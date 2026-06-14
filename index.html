@@ -146,11 +146,12 @@
       <div class="loop">
         <div class="step"><b>/grill-with-docs</b><span>decide · pin CONTEXT.md + ADRs</span></div>
         <div class="step"><b>/to-plan</b><span>write the plan in docs/plans</span></div>
-        <div class="step"><b>implement</b><span>build it (optionally /tdd)</span></div>
+        <div class="step"><b>/handoff</b><span>pass the plan to a NEW agent — execute or continue</span></div>
+        <div class="step"><b>implement</b><span>the new agent builds it (optionally /tdd)</span></div>
         <div class="step"><b>/sync-doc</b><span>update docs/system</span></div>
         <div class="step"><b>/to-plan done</b><span>archive the plan</span></div>
       </div>
-      <p>Along the way: <code>/to-pending</code> for anything deferred, a note in <code>docs/aprendizados/</code> if you got bitten, and <code>/handoff</code> to pass the baton to another chat.</p>
+      <p><strong><code>/handoff</code> is the bridge between planning and building:</strong> once the plan is written, it produces a ready-to-paste prompt (saved under <code>.handoff/</code> and opened) that a <strong>new agent/chat</strong> uses to pick up — to <em>execute the plan</em> or to <em>continue planning</em> — wired to all the docs. Along the way: <code>/to-pending</code> for anything deferred, and a note in <code>docs/aprendizados/</code> if you got bitten.</p>
     </section>
 
     <h2 id="skills">The skills</h2>

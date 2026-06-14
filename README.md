@@ -20,13 +20,17 @@ The agent shouldn't re-learn the project every session. These skills install and
 ## The loop
 
 ```
-/grill-with-docs   →   /to-plan   →   implement   →   /sync-doc   →   /to-plan done
-  (decide + ADR/         (write the      (build it)      (update          (archive
-   CONTEXT.md)            plan)                           docs/system)      the plan)
-                                                                   ↘ /to-pending (deferred)
-                                                                   ↘ docs/aprendizados (lessons)
-                                                                   ↘ /handoff (pass to another chat)
+1. /grill-with-docs   decide; pin vocabulary in CONTEXT.md + write ADRs
+2. /to-plan           write the plan in docs/plans/
+3. /handoff           hand the plan to a NEW agent — to execute it, or to continue planning
+4. implement          the new agent builds it (optionally with /tdd)
+5. /sync-doc          update docs/system/ to match the shipped code
+6. /to-plan done      archive the plan to docs/plans/done/
+
+along the way:  /to-pending  (defer a loose end)   ·   docs/aprendizados/  (record a lesson)
 ```
+
+`/handoff` is the bridge between planning and building: once the plan is written, it produces a ready-to-paste prompt (saved under `.handoff/` and opened) that a **new agent/chat** uses to pick up — either to **execute the plan** or to **continue the planning** — wired to all the docs above.
 
 ## Skills
 
