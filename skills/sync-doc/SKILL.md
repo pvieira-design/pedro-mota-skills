@@ -8,7 +8,7 @@ You were invoked via `/sync-doc`. The user finished working on a feature and wan
 
 > This is the **global** version of the command. If the project has its own version at `<repo>/.claude/commands/sync-doc.md`, that one wins — follow its instructions. This version is the generic fallback.
 
-> **Role in the ecosystem:** `docs/system/` is the **living technical doc** — the source of truth for what the code does TODAY, written so anyone (human or agent) understands a feature by **reading the page** instead of scanning the code. You are the one who keeps it in sync. The sibling folders have other owners and tenses: `docs/plans/` (what we're still **going** to do — skill `/to-plan`) and `docs/pendencias/` / `docs/aprendizados/` (loose ends / lessons from mistakes). The whole structure is installed by `/setup-pedro-mota`. **Don't** write a plan or a lesson here — only the current state of the code.
+> **Role in the ecosystem:** `docs/system/` is the **living technical doc** — the source of truth for what the code does TODAY, written so anyone (human or agent) understands a feature by **reading the page** instead of scanning the code. You are the one who keeps it in sync. The sibling folders have other owners and tenses: `docs/plans/` (what we're still **going** to do — skill `/to-plan`) and `docs/pending/` / `docs/learnings/` (loose ends / lessons from mistakes). The whole structure is installed by `/setup-pedro-mota`. **Don't** write a plan or a lesson here — only the current state of the code.
 
 ## Step 0 — Detect the project's convention
 
@@ -31,7 +31,7 @@ Also look for:
 - A `_template.md` or `TEMPLATE.md` in the docs directory — follow it if it exists.
 
 If the project has **no docs-per-feature convention** at all, tell the user and offer:
-- (a) run **`/setup-pedro-mota`** first — it does the full bootstrap (`docs/system/` + `docs/plans/` + `docs/pendencias/` + `docs/aprendizados/` + READMEs/templates + blocks in CLAUDE.md). This is the recommended path; then come back to `/sync-doc`.
+- (a) run **`/setup-pedro-mota`** first — it does the full bootstrap (`docs/system/` + `docs/plans/` + `docs/pending/` + `docs/learnings/` + READMEs/templates + blocks in CLAUDE.md). This is the recommended path; then come back to `/sync-doc`.
 - (b) write the feature's doc at a path they indicate (without the full structure).
 
 ## Step 1 — Figure out the feature
@@ -176,17 +176,17 @@ That way the next session knows human context is missing.
 
 ---
 
-## If you got bitten by a trap (`docs/aprendizados/`)
+## If you got bitten by a trap (`docs/learnings/`)
 
-If during this feature's work you (or the user) **lost time on a bug with a non-obvious cause, an environment/tool trap, or a wrong path** — that does not go to `docs/system/` (which describes the code, not the stumbles). Offer to record a **lesson** in `docs/aprendizados/` (format: what went wrong · why · the rule not to repeat). Worth it when: it cost time + tends to recur + has an actionable rule. Don't invent a lesson if there was no real stumble.
+If during this feature's work you (or the user) **lost time on a bug with a non-obvious cause, an environment/tool trap, or a wrong path** — that does not go to `docs/system/` (which describes the code, not the stumbles). Offer to record a **lesson** in `docs/learnings/` (format: what went wrong · why · the rule not to repeat). Worth it when: it cost time + tends to recur + has an actionable rule. Don't invent a lesson if there was no real stumble.
 
 ## Related skills (the ecosystem)
 
 `/sync-doc` is one piece of a loop. The others:
 
-- **`/setup-pedro-mota`** — installs the structure (`docs/system/` + `docs/plans/` + `docs/pendencias/` + `docs/aprendizados/` + CLAUDE.md). Run it if the convention doesn't exist yet.
+- **`/setup-pedro-mota`** — installs the structure (`docs/system/` + `docs/plans/` + `docs/pending/` + `docs/learnings/` + CLAUDE.md). Run it if the convention doesn't exist yet.
 - **`/grill-with-docs`** / **`/grill-me`** — grilling session that stress-tests the plan.
 - **`/to-plan`** — distills the grilling into a plan in `docs/plans/`; `/to-plan done <slug>` archives the plan when the feature ships.
-- **`/to-pending`** — records loose ends in `docs/pendencias/`. If while syncing the doc you notice something deferred/open, suggest recording the pending item so it's not forgotten.
+- **`/to-pending`** — records loose ends in `docs/pending/`. If while syncing the doc you notice something deferred/open, suggest recording the pending item so it's not forgotten.
 
 Typical loop: **grill → `/to-plan` → implement → `/sync-doc` (you) → `/to-plan done`** (+ `/to-pending` for what's left open). When you finish `/sync-doc` for a plan that existed in `docs/plans/`, remind the user to close it with `/to-plan done <slug>`.

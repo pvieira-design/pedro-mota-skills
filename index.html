@@ -135,8 +135,8 @@
         <tr><td><code>docs/adr/</code></td><td>why we decided this way</td><td>decisions (the <em>why</em>)</td></tr>
         <tr><td><code>docs/system/</code></td><td>what the code does today</td><td>present · source of truth</td></tr>
         <tr><td><code>docs/plans/</code></td><td>what we're going to do</td><td>future · ephemeral</td></tr>
-        <tr><td><code>docs/pendencias/</code></td><td>what's left open</td><td>loose ends</td></tr>
-        <tr><td><code>docs/aprendizados/</code></td><td>where we already erred</td><td>lessons</td></tr>
+        <tr><td><code>docs/pending/</code></td><td>what's left open</td><td>loose ends</td></tr>
+        <tr><td><code>docs/learnings/</code></td><td>where we already erred</td><td>lessons</td></tr>
       </table>
       <div class="callout">Golden rule: <strong>read <code>docs/system/</code> before coding, update it after</strong> (with <code>/sync-doc</code>). The doc must never diverge from the code — if it does, the doc is wrong: fix it.</div>
     </section>
@@ -151,7 +151,7 @@
         <div class="step"><b>/sync-doc</b><span>update docs/system</span></div>
         <div class="step"><b>/to-plan done</b><span>archive the plan</span></div>
       </div>
-      <p><strong><code>/handoff</code> is the bridge between planning and building:</strong> once the plan is written, it produces a ready-to-paste prompt (saved under <code>.handoff/</code> and opened) that a <strong>new agent/chat</strong> uses to pick up — to <em>execute the plan</em> or to <em>continue planning</em> — wired to all the docs. Along the way: <code>/to-pending</code> for anything deferred, and a note in <code>docs/aprendizados/</code> if you got bitten.</p>
+      <p><strong><code>/handoff</code> is the bridge between planning and building:</strong> once the plan is written, it produces a ready-to-paste prompt (saved under <code>.handoff/</code> and opened) that a <strong>new agent/chat</strong> uses to pick up — to <em>execute the plan</em> or to <em>continue planning</em> — wired to all the docs. Along the way: <code>/to-pending</code> for anything deferred, and a note in <code>docs/learnings/</code> if you got bitten.</p>
     </section>
 
     <h2 id="skills">The skills</h2>
@@ -161,7 +161,7 @@
       <div class="skill">
         <span class="tag pedro">Pedro · new</span>
         <h3><code>/setup-pedro-mota</code></h3>
-        <p>One-shot bootstrap of the whole knowledge base: <code>CONTEXT.md</code>, <code>docs/adr</code>, <code>docs/system</code>, <code>docs/plans</code>, <code>docs/pendencias</code>, <code>docs/aprendizados</code> + a CLAUDE.md that explains each one. Calls <code>/setup-matt-pocock-skills</code> for the agent config.</p>
+        <p>One-shot bootstrap of the whole knowledge base: <code>CONTEXT.md</code>, <code>docs/adr</code>, <code>docs/system</code>, <code>docs/plans</code>, <code>docs/pending</code>, <code>docs/learnings</code> + a CLAUDE.md that explains each one. Calls <code>/setup-matt-pocock-skills</code> for the agent config.</p>
         <p class="when"><strong>When:</strong> once per repo, before using the others.</p>
         <div class="ex">Run it on a fresh repo → instant, documented foundation.</div>
       </div>
@@ -197,7 +197,7 @@
       <div class="skill">
         <span class="tag pedro">Pedro · new</span>
         <h3><code>/to-pending</code></h3>
-        <p>Records a loose end ("we'll look at it later") as a detailed, actionable item in <code>docs/pendencias/</code> — why deferred, impact, next step. <code>done</code> mode resolves it.</p>
+        <p>Records a loose end ("we'll look at it later") as a detailed, actionable item in <code>docs/pending/</code> — why deferred, impact, next step. <code>done</code> mode resolves it.</p>
         <p class="when"><strong>When:</strong> you defer an edge case, a decision, or tech debt.</p>
       </div>
       <div class="skill">

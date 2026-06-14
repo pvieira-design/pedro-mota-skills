@@ -1,4 +1,4 @@
-# Lessons learned (`docs/aprendizados/`)
+# Lessons learned (`docs/learnings/`)
 
 **Lessons from mistakes already made** — traps, bugs with non-obvious causes, decisions that went wrong, and rework. Each file records **one** mistake and, above all, **the rule not to repeat it**. It's the institutional memory of "we already stepped on this rake".
 
@@ -16,7 +16,7 @@ If it's just a code detail, that's a feature doc (`docs/system/`), not a lesson.
 
 ## Difference from sibling folders
 
-| | `docs/aprendizados/` | `docs/system/` | `docs/plans/` |
+| | `docs/learnings/` | `docs/system/` | `docs/plans/` |
 |---|---|---|---|
 | Captures | **mistake + rule not to repeat** | current state of the code | what we're going to do |
 | Tone | "don't do X because Y" | "the code does X" | "we'll do X" |

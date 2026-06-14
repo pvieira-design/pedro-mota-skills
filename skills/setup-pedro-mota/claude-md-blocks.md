@@ -2,7 +2,7 @@ These are the blocks the skill inserts/updates in the repo's `CLAUDE.md` (or `AG
 
 The goal of CLAUDE.md here is that an agent who has **never seen the repo** understands, just by reading: (1) which docs folders exist, (2) **why each one matters**, (3) **how each one works** (when to read, when to write, which skill maintains it) and (4) the work loop. Listing isn't enough — it has to explain.
 
-> Folder/path names (`docs/system`, `docs/plans`, `docs/pendencias`, `docs/aprendizados`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is. If the target repo writes its CLAUDE.md in another language, adapt the prose to that language.
+> Folder/path names (`docs/system`, `docs/plans`, `docs/pending`, `docs/learnings`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is. If the target repo writes its CLAUDE.md in another language, adapt the prose to that language.
 
 ---
 
@@ -16,8 +16,8 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 - `docs/adr/` — **decisions** of architecture and their whys
 - `docs/system/` — **living technical docs** (what the code does TODAY)
 - `docs/plans/` — **work plans** (what we're going to do; becomes `done/`)
-- `docs/pendencias/` — **loose ends** to revisit (don't forget)
-- `docs/aprendizados/` — **lessons** from mistakes already made
+- `docs/pending/` — **loose ends** to revisit (don't forget)
+- `docs/learnings/` — **lessons** from mistakes already made
 ```
 
 ---
@@ -53,13 +53,13 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 - **Why it matters:** separates intent from reality; whoever implements doesn't reopen everything.
 - **How it works:** create with `/to-plan`; close with `/to-plan done <slug>` (goes to `docs/plans/done/`).
 
-### `docs/pendencias/` — what's left open (don't forget)
+### `docs/pending/` — what's left open (don't forget)
 
 - **What it is:** loose ends deferred mid-work — edge case out of scope, postponed decision, TODO, tech debt, open question. One per file.
 - **Why it matters:** "we'll look at it later" vanishes if it lives only in your head. It's the in-repo backlog of what can't be forgotten.
 - **How it works:** record with `/to-pending` when you defer something (detailed: the what + why + impact + next step). Resolved → `done/`. Can graduate to a plan (`/to-plan`) or an issue.
 
-### `docs/aprendizados/` — where we already erred (don't repeat)
+### `docs/learnings/` — where we already erred (don't repeat)
 
 - **What it is:** lessons from bugs with non-obvious causes, tool/environment traps.
 - **Why it matters:** avoids paying the same mistake twice — the most expensive part of rework.
@@ -75,16 +75,16 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 
 1. Open **`docs/system/README.md`** → "Topic map" → read the area's `feature-*.md`.
 2. Consult **`CONTEXT.md`** (vocabulary) and **`docs/adr/`** (why the area is the way it is) when relevant.
-3. Check **`docs/aprendizados/`** if the area is sensitive.
-4. See if there's already a plan in **`docs/plans/`** or open items in **`docs/pendencias/`** about what you're going to do.
+3. Check **`docs/learnings/`** if the area is sensitive.
+4. See if there's already a plan in **`docs/plans/`** or open items in **`docs/pending/`** about what you're going to do.
 5. Only then open the code.
 
 ## ⚠️ When done (mandatory)
 
 1. **`/sync-doc`** — update the affected `docs/system/feature-*.md` (the living doc must never diverge from the code).
 2. **`/to-plan done <slug>`** — if you implemented a plan from `docs/plans/`, archive it in `done/`.
-3. **`/to-pending`** — if you deferred something ("we'll look later"), record it in `docs/pendencias/` so it's not forgotten.
-4. **`docs/aprendizados/`** — record the lesson if you got bitten by a non-obvious trap.
+3. **`/to-pending`** — if you deferred something ("we'll look later"), record it in `docs/pending/` so it's not forgotten.
+4. **`docs/learnings/`** — record the lesson if you got bitten by a non-obvious trap.
 ```
 
 ---
@@ -94,12 +94,12 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 ```markdown
 ## Documentation skills (how they fit together)
 
-- **`/setup-pedro-mota`** — bootstrap: creates the whole knowledge base (`CONTEXT.md`, `docs/adr/`, `docs/system/`, `docs/plans/`, `docs/pendencias/`, `docs/aprendizados/`, agent config) + this documentation in CLAUDE.md. Once per repo.
+- **`/setup-pedro-mota`** — bootstrap: creates the whole knowledge base (`CONTEXT.md`, `docs/adr/`, `docs/system/`, `docs/plans/`, `docs/pending/`, `docs/learnings/`, agent config) + this documentation in CLAUDE.md. Once per repo.
 - **`/setup-matt-pocock-skills`** — agent config (issue tracker, triage labels, domain layout) in `docs/agents/`. Called by `/setup-pedro-mota`.
 - **`/grill-with-docs`** / **`/grill-me`** — grilling that stress-tests the plan; updates `CONTEXT.md` (vocabulary) and creates ADRs **inline** as decisions close.
 - **`/to-plan`** — distills the grilling into a plan in `docs/plans/`; `/to-plan done` archives the finished one.
-- **`/to-pending`** — records a loose end in `docs/pendencias/` (detailed); `/to-pending done` resolves it.
+- **`/to-pending`** — records a loose end in `docs/pending/` (detailed); `/to-pending done` resolves it.
 - **`/sync-doc`** — syncs `docs/system/` with the real code at the end of implementation.
 
-Loop: **grill (`CONTEXT.md`+ADR) → `/to-plan` → implement → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what you deferred, + `docs/aprendizados/` if there was a trap).
+Loop: **grill (`CONTEXT.md`+ADR) → `/to-plan` → implement → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what you deferred, + `docs/learnings/` if there was a trap).
 ```

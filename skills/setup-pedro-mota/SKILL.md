@@ -1,6 +1,6 @@
 ---
 name: setup-pedro-mota
-description: COMPLETE bootstrap of a repo's knowledge base in Pedro Mota's standard, so the AI is smart from day one. Creates/ensures CONTEXT.md (domain glossary), docs/adr/ (decisions + whys), docs/system/ (living technical docs), docs/plans/ (work plans), docs/pendencias/ (loose ends to revisit), docs/aprendizados/ (lessons from mistakes), runs Matt Pocock's agent setup (issue tracker/triage/domain in docs/agents/), and writes/updates CLAUDE.md explaining the importance and how each one works + the skill loop (/grill-with-docs, /to-plan, /to-pending, /sync-doc). Run once per repo, before using the other skills, or whenever this structure is missing.
+description: COMPLETE bootstrap of a repo's knowledge base in Pedro Mota's standard, so the AI is smart from day one. Creates/ensures CONTEXT.md (domain glossary), docs/adr/ (decisions + whys), docs/system/ (living technical docs), docs/plans/ (work plans), docs/pending/ (loose ends to revisit), docs/learnings/ (lessons from mistakes), runs Matt Pocock's agent setup (issue tracker/triage/domain in docs/agents/), and writes/updates CLAUDE.md explaining the importance and how each one works + the skill loop (/grill-with-docs, /to-plan, /to-pending, /sync-doc). Run once per repo, before using the other skills, or whenever this structure is missing.
 disable-model-invocation: true
 ---
 
@@ -12,13 +12,13 @@ Bootstraps the whole **knowledge base** that makes an agent (or person) producti
 - **`docs/adr/`** — *why we decided it this way* (Architecture Decision Records).
 - **`docs/system/`** — *what the code does TODAY* (living technical docs; one feature per file). Maintained by `/sync-doc`.
 - **`docs/plans/`** — *what we're GOING to do* (work plans; ephemeral). Created by `/to-plan`.
-- **`docs/pendencias/`** — *what's left open* (loose ends to revisit, so nothing is forgotten). Created by `/to-pending`.
-- **`docs/aprendizados/`** — *where we already erred* (lessons not to repeat).
+- **`docs/pending/`** — *what's left open* (loose ends to revisit, so nothing is forgotten). Created by `/to-pending`.
+- **`docs/learnings/`** — *where we already erred* (lessons not to repeat).
 - **`docs/agents/`** — operational agent config (issue tracker, triage labels, domain layout), via `/setup-matt-pocock-skills`.
 
 This is a **prompt-driven** skill, not a script. Explore → present what you found → confirm with the user → write. Be **idempotent**: only create what's missing, never overwrite the user's work, update blocks in-place.
 
-> Folder/path names (`docs/system`, `docs/plans`, `docs/pendencias`, `docs/aprendizados`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is even though this skill is written in English.
+> Folder/path names (`docs/system`, `docs/plans`, `docs/pending`, `docs/learnings`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is even though this skill is written in English.
 
 ## Process
 
@@ -26,7 +26,7 @@ This is a **prompt-driven** skill, not a script. Explore → present what you fo
 
 Understand the repo's current state (run in parallel):
 
-- `ls docs/ docs/system/ docs/plans/ docs/pendencias/ docs/aprendizados/ docs/adr/ docs/agents/ 2>/dev/null` — what already exists?
+- `ls docs/ docs/system/ docs/plans/ docs/pending/ docs/learnings/ docs/adr/ docs/agents/ 2>/dev/null` — what already exists?
 - `ls CLAUDE.md AGENTS.md CONTEXT.md CONTEXT-MAP.md 2>/dev/null` — which root artifacts exist?
 - `git remote -v` — GitHub/GitLab? (feeds Matt's issue-tracker setup).
 - `git ls-files '*.md' | head -50` — docs convention already in use?
@@ -59,13 +59,13 @@ Always adapt paths/layout to the repo (language, monorepo vs single app) — the
 **Plans — `docs/plans/`**:
 - `docs/plans/README.md` ← seed [`plans-readme.md`](./plans-readme.md).
 
-**Pending — `docs/pendencias/`**:
-- `docs/pendencias/_template.md` ← seed [`pendencias-template.md`](./pendencias-template.md).
-- `docs/pendencias/README.md` ← seed [`pendencias-readme.md`](./pendencias-readme.md).
+**Pending — `docs/pending/`**:
+- `docs/pending/_template.md` ← seed [`pending-template.md`](./pending-template.md).
+- `docs/pending/README.md` ← seed [`pending-readme.md`](./pending-readme.md).
 
-**Lessons — `docs/aprendizados/`**:
-- `docs/aprendizados/_template.md` ← seed [`aprendizados-template.md`](./aprendizados-template.md).
-- `docs/aprendizados/README.md` ← seed [`aprendizados-readme.md`](./aprendizados-readme.md).
+**Lessons — `docs/learnings/`**:
+- `docs/learnings/_template.md` ← seed [`learnings-template.md`](./learnings-template.md).
+- `docs/learnings/README.md` ← seed [`learnings-readme.md`](./learnings-readme.md).
 
 If a folder exists but its README/template is missing, create only what's missing. Never clobber a user's file — suggest the additions instead.
 
@@ -99,7 +99,7 @@ This skill **installs the knowledge base**; the others **consume and maintain it
 - **`/setup-matt-pocock-skills`** — agent config (issue tracker, triage, domain) in `docs/agents/`. Called in step 4.
 - **`/grill-with-docs`** / **`/grill-me`** — grilling that fixes vocabulary in `CONTEXT.md` and creates **ADRs** inline as decisions close.
 - **`/to-plan`** — writes plans in `docs/plans/` (referencing relevant ADRs) and archives them in `done/` when implemented.
-- **`/to-pending`** — records loose ends in `docs/pendencias/` (detailed) and resolves/promotes them.
+- **`/to-pending`** — records loose ends in `docs/pending/` (detailed) and resolves/promotes them.
 - **`/sync-doc`** — keeps `docs/system/` in sync with the code (+ "Topic map") at the end of each feature.
 
 Keep them coherent: if you change the structure here, adjust the references in those skills.

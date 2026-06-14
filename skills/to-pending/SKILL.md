@@ -1,6 +1,6 @@
 ---
 name: to-pending
-description: Record a PENDING ITEM (a loose end to revisit — deferred edge case, postponed decision, TODO, tech debt, open question) as a detailed doc under docs/pendencias/, following best practices (self-sufficient, with why + impact + next step). Also resolves/archives completed pending items. Use when something is left pending mid-work ("we'll look at it later", "left pending", "don't forget to", "note this pending item"), or to mark a pending item as resolved.
+description: Record a PENDING ITEM (a loose end to revisit — deferred edge case, postponed decision, TODO, tech debt, open question) as a detailed doc under docs/pending/, following best practices (self-sufficient, with why + impact + next step). Also resolves/archives completed pending items. Use when something is left pending mid-work ("we'll look at it later", "left pending", "don't forget to", "note this pending item"), or to mark a pending item as resolved.
 argument-hint: "<what was left pending>  |  done <file-or-slug>"
 ---
 
@@ -9,7 +9,7 @@ This skill has **two modes**. Decide by the argument:
 - Argument starts with `done` (or `resolved`/`finish`) → **RESOLVE mode**.
 - Anything else (including no argument) → **RECORD mode**.
 
-First, find today's date (`date +%F`) and confirm the `docs/pendencias/` folder (if it doesn't exist, suggest running `/setup-pedro-mota`, which creates the whole structure).
+First, find today's date (`date +%F`) and confirm the `docs/pending/` folder (if it doesn't exist, suggest running `/setup-pedro-mota`, which creates the whole structure).
 
 ---
 
@@ -23,11 +23,11 @@ Use the argument (if any) and what was said in this conversation. If several thi
 
 ### 2. Name and location
 
-`docs/pendencias/YYYY-MM-DD-short-title.md` (today's date + slug of the title). Follow the repo's `docs/pendencias/README.md` if it differs.
+`docs/pending/YYYY-MM-DD-short-title.md` (today's date + slug of the title). Follow the repo's `docs/pending/README.md` if it differs.
 
 ### 3. Detail it following best practices
 
-Use the repo's template (`docs/pendencias/_template.md`) or these sections. **Each pending item must be self-sufficient and actionable**:
+Use the repo's template (`docs/pending/_template.md`) or these sections. **Each pending item must be self-sufficient and actionable**:
 
 1. **What's pending** — exactly what's left to do/decide. Concrete, not vague ("handle the X error when Y" > "improve errors").
 2. **Why it was deferred** — the reason for postponing (out of scope, dependency, missing decision, time).
@@ -41,7 +41,7 @@ Principles (backlog/issue best practices): specific and context-free · capture 
 
 ### 4. Update the index
 
-Add the pending item to the `docs/pendencias/README.md` list (link + 1 sentence + priority).
+Add the pending item to the `docs/pending/README.md` list (link + 1 sentence + priority).
 
 ### 5. Close out
 
@@ -55,7 +55,7 @@ Argument: `done <file-or-slug>`.
 
 ### 1. Locate
 
-Search `docs/pendencias/` (outside `done/`) for the matching file. Ambiguous → list and ask. No argument → list the open pending items and ask which one.
+Search `docs/pending/` (outside `done/`) for the matching file. Ambiguous → list and ask. No argument → list the open pending items and ask which one.
 
 ### 2. Record how it was resolved
 
@@ -63,16 +63,16 @@ At the top of the file, add: `> ✅ **Resolved on YYYY-MM-DD** — <how> (implem
 
 ### 3. Move to `done/`
 
-- Create `docs/pendencias/done/` if needed.
-- `git mv docs/pendencias/<file> docs/pendencias/done/<file>` (preserves history). Outside git, `mv`.
+- Create `docs/pending/done/` if needed.
+- `git mv docs/pending/<file> docs/pending/done/<file>` (preserves history). Outside git, `mv`.
 
 ### 4. Update the index
 
-Remove the pending item from the open list in `docs/pendencias/README.md` (move it to a "Resolved" section or remove it, per the README).
+Remove the pending item from the open list in `docs/pending/README.md` (move it to a "Resolved" section or remove it, per the README).
 
 ### 5. Chain
 
-If the resolution was to **do** something, remember to `/sync-doc` the feature. If it **became a plan**, create it with `/to-plan`. If there was a lesson, record it in `docs/aprendizados/`.
+If the resolution was to **do** something, remember to `/sync-doc` the feature. If it **became a plan**, create it with `/to-plan`. If there was a lesson, record it in `docs/learnings/`.
 
 ---
 
@@ -85,10 +85,10 @@ If the resolution was to **do** something, remember to `/sync-doc` the feature. 
 
 `/to-pending` is the lightweight "don't forget" layer. Neighbors:
 
-- **`/setup-pedro-mota`** — creates `docs/pendencias/` and the whole structure. Run it first if the folder doesn't exist.
+- **`/setup-pedro-mota`** — creates `docs/pending/` and the whole structure. Run it first if the folder doesn't exist.
 - **`/to-plan`** — when a pending item grows and becomes a feature to plan, promote it to a plan in `docs/plans/`.
 - **`/sync-doc`** — when the pending item is resolved by writing code, sync the living doc.
 - **Issue tracker / `/triage`** — when the pending item is prioritized to be worked on, graduate it to a formal issue.
-- **`docs/aprendizados/`** — if the pending item existed because of a mistake, record the lesson there.
+- **`docs/learnings/`** — if the pending item existed because of a mistake, record the lesson there.
 
 Quick distinction: **pending** = loose end to revisit (light); **plan** = feature to execute (complete); **issue** = prioritized/triaged work; **lesson** = mistake not to repeat.

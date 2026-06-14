@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Compact the current conversation into a handoff document, then write a ready-to-paste prompt as a markdown file under the project's hidden .handoff/ folder and open it so the user can copy it. The prompt is tailored to the handoff's purpose — continuing a grilling/planning session, or executing a plan — and is wired to the repo's knowledge base (CONTEXT.md, docs/adr, docs/system, docs/plans, docs/pendencias, docs/aprendizados).
+description: Compact the current conversation into a handoff document, then write a ready-to-paste prompt as a markdown file under the project's hidden .handoff/ folder and open it so the user can copy it. The prompt is tailored to the handoff's purpose — continuing a grilling/planning session, or executing a plan — and is wired to the repo's knowledge base (CONTEXT.md, docs/adr, docs/system, docs/plans, docs/pending, docs/learnings).
 argument-hint: "What will the next session be used for?"
 ---
 
@@ -48,8 +48,8 @@ Detect which knowledge-base artifacts exist (only reference what's there) and bu
 - `docs/adr/` — decisions (the *why*). Cite the specific ADRs that constrain the next task.
 - `docs/system/` — living technical docs. Point at `docs/system/README.md` ("Topic map") + the specific `feature-*.md` for the area.
 - `docs/plans/` — work plans. Name the **active plan** if there is one.
-- `docs/pendencias/` — open loose ends. Link any relevant one.
-- `docs/aprendizados/` — past mistakes. Link any that apply.
+- `docs/pending/` — open loose ends. Link any relevant one.
+- `docs/learnings/` — past mistakes. Link any that apply.
 
 If the repo has none of this structure, suggest running `/setup-pedro-mota` first.
 
@@ -62,7 +62,7 @@ Every prompt: (a) states the goal, (b) tells the agent to read `.handoff/<base>.
 Then tailor the action by purpose:
 
 - **Continue grilling/planning:** instruct the agent to **resume the design session** — re-open the still-undecided questions (list them), stress-test them, and NOT jump to code. Suggested skills: `/grill-with-docs` (keep challenging against the domain, update `CONTEXT.md`/ADRs as decisions close) and, once settled, `/to-plan` to capture the plan.
-- **Execute a plan:** instruct the agent to **implement the plan** at `docs/plans/<...>.md` — read it plus the cited ADRs and `feature-*.md`, respect the invariants, and when done run `/sync-doc` on the touched feature and `/to-plan done <slug>` to archive the plan. Register `/to-pending` for anything deferred and a lesson in `docs/aprendizados/` if bitten.
+- **Execute a plan:** instruct the agent to **implement the plan** at `docs/plans/<...>.md` — read it plus the cited ADRs and `feature-*.md`, respect the invariants, and when done run `/sync-doc` on the touched feature and `/to-plan done <slug>` to archive the plan. Register `/to-pending` for anything deferred and a lesson in `docs/learnings/` if bitten.
 - **Other:** a general continuation pointing at the handoff doc + reading list.
 
 Keep it tight and self-contained — real, clickable paths.

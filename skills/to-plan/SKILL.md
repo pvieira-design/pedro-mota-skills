@@ -111,11 +111,11 @@ Confirm: file moved to `docs/plans/done/<file>`, badge applied, README updated. 
 
 `/to-plan` is the bridge between planning and implementing. The neighboring folders and skills:
 
-- **`/setup-pedro-mota`** — installs the docs structure (`docs/system/`, `docs/plans/`, `docs/pendencias/`, `docs/aprendizados/`) and the convention this skill follows. If `docs/plans/` doesn't exist, suggest running it first.
+- **`/setup-pedro-mota`** — installs the docs structure (`docs/system/`, `docs/plans/`, `docs/pending/`, `docs/learnings/`) and the convention this skill follows. If `docs/plans/` doesn't exist, suggest running it first.
 - **`/grill-with-docs`** / **`/grill-me`** — the grilling session that **precedes** BUILD mode; it's where the "Closed decisions" (and the ADRs) come from.
 - **`docs/adr/`** — the plan's **durable counterpart**: the plan is ephemeral (goes to `done/`), the ADR is permanent. Cite existing ADRs in the plan and promote every hard-to-reverse decision to an ADR (see step **3.1**). ADRs are **never** moved to `done/`.
 - **`/sync-doc`** — this skill's **counterpart on the time axis**: `docs/plans/` is the future (what we'll do), `docs/system/` is the present (what exists). In CLOSE mode, after moving the plan to `done/`, run `/sync-doc <feature>` so the technical doc reflects what shipped.
-- **`/to-pending`** — what you left in "Out of scope" or deferred during execution must not vanish: record it as a pending item in `docs/pendencias/` (a loose end is lighter than a plan).
-- **`docs/aprendizados/`** — if during the plan's implementation you got bitten by a non-obvious trap, record the lesson there (not in the plan or the system doc).
+- **`/to-pending`** — what you left in "Out of scope" or deferred during execution must not vanish: record it as a pending item in `docs/pending/` (a loose end is lighter than a plan).
+- **`docs/learnings/`** — if during the plan's implementation you got bitten by a non-obvious trap, record the lesson there (not in the plan or the system doc).
 
 Typical loop: **grill → `/to-plan` → implement → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what's left open).

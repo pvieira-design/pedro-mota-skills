@@ -14,8 +14,8 @@ The agent shouldn't re-learn the project every session. These skills install and
 | `docs/adr/` | why we decided this way (decisions) |
 | `docs/system/` | what the code does today (living docs) |
 | `docs/plans/` | what we're going to do (plans) |
-| `docs/pendencias/` | what's left open (loose ends) |
-| `docs/aprendizados/` | where we already erred (lessons) |
+| `docs/pending/` | what's left open (loose ends) |
+| `docs/learnings/` | where we already erred (lessons) |
 
 ## The loop
 
@@ -27,7 +27,7 @@ The agent shouldn't re-learn the project every session. These skills install and
 5. /sync-doc          update docs/system/ to match the shipped code
 6. /to-plan done      archive the plan to docs/plans/done/
 
-along the way:  /to-pending  (defer a loose end)   ·   docs/aprendizados/  (record a lesson)
+along the way:  /to-pending  (defer a loose end)   ·   docs/learnings/  (record a lesson)
 ```
 
 `/handoff` is the bridge between planning and building: once the plan is written, it produces a ready-to-paste prompt (saved under `.handoff/` and opened) that a **new agent/chat** uses to pick up — either to **execute the plan** or to **continue the planning** — wired to all the docs above.

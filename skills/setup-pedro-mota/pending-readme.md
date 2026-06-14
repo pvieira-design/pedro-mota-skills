@@ -1,4 +1,4 @@
-# Pending items (`docs/pendencias/`)
+# Pending items (`docs/pending/`)
 
 **Loose ends** — everything left **pending to look at later** that must not be forgotten: a deferred edge case, a postponed decision, a TODO/tech debt, an open question. Each file is **one** pending item, detailed enough that "future-you" (or another agent) can pick it up without the original context.
 
@@ -10,7 +10,7 @@ When you **consciously defer** something during work: left a case out of scope, 
 
 ## Difference from sibling folders/tools
 
-| | `docs/pendencias/` | `docs/plans/` | Issue tracker | `docs/aprendizados/` |
+| | `docs/pending/` | `docs/plans/` | Issue tracker | `docs/learnings/` |
 |---|---|---|---|---|
 | What it is | loose end / look-at-later | execution plan for a feature | tracked/triaged formal work | lesson from a mistake |
 | Size | small, 1 item | full doc | triaged issue | 1 lesson |

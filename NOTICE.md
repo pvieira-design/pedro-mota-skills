@@ -21,9 +21,9 @@ Included as-is (or near-as-is) from **[github.com/mattpocock/skills](https://git
 
 Authored or substantially adapted by Pedro Mota, building on the same philosophy:
 
-- `setup-pedro-mota` — **new**. Complete knowledge-base bootstrap (CONTEXT.md, docs/adr, docs/system, docs/plans, docs/pendencias, docs/aprendizados) + CLAUDE.md; calls `setup-matt-pocock-skills`.
+- `setup-pedro-mota` — **new**. Complete knowledge-base bootstrap (CONTEXT.md, docs/adr, docs/system, docs/plans, docs/pending, docs/learnings) + CLAUDE.md; calls `setup-matt-pocock-skills`.
 - `to-plan` — **new**. Turn grilling decisions into an implementation plan under `docs/plans/`; close it to `done/`. Works together with `docs/adr/`.
-- `to-pending` — **new**. Record/resolve loose ends under `docs/pendencias/`.
+- `to-pending` — **new**. Record/resolve loose ends under `docs/pending/`.
 - `sync-doc` — **new**. Keep `docs/system/` (living technical docs) in sync with the code.
 - `handoff` — **adapted** from Matt Pocock's handoff. Rewritten to emit a ready-to-paste prompt (continue-planning vs execute) wired to the knowledge base, saved under `.handoff/` and opened.
 
