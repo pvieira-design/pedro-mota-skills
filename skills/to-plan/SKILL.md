@@ -64,7 +64,7 @@ Add a line for the new plan in the "Plans" section of `docs/plans/README.md` (re
 
 ### 5. Close out
 
-Tell the user the path of the created plan and offer the next step (e.g. handoff to an executing agent, or implement now). If the grilling produced terms for `CONTEXT.md`, or an ADR-worthy decision you haven't recorded yet (see 3.1), remind/offer to record it before moving on — that knowledge outlives the plan.
+Tell the user the path of the created plan and offer the next step (e.g. `/handoff` to an executing agent, `/to-tasks` to publish it as a Click Notes task board for autonomous agents to pull, or implement now). If the grilling produced terms for `CONTEXT.md`, or an ADR-worthy decision you haven't recorded yet (see 3.1), remind/offer to record it before moving on — that knowledge outlives the plan.
 
 ---
 
@@ -114,8 +114,9 @@ Confirm: file moved to `docs/plans/done/<file>`, badge applied, README updated. 
 - **`/setup-pedro-mota`** — installs the docs structure (`docs/system/`, `docs/plans/`, `docs/pending/`, `docs/learnings/`) and the convention this skill follows. If `docs/plans/` doesn't exist, suggest running it first.
 - **`/grill-with-docs`** / **`/grill-me`** — the grilling session that **precedes** BUILD mode; it's where the "Closed decisions" (and the ADRs) come from.
 - **`docs/adr/`** — the plan's **durable counterpart**: the plan is ephemeral (goes to `done/`), the ADR is permanent. Cite existing ADRs in the plan and promote every hard-to-reverse decision to an ADR (see step **3.1**). ADRs are **never** moved to `done/`.
+- **`/to-tasks`** / **`/do-task`** — the **board-driven** way to execute this plan: `/to-tasks` publishes it as Click Notes tasks (gated `[READY FOR DEV]` / `[PLANNING]` / `[WIP]`), then an autonomous agent runs `/do-task` to pull and implement each slice from its linked plan + ADRs. An alternative to `/handoff` for passing the plan to a fresh agent.
 - **`/sync-doc`** — this skill's **counterpart on the time axis**: `docs/plans/` is the future (what we'll do), `docs/system/` is the present (what exists). In CLOSE mode, after moving the plan to `done/`, run `/sync-doc <feature>` so the technical doc reflects what shipped.
 - **`/to-pending`** — what you left in "Out of scope" or deferred during execution must not vanish: record it as a pending item in `docs/pending/` (a loose end is lighter than a plan).
 - **`docs/learnings/`** — if during the plan's implementation you got bitten by a non-obvious trap, record the lesson there (not in the plan or the system doc).
 
-Typical loop: **grill → `/to-plan` → implement → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what's left open).
+Typical loop: **grill → `/to-plan` → implement → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what's left open). Board-driven branch: **grill → `/to-plan` → `/to-tasks` → `/do-task` (autonomous) → `/sync-doc` → `/to-plan done`**.

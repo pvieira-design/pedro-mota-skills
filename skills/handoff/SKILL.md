@@ -62,7 +62,7 @@ Every prompt: (a) states the goal, (b) tells the agent to read `.handoff/<base>.
 Then tailor the action by purpose:
 
 - **Continue grilling/planning:** instruct the agent to **resume the design session** — re-open the still-undecided questions (list them), stress-test them, and NOT jump to code. Suggested skills: `/grill-with-docs` (keep challenging against the domain, update `CONTEXT.md`/ADRs as decisions close) and, once settled, `/to-plan` to capture the plan.
-- **Execute a plan:** instruct the agent to **implement the plan** at `docs/plans/<...>.md` — read it plus the cited ADRs and `feature-*.md`, respect the invariants, and when done run `/sync-doc` on the touched feature and `/to-plan done <slug>` to archive the plan. Register `/to-pending` for anything deferred and a lesson in `docs/learnings/` if bitten.
+- **Execute a plan:** instruct the agent to **implement the plan** at `docs/plans/<...>.md` — read it plus the cited ADRs and `feature-*.md`, respect the invariants, and when done run `/sync-doc` on the touched feature and `/to-plan done <slug>` to archive the plan. Register `/to-pending` for anything deferred and a lesson in `docs/learnings/` if bitten. (Board-driven alternative to a handoff prompt: `/to-tasks` publishes the plan as Click Notes tasks for an autonomous agent to pull via `/do-task`.)
 - **Other:** a general continuation pointing at the handoff doc + reading list.
 
 Keep it tight and self-contained — real, clickable paths.
@@ -79,3 +79,5 @@ Then tell the user, in ≤4 lines: the purpose detected, the two file paths, and
 ## Related skills
 
 `/handoff` is the exit of the work loop — it passes the baton to another session pointing at the knowledge base that **`/setup-pedro-mota`** installed and that **`/grill-with-docs`**, **`/to-plan`**, **`/sync-doc`** and **`/to-pending`** maintain. Before handing off, consider closing what you can so the handoff points at a clean state: `/sync-doc` on the touched feature, `/to-plan done` on an implemented plan, `/to-pending` for what's left open.
+
+For execution specifically, **`/to-tasks`** + **`/do-task`** is the **board-driven** alternative to a handoff prompt: publish the plan as Click Notes tasks once (gated in the title) and let autonomous agents pull them, instead of pasting a prompt into one new chat.
