@@ -102,4 +102,16 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 - **`/sync-doc`** — syncs `docs/system/` with the real code at the end of implementation.
 
 Loop: **grill (`CONTEXT.md`+ADR) → `/to-plan` → implement → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what you deferred, + `docs/learnings/` if there was a trap).
+
+### If your workspace uses the Click Notes MCP (optional)
+
+A board-driven way to execute plans, plus skills for the company's meetings + knowledge graph. These need the Click Notes MCP connected — skip this section if you don't use it.
+
+- **`/to-tasks`** — publish a `docs/plans/` plan as Click Notes tasks + subtasks, **gated in the title** (`[READY FOR DEV]` to code · `[PLANNING]` to leave alone · `[WIP]` while worked). The plan = one root task, each vertical slice = a subtask carrying pointers to the plan + ADRs.
+- **`/do-task`** — an autonomous agent grabs the next `[READY FOR DEV]` task, reads its linked plan + ADRs + `feature-*.md`, implements, tests, and marks it done. Never codes a `[PLANNING]` task; refuses to code with no detailed plan.
+- **`/clicknotes-meeting`** — rewrite a meeting's notes from its transcript + generate its tasks (deduped against existing ones).
+- **`/clicknotes-memory`** / **`/clicknotes-recall`** — create/update and search the company knowledge graph (Memória).
+- **`/clicknotes-tasks`** — reconcile the task board against what's actually been done.
+
+Board-driven branch: **`/to-plan` → `/to-tasks` → `/do-task` (autonomous) → `/sync-doc` → `/to-plan done`**. `/handoff` and `/to-tasks` are two ways to pass a written plan to a fresh agent — a ready-to-paste prompt vs. a board agents pull from.
 ```
