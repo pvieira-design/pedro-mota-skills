@@ -17,6 +17,13 @@ Before anything, find today's date with `date +%F` and the repo's plans folder (
 
 You just went through a grilling/design session (probably `grill-me` or `grill-with-docs`). The goal now is to **distill what was decided in this conversation** into an executable plan doc that another agent (or a future session) can pick up and implement without reopening the decisions.
 
+> ### Re-ground before you plan this topic — don't trust a long chat
+> When you've been planning for a while and **move from one topic to another**, the chat context is bloated and you *will* drift. Before planning a new subject, **refresh on it from the source of truth, not from memory**:
+> - the **current code** in that area (read it now — don't rely on what you "remember" from earlier in the session);
+> - the repo's docs about it — `docs/plans/` (open **and** `done/`), `docs/system/feature-*.md`, `docs/adr/`, `docs/pending/`, `CONTEXT.md`.
+>
+> Get current on what exists *today*, **then** distill the decisions below. This is re-grounding, not re-litigating — don't reopen decisions already closed, just make sure the plan is anchored to reality and not to a stale, overflowing chat.
+
 ### 1. Read the repo's convention first
 
 If `docs/plans/README.md` exists, **read it and follow** its naming convention and section structure exactly — it's the source of truth for this repo's format. The instructions below are the fallback when there's no README.

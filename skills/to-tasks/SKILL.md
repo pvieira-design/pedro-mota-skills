@@ -40,6 +40,8 @@ Find the plan in `docs/plans/` matching the argument (by slug/date). If ambiguou
 
 Read it in full **plus** the artifacts it cites — the ADRs in `docs/adr/`, the `docs/system/feature-*.md`, and `CONTEXT.md` — so task titles and descriptions use the project's real vocabulary and respect its decisions. Don't re-derive the plan; just absorb it.
 
+> **Re-ground first — don't trust a long chat.** If you've been in a long session planning/creating tasks for *other* topics, the context is bloated and you'll drift. Before breaking down THIS subject, refresh from the source of truth, not memory: re-read the **current code** in the area + the repo docs for it (`docs/plans/` open and `done/`, `docs/system/feature-*.md`, `docs/adr/`, `docs/pending/`). Get current on what exists *today*, then slice.
+
 ### 2. Draft the slices
 
 Break the plan into **tracer-bullet vertical slices**. Each slice cuts through ALL layers end-to-end — not a horizontal slice of one layer:
