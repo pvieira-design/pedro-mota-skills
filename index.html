@@ -112,6 +112,8 @@
     <a href="#setup">Setup</a>
     <a href="#planning">Grilling &amp; planning</a>
     <a href="#docs">Docs &amp; handoff</a>
+    <a href="#tasks">Tasks &amp; execution</a>
+    <a href="#clicknotes">Click Notes</a>
     <a href="#issues">Issues &amp; PRDs</a>
     <a href="#eng">Engineering</a>
     <strong>Use</strong>
@@ -152,6 +154,7 @@
         <div class="step"><b>/to-plan done</b><span>archive the plan</span></div>
       </div>
       <p><strong><code>/handoff</code> is the bridge between planning and building:</strong> once the plan is written, it produces a ready-to-paste prompt (saved under <code>.handoff/</code> and opened) that a <strong>new agent/chat</strong> uses to pick up — to <em>execute the plan</em> or to <em>continue planning</em> — wired to all the docs. Along the way: <code>/to-pending</code> for anything deferred, and a note in <code>docs/learnings/</code> if you got bitten.</p>
+      <div class="callout"><strong>Board-driven alternative.</strong> Instead of (or alongside) <code>/handoff</code>, run <code>/to-tasks</code> to publish the plan as <strong>Click Notes</strong> tasks + subtasks — each slice gated in its title (<code>[READY FOR DEV]</code> to code, <code>[PLANNING]</code> to leave alone, <code>[WIP]</code> while worked). Autonomous agents then run <code>/do-task</code> to pull the next ready task, read its plan + ADRs, build, test, and mark it done. <em>Publish once, let agents pull.</em></div>
     </section>
 
     <h2 id="skills">The skills</h2>
@@ -224,6 +227,51 @@
       </div>
     </div>
 
+    <div class="group-title" id="tasks">Tasks &amp; autonomous execution · Click Notes board</div>
+    <div class="grid">
+      <div class="skill">
+        <span class="tag pedro">Pedro · new</span>
+        <h3><code>/to-tasks</code></h3>
+        <p>Publishes a plan from <code>docs/plans/</code> as <strong>Click Notes</strong> tasks + subtasks — the plan becomes one root task, each vertical slice a subtask, <strong>gated in the title</strong> (<code>[READY FOR DEV]</code> / <code>[PLANNING]</code> / <code>[WIP]</code>). Each task carries pointers to the plan + ADRs so an agent can build it without reopening decisions.</p>
+        <p class="when"><strong>When:</strong> after <code>/to-plan</code>, to hand work to autonomous agents.</p>
+        <div class="ex">plan → root task + slice subtasks, gated for pickup</div>
+      </div>
+      <div class="skill">
+        <span class="tag pedro">Pedro · new</span>
+        <h3><code>/do-task</code></h3>
+        <p>An autonomous agent grabs the next <code>[READY FOR DEV]</code> task, reads its linked plan + ADRs + feature docs, claims it (<code>[WIP]</code>), implements + tests, and marks it done. Never codes a <code>[PLANNING]</code> task; refuses to code with no detailed plan.</p>
+        <p class="when"><strong>When:</strong> draining the board — one slice per run.</p>
+      </div>
+    </div>
+
+    <div class="group-title" id="clicknotes">Click Notes — meetings &amp; memory</div>
+    <div class="grid">
+      <div class="skill">
+        <span class="tag pedro">Pedro · new</span>
+        <h3><code>/clicknotes-meeting</code></h3>
+        <p>Reads a meeting's transcript + thin notes → rewrites/complements the notes faithfully, and turns action items into tasks linked to the meeting — <strong>deduping</strong> against tasks the org already has instead of creating twins.</p>
+        <p class="when"><strong>When:</strong> wrapping up a meeting.</p>
+      </div>
+      <div class="skill">
+        <span class="tag pedro">Pedro · new</span>
+        <h3><code>/clicknotes-memory</code></h3>
+        <p>Creates/updates a block in the company <strong>knowledge graph</strong>, obeying its living conventions (mandatory header, stable ID, fixed sections, reused tags) and wiring it into the graph (wikilinks, parent/related, hub index).</p>
+        <p class="when"><strong>When:</strong> saving a durable fact/decision to memory.</p>
+      </div>
+      <div class="skill">
+        <span class="tag pedro">Pedro · new</span>
+        <h3><code>/clicknotes-recall</code></h3>
+        <p>Searches the knowledge graph for the current topic and walks the connections (wikilinks, backlinks, tag context) to ground the conversation in what the org already knows. Read-only.</p>
+        <p class="when"><strong>When:</strong> before answering a domain question.</p>
+      </div>
+      <div class="skill">
+        <span class="tag pedro">Pedro · new</span>
+        <h3><code>/clicknotes-tasks</code></h3>
+        <p>Reconciles the task board against reality: reviews open tasks, marks finished ones done and partial ones in-progress with what remains. Evidence-based — never closes a task it can't prove is done.</p>
+        <p class="when"><strong>When:</strong> keeping the board honest.</p>
+      </div>
+    </div>
+
     <div class="group-title" id="issues">Issues &amp; PRDs</div>
     <div class="grid">
       <div class="skill">
@@ -285,7 +333,10 @@
       <p>Each skill is a folder with a <code>SKILL.md</code>. Clone the repo and symlink the skills into your agent's skills directory (Claude Code: <code>~/.claude/skills</code>):</p>
       <pre>git clone https://github.com/pvieira-design/pedro-mota-skills.git
 cd pedro-mota-skills
-for d in skills/*/; do ln -sfn "$PWD/$d" ~/.claude/skills/"$(basename "$d")"; done</pre>
+# symlink every skill (top-level and nested, e.g. skills/clicknotes/*)
+find skills -name SKILL.md | while read -r f; do
+  d=$(dirname "$f"); ln -sfn "$PWD/$d" ~/.claude/skills/"$(basename "$d")"
+done</pre>
       <p>Then invoke any skill as <code>/&lt;skill-name&gt;</code>. On a new repo, start with <code>/setup-pedro-mota</code>.</p>
     </section>
 

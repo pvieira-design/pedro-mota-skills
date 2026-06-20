@@ -32,6 +32,8 @@ along the way:  /to-pending  (defer a loose end)   ·   docs/learnings/  (record
 
 `/handoff` is the bridge between planning and building: once the plan is written, it produces a ready-to-paste prompt (saved under `.handoff/` and opened) that a **new agent/chat** uses to pick up — either to **execute the plan** or to **continue the planning** — wired to all the docs above.
 
+**Board-driven alternative.** Instead of (or alongside) `/handoff`, run `/to-tasks` to publish the plan as **Click Notes** tasks + subtasks — each grab-able slice gated in its title (`[READY FOR DEV]` to code, `[PLANNING]` to leave alone, `[WIP]` while an agent works it). An autonomous agent then runs `/do-task` to pull the next ready task, read its linked plan + ADRs, implement, test, and mark it done. Publish once, let agents pull.
+
 ## Skills
 
 **Setup**
@@ -48,6 +50,16 @@ along the way:  /to-pending  (defer a loose end)   ·   docs/learnings/  (record
 - `sync-doc` — keep `docs/system/` in sync with the code.
 - `handoff` — emit a ready-to-paste prompt (continue planning or execute) wired to the docs.
 
+**Tasks & autonomous execution (Click Notes)**
+- `to-tasks` — publish a plan as Click Notes tasks/subtasks, gated `[READY FOR DEV]` / `[PLANNING]` in the title.
+- `do-task` — an agent grabs a `[READY FOR DEV]` task and implements it from the linked plan + ADRs + feature docs.
+
+**Click Notes — meetings & memory** (in [`skills/clicknotes/`](skills/clicknotes/README.md))
+- `clicknotes-meeting` — improve a meeting's notes from its transcript and generate its tasks (deduped).
+- `clicknotes-memory` — create/update a block in the company knowledge graph, following its conventions.
+- `clicknotes-recall` — search the knowledge graph for the current topic and ground the conversation.
+- `clicknotes-tasks` — reconcile open tasks against what's actually done (mark done / update partial).
+
 **Issues & PRDs**
 - `to-issues`, `to-prd`, `triage`.
 
@@ -63,8 +75,10 @@ Skills are folders with a `SKILL.md`. Point your agent's skills directory at the
 ```bash
 git clone https://github.com/pvieira-design/pedro-mota-skills.git
 cd pedro-mota-skills
-# symlink all skills into ~/.claude/skills (adjust path to your setup)
-for d in skills/*/; do ln -sfn "$PWD/$d" ~/.claude/skills/"$(basename "$d")"; done
+# symlink every skill (top-level and nested, e.g. skills/clicknotes/*) into ~/.claude/skills
+find skills -name SKILL.md | while read -r f; do
+  d=$(dirname "$f"); ln -sfn "$PWD/$d" ~/.claude/skills/"$(basename "$d")"
+done
 ```
 
 Then invoke any skill as `/<skill-name>` (e.g. `/setup-pedro-mota`). Start a new repo with `/setup-pedro-mota`.
