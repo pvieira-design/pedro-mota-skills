@@ -48,6 +48,7 @@ Break the plan into **tracer-bullet vertical slices**. Each slice cuts through A
 - Each slice delivers a narrow but COMPLETE path through every layer (schema, API, UI, tests).
 - A completed slice is demoable or verifiable on its own.
 - Prefer many thin slices over a few thick ones.
+- Each slice is **self-contained**: it carries everything its implementer needs — the agent has zero chat history, so never "as we discussed earlier".
 </vertical-slice-rules>
 
 If the plan already enumerates slices/phases, reuse them. For each slice decide:
@@ -85,7 +86,7 @@ Publish blockers first so you can name real blocker titles. For each slice, `cre
 
 ### 6. Report
 
-Tell the user: the root task id + the subtask ids, how many are `[READY FOR DEV]` vs `[PLANNING]`, and that an agent can now run `/do-task` (empty arg) to grab the next ready slice. If any slice is `[PLANNING]` only because of a blocker, say which blocker unlocks it.
+Tell the user: the root task id + the subtask ids, how many are `[READY FOR DEV]` vs `[PLANNING]`, and that an agent can now run `/do-task` (empty arg) to grab the next ready slice — or `/night-shift` to drain the whole board unattended (e.g. overnight). If any slice is `[PLANNING]` only because of a blocker, say which blocker unlocks it.
 
 ---
 
@@ -106,7 +107,11 @@ Keep descriptions **pointer-first** — reference the repo's docs by path, don't
 - Vocabulary: `CONTEXT.md` (<key terms>)
 - Learnings/pending: `docs/learnings/...`, `docs/pending/...` (if relevant to this area)
 
-**Slices:** see the subtasks. Grab a `[READY FOR DEV]` one via `/do-task`.
+**Conventions for this work (every slice follows):** <cross-cutting rules — e.g. all endpoints via oRPC; every AI call through `recordAiUsage`; the feature-flag/env-gate pattern; naming>.
+
+**Do NOT (closed decisions / rejected alternatives):** <the wrong turns to pre-empt — e.g. don't add a new table (extend X); don't use library Y; don't touch the legacy mirror>.
+
+**Slices (in execution order):** see the subtasks — listed blockers-first. Grab one with `/do-task`, or drain them all overnight with `/night-shift`.
 
 **Done when:** every subtask is COMPLETED. Then run `/sync-doc <feature>` and `/to-plan done <slug>`.
 </root-task-template>
@@ -118,9 +123,13 @@ Keep descriptions **pointer-first** — reference the repo's docs by path, don't
 
 **From plan:** `docs/plans/<slug>.md` → <section/anchor>. Cited decisions: <ADR links if any>.
 
+**Grounding (read before coding):** the specific `docs/system/feature-*.md` this slice touches + the cited ADRs — understand how it works today and how this slice fits before changing anything. Name the exact docs; don't make the agent hunt.
+
 **Acceptance criteria:**
 - [ ] <criterion 1>
 - [ ] <criterion 2>
+
+**Verify (runnable):** the exact commands that prove this slice — e.g. `pnpm typecheck`, `pnpm --filter <pkg> test <path>`, a named e2e spec. "Done" = these pass; an autonomous agent (`/night-shift`) marks the slice complete only on green.
 
 **Blocked by:** <blocker slice title> — or "None, can start immediately".
 
@@ -142,7 +151,8 @@ Keep descriptions **pointer-first** — reference the repo's docs by path, don't
 `/to-tasks` sits between planning and autonomous execution:
 
 - **`/to-plan`** — writes the plan in `docs/plans/` that this skill consumes. Run it first.
-- **`/do-task`** — the counterpart: an agent grabs a `[READY FOR DEV]` task this skill created, reads the linked plan + ADRs + feature docs, and implements it. When all subtasks complete, it suggests `/sync-doc` + `/to-plan done`.
+- **`/do-task`** — the counterpart: an agent grabs a `[READY FOR DEV]` task this skill created, reads the linked plan + ADRs + feature docs, and implements it (supervised, one at a time). When all subtasks complete, it suggests `/sync-doc` + `/to-plan done`.
+- **`/night-shift`** — runs `/do-task` in a loop, **unattended**: drains the whole board (e.g. overnight), commits green work to main, and reports in the morning. This is why the **Verify** block and **context anchor** above matter — they're what let it self-check and stay on-context without a human.
 - **`/to-issues`** — the same vertical-slice idea but published to the GitHub/markdown issue tracker instead of Click Notes. Use `/to-issues` for the public issue tracker, `/to-tasks` for the Click Notes work board.
 - **`/handoff`** — the other way to pass a plan to a fresh agent (a ready-to-paste prompt). `/to-tasks` + `/do-task` is the **board-driven** alternative: publish once, let agents pull.
 

@@ -108,10 +108,11 @@ Loop: **grill (`CONTEXT.md`+ADR) → `/to-plan` → implement → `/sync-doc` �
 A board-driven way to execute plans, plus skills for the company's meetings + knowledge graph. These need the Click Notes MCP connected — skip this section if you don't use it.
 
 - **`/to-tasks`** — publish a `docs/plans/` plan as Click Notes tasks + subtasks, **gated in the title** (`[READY FOR DEV]` to code · `[PLANNING]` to leave alone · `[WIP]` while worked). The plan = one root task, each vertical slice = a subtask carrying pointers to the plan + ADRs.
-- **`/do-task`** — an autonomous agent grabs the next `[READY FOR DEV]` task, reads its linked plan + ADRs + `feature-*.md`, implements, tests, and marks it done. Never codes a `[PLANNING]` task; refuses to code with no detailed plan.
+- **`/do-task`** — an agent grabs the next `[READY FOR DEV]` task, reads its linked plan + ADRs + `feature-*.md`, implements, tests, and marks it done (supervised, one at a time). Never codes a `[PLANNING]` task; refuses to code with no detailed plan.
+- **`/night-shift`** — runs `/do-task` in a loop **unattended** (e.g. overnight): grounds each task in the project's `docs/system/` + ADRs, commits green work to main, tries hard to resolve failures before parking, and posts a morning report. The board's per-task **Verify** block + context anchor are what make this reliable.
 - **`/clicknotes-meeting`** — rewrite a meeting's notes from its transcript + generate its tasks (deduped against existing ones).
 - **`/clicknotes-memory`** / **`/clicknotes-recall`** — create/update and search the company knowledge graph (Memória).
 - **`/clicknotes-tasks`** — reconcile the task board against what's actually been done.
 
-Board-driven branch: **`/to-plan` → `/to-tasks` → `/do-task` (autonomous) → `/sync-doc` → `/to-plan done`**. `/handoff` and `/to-tasks` are two ways to pass a written plan to a fresh agent — a ready-to-paste prompt vs. a board agents pull from.
+Board-driven branch: **`/to-plan` → `/to-tasks` → `/do-task` (or `/night-shift` unattended) → `/sync-doc` → `/to-plan done`**. `/handoff` and `/to-tasks` are two ways to pass a written plan to a fresh agent — a ready-to-paste prompt vs. a board agents pull from.
 ```

@@ -154,7 +154,7 @@
         <div class="step"><b>/to-plan done</b><span>archive the plan</span></div>
       </div>
       <p><strong><code>/handoff</code> is the bridge between planning and building:</strong> once the plan is written, it produces a ready-to-paste prompt (saved under <code>.handoff/</code> and opened) that a <strong>new agent/chat</strong> uses to pick up — to <em>execute the plan</em> or to <em>continue planning</em> — wired to all the docs. Along the way: <code>/to-pending</code> for anything deferred, and a note in <code>docs/learnings/</code> if you got bitten.</p>
-      <div class="callout"><strong>Board-driven alternative.</strong> Instead of (or alongside) <code>/handoff</code>, run <code>/to-tasks</code> to publish the plan as <strong>Click Notes</strong> tasks + subtasks — each slice gated in its title (<code>[READY FOR DEV]</code> to code, <code>[PLANNING]</code> to leave alone, <code>[WIP]</code> while worked). Autonomous agents then run <code>/do-task</code> to pull the next ready task, read its plan + ADRs, build, test, and mark it done. <em>Publish once, let agents pull.</em></div>
+      <div class="callout"><strong>Board-driven alternative.</strong> Instead of (or alongside) <code>/handoff</code>, run <code>/to-tasks</code> to publish the plan as <strong>Click Notes</strong> tasks + subtasks — each slice gated in its title (<code>[READY FOR DEV]</code> to code, <code>[PLANNING]</code> to leave alone, <code>[WIP]</code> while worked). An agent runs <code>/do-task</code> to pull the next ready task, read its plan + ADRs, build, test, and mark it done — or <code>/night-shift</code> drains the whole board <strong>unattended overnight</strong> and reports in the morning. <em>Plan by day, code by night.</em></div>
     </section>
 
     <h2 id="skills">The skills</h2>
@@ -239,8 +239,14 @@
       <div class="skill">
         <span class="tag pedro">Pedro · new</span>
         <h3><code>/do-task</code></h3>
-        <p>An autonomous agent grabs the next <code>[READY FOR DEV]</code> task, reads its linked plan + ADRs + feature docs, claims it (<code>[WIP]</code>), implements + tests, and marks it done. Never codes a <code>[PLANNING]</code> task; refuses to code with no detailed plan.</p>
-        <p class="when"><strong>When:</strong> draining the board — one slice per run.</p>
+        <p>An agent grabs the next <code>[READY FOR DEV]</code> task, reads its linked plan + ADRs + feature docs, claims it (<code>[WIP]</code>), implements + tests, and marks it done. Never codes a <code>[PLANNING]</code> task; refuses to code with no detailed plan.</p>
+        <p class="when"><strong>When:</strong> a supervised, one-slice-at-a-time run.</p>
+      </div>
+      <div class="skill">
+        <span class="tag pedro">Pedro · new</span>
+        <h3><code>/night-shift</code></h3>
+        <p>The <strong>unattended</strong> drain: loops <code>/do-task</code> over the whole board overnight. Pre-flights a green baseline, grounds each task in the project's <code>docs/system/</code> + ADRs, commits green work to main (no push), tries hard to resolve failures before parking, and posts a morning report.</p>
+        <p class="when"><strong>When:</strong> plan by day, let the AI code by night.</p>
       </div>
     </div>
 

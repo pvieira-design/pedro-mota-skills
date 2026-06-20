@@ -82,12 +82,13 @@ Don't guess on a hard call. Leave a comment on the task describing the blocker, 
 ## Notes
 
 - "Autonomous" means you carry the task from ready → done without hand-holding — but the **plan is your contract**. No detailed plan ⇒ no code (step 3).
-- One `/do-task` run = one slice. To drain a board, run it repeatedly (each call grabs the next `[READY FOR DEV]`).
+- One `/do-task` run = one slice, **supervised**. To drain the whole board **unattended** (e.g. overnight, committing as it goes), use **`/night-shift`** instead of running this repeatedly.
 - The title gate is advisory metadata for humans+agents; the Click Notes **status** is the source of truth for lifecycle. Keep them consistent (READY↔OPEN, WIP↔IN_PROGRESS, none↔COMPLETED).
 
 ## Related skills (the ecosystem)
 
 - **`/to-tasks`** — creates the tasks this skill consumes (plan → root task + slice subtasks, gated in the title). `/do-task` is its executing counterpart.
+- **`/night-shift`** — runs this procedure in an unattended loop to drain the whole board overnight (commit-to-main, try-hard-to-resolve, morning report). `/do-task` is the single supervised step; `/night-shift` is the autonomous run.
 - **`/to-plan`** — writes the plan in `docs/plans/` that this skill reads as its contract. `/to-plan done <slug>` archives it once every slice is COMPLETED.
 - **`/sync-doc`** — run after finishing the slices so `docs/system/` reflects what shipped.
 - **`/grill-with-docs`** — what you run instead of coding when the task is `[PLANNING]` and the user asked to continue planning.

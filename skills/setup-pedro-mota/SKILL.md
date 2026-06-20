@@ -1,6 +1,6 @@
 ---
 name: setup-pedro-mota
-description: COMPLETE bootstrap of a repo's knowledge base in Pedro Mota's standard, so the AI is smart from day one. Creates/ensures CONTEXT.md (domain glossary), docs/adr/ (decisions + whys), docs/system/ (living technical docs), docs/plans/ (work plans), docs/pending/ (loose ends to revisit), docs/learnings/ (lessons from mistakes), runs Matt Pocock's agent setup (issue tracker/triage/domain in docs/agents/), and writes/updates CLAUDE.md explaining the importance and how each one works + the skill loop (/grill-with-docs, /to-plan, /to-pending, /sync-doc) plus the optional Click Notes MCP branch (/to-tasks, /do-task, /clicknotes-*). Run once per repo, before using the other skills, or whenever this structure is missing.
+description: COMPLETE bootstrap of a repo's knowledge base in Pedro Mota's standard, so the AI is smart from day one. Creates/ensures CONTEXT.md (domain glossary), docs/adr/ (decisions + whys), docs/system/ (living technical docs), docs/plans/ (work plans), docs/pending/ (loose ends to revisit), docs/learnings/ (lessons from mistakes), runs Matt Pocock's agent setup (issue tracker/triage/domain in docs/agents/), and writes/updates CLAUDE.md explaining the importance and how each one works + the skill loop (/grill-with-docs, /to-plan, /to-pending, /sync-doc) plus the optional Click Notes MCP branch (/to-tasks, /do-task, /night-shift, /clicknotes-*). Run once per repo, before using the other skills, or whenever this structure is missing.
 disable-model-invocation: true
 ---
 
@@ -84,7 +84,7 @@ CLAUDE.md must **explain** the knowledge base — why each artifact matters and 
 1. **Structure** — short list (apps/packages + the docs artifacts with a one-liner).
 2. **The `docs/` folder — why it matters and how it works** — the main block: one subsection per artifact (`CONTEXT.md`/`docs/adr`/`system`/`plans`/`pendencias`/`aprendizados`) with *what it is · why it matters · how it works*. **Don't cut this block** — it's the heart.
 3. **The routine** — what to read before coding (incl. `CONTEXT.md`/ADR) and what to run when done (`/sync-doc`, `/to-plan done`, `/to-pending`, lesson).
-4. **Skill ecosystem** — how `/setup-pedro-mota`, `/setup-matt-pocock-skills`, `/grill-with-docs`, `/to-plan`, `/to-pending` and `/sync-doc` fit into the loop, plus a **gated** subsection for the optional Click Notes MCP branch (`/to-tasks`, `/do-task`, `/clicknotes-*`) — keep it clearly marked "if your workspace uses the Click Notes MCP" so repos without it aren't confused.
+4. **Skill ecosystem** — how `/setup-pedro-mota`, `/setup-matt-pocock-skills`, `/grill-with-docs`, `/to-plan`, `/to-pending` and `/sync-doc` fit into the loop, plus a **gated** subsection for the optional Click Notes MCP branch (`/to-tasks`, `/do-task`, `/night-shift`, `/clicknotes-*`) — keep it clearly marked "if your workspace uses the Click Notes MCP" so repos without it aren't confused.
 
 **Idempotency:** if a block already exists (even worded differently), update it in-place instead of duplicating. Preserve what the user wrote around it.
 
@@ -104,7 +104,7 @@ This skill **installs the knowledge base**; the others **consume and maintain it
 
 **Optional — Click Notes MCP branch** (only if that MCP is connected; gate it as such in the generated CLAUDE.md):
 
-- **`/to-tasks`** / **`/do-task`** — board-driven execution: publish a `docs/plans/` plan as gated Click Notes tasks (`[READY FOR DEV]`/`[PLANNING]`/`[WIP]`), then an autonomous agent pulls and implements each from its linked plan + ADRs. An alternative to `/handoff` for passing a plan to a fresh agent.
+- **`/to-tasks`** / **`/do-task`** / **`/night-shift`** — board-driven execution: publish a `docs/plans/` plan as gated Click Notes tasks (`[READY FOR DEV]`/`[PLANNING]`/`[WIP]`), then `/do-task` implements one (supervised) or `/night-shift` drains the whole board unattended (overnight, committing green work to main). An alternative to `/handoff` for passing a plan to a fresh agent.
 - **`/clicknotes-meeting`** / **`/clicknotes-memory`** / **`/clicknotes-recall`** / **`/clicknotes-tasks`** — drive the company's meetings + knowledge graph + task board (see `skills/clicknotes/`).
 
 Keep them coherent: if you change the structure here, adjust the references in those skills.

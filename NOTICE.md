@@ -28,6 +28,7 @@ Authored or substantially adapted by Pedro Mota, building on the same philosophy
 - `handoff` — **adapted** from Matt Pocock's handoff. Rewritten to emit a ready-to-paste prompt (continue-planning vs execute) wired to the knowledge base, saved under `.handoff/` and opened.
 - `to-tasks` — **new**. Publish a plan from `docs/plans/` as Click Notes tasks + subtasks (gated `[READY FOR DEV]` / `[PLANNING]` / `[WIP]` in the title) for an autonomous agent to pull.
 - `do-task` — **new**. An agent grabs a `[READY FOR DEV]` Click Notes task and implements it from the linked plan + ADRs + feature docs, obeying the title gate.
+- `night-shift` — **new**. Unattended drain of the Click Notes board (e.g. overnight): loops `do-task` over the ready tasks, grounds each in the project's `docs/system/` + ADRs, commits green work to main, tries hard to resolve failures before parking, and posts a morning report.
 - `clicknotes-meeting`, `clicknotes-memory`, `clicknotes-recall`, `clicknotes-tasks` — **new** (in `skills/clicknotes/`). Drive the Click Notes MCP: optimize a meeting's notes + tasks, create/update knowledge-graph memories per the org conventions, recall memories for the current topic, and reconcile the task board.
 
 If you redistribute, keep this notice and the LICENSE.
