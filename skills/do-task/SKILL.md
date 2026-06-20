@@ -63,6 +63,8 @@ So no other agent grabs it:
 
 Build the slice end-to-end, respecting the plan's invariants and the ADRs. Use `/tdd` if the work benefits from a red-green-refactor loop. Run the repo's checks — typecheck, unit tests, and the e2e suite if the touched flow is covered (see the repo's CLAUDE.md / `e2e/README.md`). Keep the change surgical; match the surrounding code's conventions.
 
+**If the description marks the slice `HITL`** (human-in-the-loop), do the autonomous part, then **stop at the human checkpoint**: comment exactly what needs the human (the decision, review, or approval) plus the work done so far, and **do not mark it COMPLETED** until the human resolves it — never push past a human gate on your own. An **AFK** slice you carry all the way to done.
+
 ### 7. Close out the task
 
 On green:

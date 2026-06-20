@@ -42,20 +42,28 @@ Read it in full **plus** the artifacts it cites — the ADRs in `docs/adr/`, the
 
 ### 2. Draft the slices
 
-Break the plan into **tracer-bullet vertical slices** — each a thin path through every layer (schema, API, UI, tests) that is demoable/verifiable on its own. Prefer many thin slices over a few thick ones. If the plan already enumerates slices/phases, reuse them.
+Break the plan into **tracer-bullet vertical slices**. Each slice cuts through ALL layers end-to-end — not a horizontal slice of one layer:
 
-For each slice decide:
+<vertical-slice-rules>
+- Each slice delivers a narrow but COMPLETE path through every layer (schema, API, UI, tests).
+- A completed slice is demoable or verifiable on its own.
+- Prefer many thin slices over a few thick ones.
+</vertical-slice-rules>
+
+If the plan already enumerates slices/phases, reuse them. For each slice decide:
 - **Title** — short, in the project's vocabulary.
 - **Blocked by** — which other slices must complete first (if any).
 - **Ready or planning** — `[READY FOR DEV]` if it has no unmet blocker and the design is settled; `[PLANNING]` otherwise.
+- **Mode — AFK or HITL** — *AFK* (away-from-keyboard): an agent can implement and finish it alone. *HITL* (human-in-the-loop): it needs a human at some point — an architectural decision, a design review, a risky/destructive op. **Prefer AFK**; when a slice must be HITL, say exactly what needs the human. (`/do-task` carries an AFK slice to done, but stops an HITL slice at the human checkpoint.)
 
 ### 3. Quiz the user
 
-Present the breakdown as a numbered list — for each slice: title, ready/planning, blocked-by. Ask:
+Present the breakdown as a numbered list — for each slice: **title · ready/planning · mode (AFK/HITL) · blocked-by · what it covers** (the user stories / acceptance it addresses, if the plan has them). Ask:
 - Does the granularity feel right (too coarse / too fine)?
 - Are the dependencies correct?
 - Should any slice be merged or split?
 - Are the right slices `[READY FOR DEV]` vs `[PLANNING]`?
+- Are the right slices marked AFK vs HITL?
 
 Iterate until the user approves. (Skip the quiz only if the user explicitly said "just publish it".)
 
@@ -83,12 +91,14 @@ Tell the user: the root task id + the subtask ids, how many are `[READY FOR DEV]
 
 ## Description templates
 
-Keep descriptions **pointer-first** — reference the repo's docs by path, don't copy them (they go stale). The plan and ADRs are the source of truth; the task just points an agent at them.
+Keep descriptions **pointer-first** — reference the repo's docs by path, don't copy them. Point at the **knowledge base** (the plan, ADRs, `feature-*.md`) — those paths are stable and are the source of truth. But describe *behavior*, not implementation: **avoid pinning specific source files / line numbers** in "What to build" (they go stale fast). Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can — a state machine, reducer, schema, or type shape — inline just that decision-rich bit and note it came from a prototype.
 
 <root-task-template>
 **Plan:** `docs/plans/<slug>.md` — read it first; do not reopen its closed decisions.
 
 **Goal:** <2-3 lines: the problem this plan solves>.
+
+**Source (if any):** <the originating GitHub issue / Click Notes task / PRD> — for context; this skill references it, never modifies it.
 
 **Read before coding (knowledge base):**
 - ADRs: `docs/adr/NNNN-...md` (the *why* behind <decision>)
@@ -103,6 +113,8 @@ Keep descriptions **pointer-first** — reference the repo's docs by path, don't
 
 <subtask-template>
 **What to build:** <the end-to-end behavior of this slice — not layer-by-layer>.
+
+**Mode:** AFK — or "HITL: <what needs a human: a decision / review / risky op>".
 
 **From plan:** `docs/plans/<slug>.md` → <section/anchor>. Cited decisions: <ADR links if any>.
 
@@ -122,6 +134,7 @@ Keep descriptions **pointer-first** — reference the repo's docs by path, don't
 - This skill **does not implement** anything — it only publishes the task tree. Implementation is `/do-task`.
 - Don't duplicate the plan/ADRs/feature docs into task descriptions — **reference them by path**. A task is a ticket; the repo doc is the spec.
 - Use real names from the project's vocabulary (`CONTEXT.md`), not placeholders.
+- If the plan came from an existing issue/task (a GitHub issue, a Click Notes task, a PRD), **reference** it in the root task but **don't close or modify** the source.
 - Soft-delete (`delete_task`) and restore (`restore_task`) exist if you publish wrong and need to redo — confirm with the user before deleting.
 
 ## Related skills (the ecosystem)
