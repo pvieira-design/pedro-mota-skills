@@ -5,11 +5,9 @@ description: Grilling session that challenges your plan against the existing dom
 
 <what-to-do>
 
-Interview me relentlessly about every aspect of this plan until we reach a shared understanding. Walk down each branch of the design tree, resolving dependencies between decisions one-by-one. For each question, provide your recommended answer.
+First, run the core interrogation protocol from the `grill-me` skill — read it in full at [../grill-me/SKILL.md](../grill-me/SKILL.md) and follow it: interview relentlessly, one question at a time (waiting for feedback before continuing), give a recommended answer for each, and explore the codebase to answer a question whenever that's possible.
 
-Ask the questions one at a time, waiting for feedback on each question before continuing.
-
-If a question can be answered by exploring the codebase, explore the codebase instead.
+Then layer the domain and documentation awareness below on top of that interview — that extra layer is what makes this skill different from plain `grill-me`.
 
 </what-to-do>
 
