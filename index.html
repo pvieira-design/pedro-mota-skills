@@ -130,7 +130,7 @@
 
     <section id="kb">
       <h2>The knowledge base</h2>
-      <p>Six artifacts under <code>docs/</code> (plus <code>CONTEXT.md</code> at the root), each answering a different question. <code>/setup-pedro-mota</code> creates them all and writes a CLAUDE.md that explains them.</p>
+      <p>Seven artifacts under <code>docs/</code> (plus <code>CONTEXT.md</code> at the root), each answering a different question. <code>/setup-pedro-mota</code> creates them all and writes a CLAUDE.md that explains them.</p>
       <table>
         <tr><th>Artifact</th><th>Question</th><th>Tense / role</th></tr>
         <tr><td><code>CONTEXT.md</code></td><td>what the words mean</td><td>glossary (vocabulary)</td></tr>
@@ -139,6 +139,7 @@
         <tr><td><code>docs/plans/</code></td><td>what we're going to do</td><td>future · ephemeral</td></tr>
         <tr><td><code>docs/pending/</code></td><td>what's left open</td><td>loose ends</td></tr>
         <tr><td><code>docs/learnings/</code></td><td>where we already erred</td><td>lessons</td></tr>
+        <tr><td><code>docs/grills/</code></td><td>how we reasoned to the decision</td><td>grilling memory (1 file/topic)</td></tr>
       </table>
       <div class="callout">Golden rule: <strong>read <code>docs/system/</code> before coding, update it after</strong> (with <code>/sync-doc</code>). The doc must never diverge from the code — if it does, the doc is wrong: fix it.</div>
     </section>
@@ -146,7 +147,7 @@
     <section id="loop">
       <h2>The work loop</h2>
       <div class="loop">
-        <div class="step"><b>/grill-with-docs</b><span>decide · pin CONTEXT.md + ADRs</span></div>
+        <div class="step"><b>/grill-with-docs</b><span>decide · record in docs/grills/ · pin CONTEXT.md + ADRs</span></div>
         <div class="step"><b>/to-plan</b><span>write the plan in docs/plans</span></div>
         <div class="step"><b>/handoff</b><span>pass the plan to a NEW agent — execute or continue</span></div>
         <div class="step"><b>implement</b><span>the new agent builds it (optionally /tdd)</span></div>
@@ -181,7 +182,7 @@
       <div class="skill">
         <span class="tag matt">Matt Pocock</span>
         <h3><code>/grill-with-docs</code></h3>
-        <p>Interviews you relentlessly to stress-test a plan against the existing domain model — sharpening terminology in <code>CONTEXT.md</code> and writing <strong>ADRs</strong> inline as decisions crystallize.</p>
+        <p>Interviews you relentlessly to stress-test a plan against the existing domain model — recording the session in <code>docs/grills/</code> (one file per topic, find-or-create), sharpening terminology in <code>CONTEXT.md</code> and writing <strong>ADRs</strong> inline as decisions crystallize.</p>
         <p class="when"><strong>When:</strong> before committing to a design, to find the holes.</p>
       </div>
       <div class="skill">

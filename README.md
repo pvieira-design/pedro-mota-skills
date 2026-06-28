@@ -16,11 +16,12 @@ The agent shouldn't re-learn the project every session. These skills install and
 | `docs/plans/` | what we're going to do (plans) |
 | `docs/pending/` | what's left open (loose ends) |
 | `docs/learnings/` | where we already erred (lessons) |
+| `docs/grills/` | how we reasoned to the decision (grilling memory) |
 
 ## The loop
 
 ```
-1. /grill-with-docs   decide; pin vocabulary in CONTEXT.md + write ADRs
+1. /grill-with-docs   decide; record the session in docs/grills/, pin vocabulary in CONTEXT.md + write ADRs
 2. /to-plan           write the plan in docs/plans/
 3. /handoff           hand the plan to a NEW agent — to execute it, or to continue planning
 4. implement          the new agent builds it (optionally with /tdd)
@@ -41,7 +42,7 @@ along the way:  /to-pending  (defer a loose end)   ·   docs/learnings/  (record
 - `setup-matt-pocock-skills` — per-repo agent config (issue tracker, triage labels, domain layout).
 
 **Grilling & planning**
-- `grill-with-docs`, `grill-me` — stress-test a plan against the domain.
+- `grill-with-docs`, `grill-me` — stress-test a plan against the domain; record each session in `docs/grills/`.
 - `to-plan` — distill grilling decisions into a plan; close it to `done/`.
 - `to-pending` — record/resolve loose ends.
 - `ubiquitous-language` — extract a domain glossary.

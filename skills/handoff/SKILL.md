@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Compact the current conversation into a handoff document, then write a ready-to-paste prompt as a markdown file under the project's hidden .handoff/ folder and open it so the user can copy it. The prompt is tailored to the handoff's purpose — continuing a grilling/planning session, or executing a plan — and is wired to the repo's knowledge base (CONTEXT.md, docs/adr, docs/system, docs/plans, docs/pending, docs/learnings).
+description: Compact the current conversation into a handoff document, then write a ready-to-paste prompt as a markdown file under the project's hidden .handoff/ folder and open it so the user can copy it. The prompt is tailored to the handoff's purpose — continuing a grilling/planning session, or executing a plan — and is wired to the repo's knowledge base (CONTEXT.md, docs/adr, docs/system, docs/plans, docs/pending, docs/learnings, docs/grills).
 argument-hint: "What will the next session be used for?"
 ---
 
@@ -61,7 +61,7 @@ Every prompt: (a) states the goal, (b) tells the agent to read `.handoff/<base>.
 
 Then tailor the action by purpose:
 
-- **Continue grilling/planning:** instruct the agent to **resume the design session** — re-open the still-undecided questions (list them), stress-test them, and NOT jump to code. Suggested skills: `/grill-with-docs` (keep challenging against the domain, update `CONTEXT.md`/ADRs as decisions close) and, once settled, `/to-plan` to capture the plan.
+- **Continue grilling/planning:** instruct the agent to **resume the design session** — point it at the topic's `docs/grills/` file (the reasoning trail so far), re-open the still-undecided questions (list them), stress-test them, and NOT jump to code. Suggested skills: `/grill-with-docs` (keep challenging against the domain, append to the `docs/grills/` session record, update `CONTEXT.md`/ADRs as decisions close) and, once settled, `/to-plan` to capture the plan.
 - **Execute a plan:** instruct the agent to **implement the plan** at `docs/plans/<...>.md` — read it plus the cited ADRs and `feature-*.md`, respect the invariants, and when done run `/sync-doc` on the touched feature and `/to-plan done <slug>` to archive the plan. Register `/to-pending` for anything deferred and a lesson in `docs/learnings/` if bitten. (Board-driven alternative to a handoff prompt: `/to-tasks` publishes the plan as Click Notes tasks for an autonomous agent to pull via `/do-task`.)
 - **Other:** a general continuation pointing at the handoff doc + reading list.
 

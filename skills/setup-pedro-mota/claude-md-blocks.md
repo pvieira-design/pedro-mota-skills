@@ -2,7 +2,7 @@ These are the blocks the skill inserts/updates in the repo's `CLAUDE.md` (or `AG
 
 The goal of CLAUDE.md here is that an agent who has **never seen the repo** understands, just by reading: (1) which docs folders exist, (2) **why each one matters**, (3) **how each one works** (when to read, when to write, which skill maintains it) and (4) the work loop. Listing isn't enough — it has to explain.
 
-> Folder/path names (`docs/system`, `docs/plans`, `docs/pending`, `docs/learnings`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is. If the target repo writes its CLAUDE.md in another language, adapt the prose to that language.
+> Folder/path names (`docs/system`, `docs/plans`, `docs/pending`, `docs/learnings`, `docs/grills`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is. If the target repo writes its CLAUDE.md in another language, adapt the prose to that language.
 
 ---
 
@@ -18,6 +18,7 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 - `docs/plans/` — **work plans** (what we're going to do; becomes `done/`)
 - `docs/pending/` — **loose ends** to revisit (don't forget)
 - `docs/learnings/` — **lessons** from mistakes already made
+- `docs/grills/` — **grilling-session memory** (how we reasoned to each decision)
 ```
 
 ---
@@ -64,6 +65,12 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 - **What it is:** lessons from bugs with non-obvious causes, tool/environment traps.
 - **Why it matters:** avoids paying the same mistake twice — the most expensive part of rework.
 - **How it works:** **read** before touching a sensitive area; **write** when bitten by something that cost time + tends to recur + has an actionable rule.
+
+### `docs/grills/` — how we reasoned to the decision (grilling memory)
+
+- **What it is:** the **memory of each grilling session** — one file per topic, accumulating the closed decisions, the Q&A trail (questions + the answers given), the dropped hypotheses, and what's still open. Upstream of `CONTEXT.md`/ADR/plan: what crystallises here flows out to those, with a pointer back.
+- **Why it matters:** a grilling produces a lot of reasoning that doesn't fit in a glossary term, one ADR, or a plan. Without this, the *why behind the why* — and the rejected options — evaporate when the session ends, and the same ground gets re-litigated next time.
+- **How it works:** maintained by `/grill-with-docs` — at the start of a grill it **finds the topic's file or creates it** (keyed by topic, one per subject), then appends a **dated session entry** and captures decisions + trail **inline** as the session unfolds. **Read** it before re-opening a topic that was already grilled.
 ```
 
 ---
@@ -74,7 +81,7 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 ## 🧭 Before touching the code (mandatory)
 
 1. Open **`docs/system/README.md`** → "Topic map" → read the area's `feature-*.md`.
-2. Consult **`CONTEXT.md`** (vocabulary) and **`docs/adr/`** (why the area is the way it is) when relevant.
+2. Consult **`CONTEXT.md`** (vocabulary) and **`docs/adr/`** (why the area is the way it is) when relevant; if you're about to re-open a topic that was grilled before, read its **`docs/grills/`** file first (the reasoning trail).
 3. Check **`docs/learnings/`** if the area is sensitive.
 4. See if there's already a plan in **`docs/plans/`** or open items in **`docs/pending/`** about what you're going to do.
 5. Only then open the code.
@@ -96,7 +103,7 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 
 - **`/setup-pedro-mota`** — bootstrap: creates the whole knowledge base (`CONTEXT.md`, `docs/adr/`, `docs/system/`, `docs/plans/`, `docs/pending/`, `docs/learnings/`, agent config) + this documentation in CLAUDE.md. Once per repo.
 - **`/setup-matt-pocock-skills`** — agent config (issue tracker, triage labels, domain layout) in `docs/agents/`. Called by `/setup-pedro-mota`.
-- **`/grill-with-docs`** / **`/grill-me`** — grilling that stress-tests the plan; updates `CONTEXT.md` (vocabulary) and creates ADRs **inline** as decisions close.
+- **`/grill-with-docs`** / **`/grill-me`** — grilling that stress-tests the plan; records the session in `docs/grills/` (one file per topic, find-or-create), updates `CONTEXT.md` (vocabulary) and creates ADRs **inline** as decisions close.
 - **`/to-plan`** — distills the grilling into a plan in `docs/plans/`; `/to-plan done` archives the finished one.
 - **`/to-pending`** — records a loose end in `docs/pending/` (detailed); `/to-pending done` resolves it.
 - **`/sync-doc`** — syncs `docs/system/` with the real code at the end of implementation.

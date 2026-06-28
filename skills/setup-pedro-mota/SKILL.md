@@ -1,12 +1,12 @@
 ---
 name: setup-pedro-mota
-description: COMPLETE bootstrap of a repo's knowledge base in Pedro Mota's standard, so the AI is smart from day one. Creates/ensures CONTEXT.md (domain glossary), docs/adr/ (decisions + whys), docs/system/ (living technical docs), docs/plans/ (work plans), docs/pending/ (loose ends to revisit), docs/learnings/ (lessons from mistakes), runs Matt Pocock's agent setup (issue tracker/triage/domain in docs/agents/), and writes/updates CLAUDE.md explaining the importance and how each one works + the skill loop (/grill-with-docs, /to-plan, /to-pending, /sync-doc) plus the optional Click Notes MCP branch (/to-tasks, /do-task, /night-shift, /clicknotes-*). Run once per repo, before using the other skills, or whenever this structure is missing.
+description: COMPLETE bootstrap of a repo's knowledge base in Pedro Mota's standard, so the AI is smart from day one. Creates/ensures CONTEXT.md (domain glossary), docs/adr/ (decisions + whys), docs/system/ (living technical docs), docs/plans/ (work plans), docs/pending/ (loose ends to revisit), docs/learnings/ (lessons from mistakes), docs/grills/ (grilling-session memory), runs Matt Pocock's agent setup (issue tracker/triage/domain in docs/agents/), and writes/updates CLAUDE.md explaining the importance and how each one works + the skill loop (/grill-with-docs, /to-plan, /to-pending, /sync-doc) plus the optional Click Notes MCP branch (/to-tasks, /do-task, /night-shift, /clicknotes-*). Run once per repo, before using the other skills, or whenever this structure is missing.
 disable-model-invocation: true
 ---
 
 # Setup Pedro Mota
 
-Bootstraps the whole **knowledge base** that makes an agent (or person) productive from day one: they understand a feature by reading a page instead of scanning the code, **don't reopen decisions already made**, and **don't repeat mistakes already paid for**. Six artifacts, each answering a different question, + Matt Pocock's agent config:
+Bootstraps the whole **knowledge base** that makes an agent (or person) productive from day one: they understand a feature by reading a page instead of scanning the code, **don't reopen decisions already made**, and **don't repeat mistakes already paid for**. Seven artifacts, each answering a different question, + Matt Pocock's agent config:
 
 - **`CONTEXT.md`** — *what the words mean* (domain glossary).
 - **`docs/adr/`** — *why we decided it this way* (Architecture Decision Records).
@@ -14,11 +14,12 @@ Bootstraps the whole **knowledge base** that makes an agent (or person) producti
 - **`docs/plans/`** — *what we're GOING to do* (work plans; ephemeral). Created by `/to-plan`.
 - **`docs/pending/`** — *what's left open* (loose ends to revisit, so nothing is forgotten). Created by `/to-pending`.
 - **`docs/learnings/`** — *where we already erred* (lessons not to repeat).
+- **`docs/grills/`** — *how we reasoned to the decision* (grilling-session memory; one file per topic). Maintained by `/grill-with-docs`.
 - **`docs/agents/`** — operational agent config (issue tracker, triage labels, domain layout), via `/setup-matt-pocock-skills`.
 
 This is a **prompt-driven** skill, not a script. Explore → present what you found → confirm with the user → write. Be **idempotent**: only create what's missing, never overwrite the user's work, update blocks in-place.
 
-> Folder/path names (`docs/system`, `docs/plans`, `docs/pending`, `docs/learnings`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is even though this skill is written in English.
+> Folder/path names (`docs/system`, `docs/plans`, `docs/pending`, `docs/learnings`, `docs/grills`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is even though this skill is written in English.
 
 ## Process
 
@@ -26,7 +27,7 @@ This is a **prompt-driven** skill, not a script. Explore → present what you fo
 
 Understand the repo's current state (run in parallel):
 
-- `ls docs/ docs/system/ docs/plans/ docs/pending/ docs/learnings/ docs/adr/ docs/agents/ 2>/dev/null` — what already exists?
+- `ls docs/ docs/system/ docs/plans/ docs/pending/ docs/learnings/ docs/grills/ docs/adr/ docs/agents/ 2>/dev/null` — what already exists?
 - `ls CLAUDE.md AGENTS.md CONTEXT.md CONTEXT-MAP.md 2>/dev/null` — which root artifacts exist?
 - `git remote -v` — GitHub/GitLab? (feeds Matt's issue-tracker setup).
 - `git ls-files '*.md' | head -50` — docs convention already in use?
@@ -67,6 +68,10 @@ Always adapt paths/layout to the repo (language, monorepo vs single app) — the
 - `docs/learnings/_template.md` ← seed [`learnings-template.md`](./learnings-template.md).
 - `docs/learnings/README.md` ← seed [`learnings-readme.md`](./learnings-readme.md).
 
+**Grilling sessions — `docs/grills/`**:
+- `docs/grills/_template.md` ← seed [`grills-template.md`](./grills-template.md) (per-session structure).
+- `docs/grills/README.md` ← seed [`grills-readme.md`](./grills-readme.md) (one file per topic; `/grill-with-docs` fills the index, find-or-create).
+
 If a folder exists but its README/template is missing, create only what's missing. Never clobber a user's file — suggest the additions instead.
 
 ### 4. Run Matt Pocock's agent setup
@@ -97,7 +102,7 @@ Tell the user, in ≤6 lines: which artifacts were created/ensured, which instru
 This skill **installs the knowledge base**; the others **consume and maintain it**:
 
 - **`/setup-matt-pocock-skills`** — agent config (issue tracker, triage, domain) in `docs/agents/`. Called in step 4.
-- **`/grill-with-docs`** / **`/grill-me`** — grilling that fixes vocabulary in `CONTEXT.md` and creates **ADRs** inline as decisions close.
+- **`/grill-with-docs`** / **`/grill-me`** — grilling that records the session in `docs/grills/` (one file per topic, find-or-create), fixes vocabulary in `CONTEXT.md`, and creates **ADRs** inline as decisions close.
 - **`/to-plan`** — writes plans in `docs/plans/` (referencing relevant ADRs) and archives them in `done/` when implemented.
 - **`/to-pending`** — records loose ends in `docs/pending/` (detailed) and resolves/promotes them.
 - **`/sync-doc`** — keeps `docs/system/` in sync with the code (+ "Topic map") at the end of each feature.
