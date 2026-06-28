@@ -33,7 +33,7 @@ along the way:  /to-pending  (defer a loose end)   ·   docs/learnings/  (record
 
 `/handoff` is the bridge between planning and building: once the plan is written, it produces a ready-to-paste prompt (saved under `.handoff/` and opened) that a **new agent/chat** uses to pick up — either to **execute the plan** or to **continue the planning** — wired to all the docs above.
 
-**Board-driven alternative.** Instead of (or alongside) `/handoff`, run `/to-tasks` to publish the plan as **Click Notes** tasks + subtasks — each grab-able slice gated in its title (`[READY FOR DEV]` to code, `[PLANNING]` to leave alone, `[WIP]` while an agent works it). An agent then runs `/do-task` to pull the next ready task, read its linked plan + ADRs, implement, test, and mark it done. To run the whole board **unattended** — plan by day, code by night — `/night-shift` loops that drain overnight, commits green work to main, and leaves a morning report. Publish once, let agents pull.
+**Board-driven alternative.** Instead of (or alongside) `/handoff`, run `/to-tasks` to publish the plan as **Click Notes** tasks + subtasks — each grab-able slice gated in its title (`[READY FOR DEV]` to code, `[PLANNING]` to leave alone, `[WIP]` while an agent works it). An agent then runs `/do-task` to pull the next ready task, read its linked plan + ADRs, implement, test, and mark it done. To run the whole board **unattended** — plan by day, code by night — `/night-shift` loops that drain overnight, delivering each green task the way you pick at start (commit + push to main per task, or one PR per task), and leaves a morning report. Publish once, let agents pull.
 
 ## Skills
 
@@ -54,7 +54,7 @@ along the way:  /to-pending  (defer a loose end)   ·   docs/learnings/  (record
 **Tasks & autonomous execution (Click Notes)**
 - `to-tasks` — publish a plan as Click Notes tasks/subtasks, gated `[READY FOR DEV]` / `[PLANNING]` in the title (with a runnable Verify block + context anchor per slice).
 - `do-task` — an agent grabs a `[READY FOR DEV]` task and implements it from the linked plan + ADRs + feature docs (supervised, one at a time).
-- `night-shift` — drains the whole board **unattended** (overnight): runs `do-task` in a loop, commits green work to main, tries hard to resolve failures, reports in the morning.
+- `night-shift` — drains the whole board **unattended** (overnight): runs `do-task` in a loop, delivers green work via the mode you pick at start (commit + push to main per task, or one PR per task), tries hard to resolve failures, reports in the morning.
 
 **Click Notes — meetings & memory** (in [`skills/clicknotes/`](skills/clicknotes/README.md))
 - `clicknotes-meeting` — improve a meeting's notes from its transcript and generate its tasks (deduped).
