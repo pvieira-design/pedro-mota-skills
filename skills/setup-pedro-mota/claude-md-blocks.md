@@ -50,9 +50,9 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 
 ### `docs/plans/` — what we're GOING to do (future)
 
-- **What it is:** execution plans, ephemeral, carrying the closed decisions from a grilling.
-- **Why it matters:** separates intent from reality; whoever implements doesn't reopen everything.
-- **How it works:** create with `/to-plan`; close with `/to-plan done <slug>` (goes to `docs/plans/done/`).
+- **What it is:** execution plans, ephemeral, carrying the closed decisions from a grilling **and a Definition of Done** — an atomic, verifiable acceptance checklist that is the plan's completeness contract.
+- **Why it matters:** separates intent from reality; whoever implements doesn't reopen everything — and the Definition of Done is what stops planned work from being silently left out (execution verifies every item, not just a green test suite).
+- **How it works:** create with `/to-plan` (which runs a completeness gate so nothing decided stays implicit); execute with `/do-task` / `/night-shift` (which tick every acceptance criterion with proof before marking done); close with `/to-plan done <slug>` (goes to `docs/plans/done/`).
 
 ### `docs/pending/` — what's left open (don't forget)
 

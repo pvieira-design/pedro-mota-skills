@@ -59,17 +59,22 @@ So no other agent grabs it:
 - `update_task_status` → `IN_PROGRESS`, and `update_task` to swap the title tag `[READY FOR DEV]` → `[WIP]`.
 - `add_task_comment` with a one-line "picked up by agent — implementing per `docs/plans/<slug>.md`". (Optionally `assign_task` to the relevant member/contact.)
 
-### 6. Implement
+### 6. Implement against the acceptance criteria (your contract)
 
-Build the slice end-to-end, respecting the plan's invariants and the ADRs. Use `/tdd` if the work benefits from a red-green-refactor loop. Run the repo's checks — typecheck, unit tests, and the e2e suite if the touched flow is covered (see the repo's CLAUDE.md / `e2e/README.md`). Keep the change surgical; match the surrounding code's conventions.
+The task's **Acceptance criteria** (its slice of the plan's Definition of Done) are the checklist you must satisfy — keep them in front of you and build to cover **every** item, not just the gist. Build the slice end-to-end, respecting the plan's invariants and the ADRs. Use `/tdd` if the work benefits from a red-green-refactor loop. Run the repo's checks — typecheck, unit tests, and the e2e suite if the touched flow is covered (see the repo's CLAUDE.md / `e2e/README.md`). Keep the change surgical; match the surrounding code's conventions.
 
 **If the description marks the slice `HITL`** (human-in-the-loop), do the autonomous part, then **stop at the human checkpoint**: comment exactly what needs the human (the decision, review, or approval) plus the work done so far, and **do not mark it COMPLETED** until the human resolves it — never push past a human gate on your own. An **AFK** slice you carry all the way to done.
 
-### 7. Close out the task
+### 7. Acceptance pass, then close out the task
 
-On green:
+**First, the acceptance pass — verify every criterion (this is the step that's usually skipped).** "The checks pass" is *not* "the task is done". Walk the task's **Acceptance criteria** (its share of the plan's Definition of Done) **one item at a time**; for each, confirm it's truly satisfied and cite the proof — the code that does it, the test that covers it, the command output — ticking `- [ ]` → `- [x]`. Then re-read the plan section for this slice and confirm nothing it specified was left out.
+
+- **A criterion is unmet** → the task is **not done**. Implement the gap now. If it's genuinely blocked or you believe it's out of scope, do **not** silently complete — comment the specific unmet item and route to step 8 (or get the user/plan to confirm the scope change). **Never mark COMPLETED with an unchecked box.**
+- **All criteria met + Verify/checks green** → close out.
+
+On green (**every criterion checked**):
 - `update_task_status` → `COMPLETED` and strip the `[WIP]` tag from the title (`update_task`).
-- `add_task_comment` summarizing what was built and how it was verified (and the commit ref, if you committed).
+- `add_task_comment` summarizing what was built and how it was verified — **include the ticked acceptance list** (each criterion + the proof) so the trail shows the task was completed in full (and the commit ref, if you committed).
 - **If this was the last open subtask of its parent**, mark the **parent** COMPLETED too, then tell the user to run `/sync-doc <feature>` (update `docs/system/`) and `/to-plan done <slug>` (archive the plan).
 - Promote any sibling slice that was `[PLANNING]` **only** because it was blocked by this one → flip it to `[READY FOR DEV]` so the next `/do-task` can grab it.
 
@@ -81,7 +86,7 @@ Don't guess on a hard call. Leave a comment on the task describing the blocker, 
 
 ## Notes
 
-- "Autonomous" means you carry the task from ready → done without hand-holding — but the **plan is your contract**. No detailed plan ⇒ no code (step 3).
+- "Autonomous" means you carry the task from ready → done without hand-holding — but the **plan is your contract**. No detailed plan ⇒ no code (step 3); no full acceptance pass ⇒ not done (step 7). "Done" = every acceptance criterion verified, not a green suite alone.
 - One `/do-task` run = one slice, **supervised**. To drain the whole board **unattended** (e.g. overnight, committing as it goes), use **`/night-shift`** instead of running this repeatedly.
 - The title gate is advisory metadata for humans+agents; the Click Notes **status** is the source of truth for lifecycle. Keep them consistent (READY↔OPEN, WIP↔IN_PROGRESS, none↔COMPLETED).
 

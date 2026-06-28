@@ -48,8 +48,8 @@ Run the single-task discipline (see `/do-task` for the full steps): read the tas
 
 Only then implement. `/night-shift` is this procedure, looped and unattended — the discipline that keeps each task *perfect and on-context* is reading the docs, every time.
 
-### 3. Self-verify — green or nothing
-Run the task's **Verify** commands + the repo's checks. "Done" is green output, not a hunch. If the Verify block is missing or unrunnable, treat the task as not-ready: park it (you can't self-check unattended) and move on.
+### 3. Self-verify — green AND complete, or nothing
+Run the task's **Verify** commands + the repo's checks, **and** do the **acceptance pass**: walk the task's **Acceptance criteria** (its slice of the plan's Definition of Done) one item at a time and confirm each is actually satisfied, citing the proof and ticking every box. "Done" means **every acceptance criterion checked AND all checks green** — not just a green suite (a passing typecheck doesn't prove a planned item was built). An unmet or unprovable criterion is a failure → go to step 4 (resolve) or park; never mark a slice complete with an unchecked box. If the Verify block or acceptance criteria are missing/unrunnable, treat the task as not-ready: park it (you can't self-check unattended) and move on.
 
 ### 4. Try hard to resolve a failure (don't give up on the first red)
 If verification fails, enter a **bounded diagnosis loop** (à la `/diagnose`): reproduce → form one hypothesis → minimal fix → re-verify. Several honest rounds before giving up. Stay **inside the plan's closed decisions** — never invent scope or reopen a decision just to make a test pass. Resolving is the job; parking is the fallback.
@@ -93,6 +93,7 @@ Post a summary as a comment on the plan's **root task**, and surface it to the u
 - **Resumable/idempotent:** a stale `[WIP]` from a crashed prior run can be reclaimed — re-verify its real state (committed? reverted?) before re-attempting.
 - **One task = one commit.** Keep the morning diff reviewable.
 - **Ground before coding, every task.** No task is implemented without reading the project's `docs/system/` feature docs + the cited ADRs + `CONTEXT.md` for its area. Unattended drift comes from skipping this.
+- **Done = every acceptance criterion verified, not just a green suite.** Walk the task's checklist item by item before completing; an unmet or unprovable criterion means the slice isn't done — resolve or park, never silently complete. This is what keeps "planned but never built" from slipping through overnight.
 - If the board keeps making you park tasks, the plan/board is under-specified — say so; the fix is sharper `/to-tasks` / `/to-plan`, not guessing.
 
 ## Related skills

@@ -34,8 +34,18 @@ Don't write the plan by hand. At the end of a grilling session (`/grill-me` or `
 4. **Changes per file** — numbered, with path + function + snippet.
 5. **Rules / invariants** — what must NOT break.
 6. **Tests** — cases to cover.
-7. **Acceptance criteria** — verifiable checklist.
+7. **Acceptance criteria — the Definition of Done** — a flat checklist (`- [ ]`) where each item is one concrete, independently verifiable outcome. This is the completeness contract execution checks against.
 8. **Out of scope** — what's explicitly left out.
+
+## Completeness rule (why plans get "left out" at execution)
+
+A plan that's **too open** is the root cause of "the AI didn't build everything I planned". To prevent it:
+
+- **No implicit work** — everything decided shows up as a concrete §4 change **and** a §7 acceptance criterion, never only in prose. If it's not a checkable deliverable, it gets skipped.
+- **Verifiable** — each criterion states *how* it's proven (test, command, observable behavior). If you can't say how to check it, it's too vague.
+- **Traceable both ways** — every §4 change has a covering criterion; every criterion traces to a change.
+
+Execution (`/do-task`, `/night-shift`) ticks **every** criterion (with proof) before marking work done — a green test suite alone is not "done". So the plan's §7 is what makes the build verifiable end-to-end.
 
 ## Plans
 

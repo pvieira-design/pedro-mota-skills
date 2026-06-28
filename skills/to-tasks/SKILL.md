@@ -58,6 +58,9 @@ If the plan already enumerates slices/phases, reuse them. For each slice decide:
 - **Blocked by** — which other slices must complete first (if any).
 - **Ready or planning** — `[READY FOR DEV]` if it has no unmet blocker and the design is settled; `[PLANNING]` otherwise.
 - **Mode — AFK or HITL** — *AFK* (away-from-keyboard): an agent can implement and finish it alone. *HITL* (human-in-the-loop): it needs a human at some point — an architectural decision, a design review, a risky/destructive op. **Prefer AFK**; when a slice must be HITL, say exactly what needs the human. (`/do-task` carries an AFK slice to done, but stops an HITL slice at the human checkpoint.)
+- **Acceptance criteria** — the slice's share of the plan's **Definition of Done** (§7): the concrete, verifiable items this slice must satisfy.
+
+**Coverage — nothing falls through.** The plan's acceptance criteria are the completeness contract. Map **every** plan criterion to exactly one slice; the union of all slices' acceptance criteria must equal the plan's, with no remainder. If a criterion fits no slice, that's a hole — fix the slicing, don't drop it. This is the decomposition-side guard against "planned but never built".
 
 ### 3. Quiz the user
 
@@ -67,6 +70,7 @@ Present the breakdown as a numbered list — for each slice: **title · ready/pl
 - Should any slice be merged or split?
 - Are the right slices `[READY FOR DEV]` vs `[PLANNING]`?
 - Are the right slices marked AFK vs HITL?
+- **Coverage:** does every plan acceptance criterion map to exactly one slice (none left unassigned, none duplicated)? Show the mapping so the user can spot a missing deliverable before anything is published.
 
 Iterate until the user approves. (Skip the quiz only if the user explicitly said "just publish it".)
 
@@ -115,7 +119,7 @@ Keep descriptions **pointer-first** — reference the repo's docs by path, don't
 
 **Slices (in execution order):** see the subtasks — listed blockers-first. Grab one with `/do-task`, or drain them all overnight with `/night-shift`.
 
-**Done when:** every subtask is COMPLETED. Then run `/sync-doc <feature>` and `/to-plan done <slug>`.
+**Done when:** every subtask is COMPLETED — i.e. every acceptance criterion across all slices is checked (the plan's full Definition of Done). Then run `/sync-doc <feature>` and `/to-plan done <slug>`.
 </root-task-template>
 
 <subtask-template>
@@ -127,11 +131,11 @@ Keep descriptions **pointer-first** — reference the repo's docs by path, don't
 
 **Grounding (read before coding):** the specific `docs/system/feature-*.md` this slice touches + the cited ADRs — understand how it works today and how this slice fits before changing anything. Name the exact docs; don't make the agent hunt.
 
-**Acceptance criteria:**
-- [ ] <criterion 1>
+**Acceptance criteria (this slice's Definition of Done):** the slice's share of the plan's §7 checklist — each item atomic and verifiable. `/do-task` and `/night-shift` tick **every** box (with proof) before the slice can be COMPLETED; an unchecked box means it isn't done.
+- [ ] <criterion 1 — concrete, provable>
 - [ ] <criterion 2>
 
-**Verify (runnable):** the exact commands that prove this slice — e.g. `pnpm typecheck`, `pnpm --filter <pkg> test <path>`, a named e2e spec. "Done" = these pass; an autonomous agent (`/night-shift`) marks the slice complete only on green.
+**Verify (runnable):** the exact commands that prove this slice — e.g. `pnpm typecheck`, `pnpm --filter <pkg> test <path>`, a named e2e spec. "Done" = these pass **and** every acceptance criterion above is checked; a green suite alone is not enough (it doesn't prove a planned item was actually built). An autonomous agent (`/night-shift`) marks the slice complete only when both hold.
 
 **Blocked by:** <blocker slice title> — or "None, can start immediately".
 

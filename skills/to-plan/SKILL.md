@@ -44,13 +44,16 @@ Synthesize from **this conversation** — don't re-explore the code from scratch
 4. **Changes per file** — numbered, each with path + function/symbol + snippet or precise description of the change.
 5. **Rules / invariants** — what must NOT break.
 6. **Tests** — cases to cover (unit / e2e), pointing to the relevant specs.
-7. **Acceptance criteria** — verifiable checklist (`- [ ]`).
+7. **Acceptance criteria — the Definition of Done** — a flat, numbered checklist (`- [ ]`) where **each item is one concrete, independently verifiable outcome**. This is the plan's completeness contract: execution is "done" only when every box is checked. Each item must map to a change in §4 and state *how* it's proven (a test, a command, an observable behavior). If you can't say how an item would be verified, it's too vague — sharpen it until you can.
 8. **Out of scope** — what's explicitly left out.
 
 Quality rules:
 - **Don't duplicate** what's already in ADRs, `CONTEXT.md`, `docs/system/feature-*.md`, or issues — **reference by path/URL**.
 - **Future** tense ("we'll record…", "create the function…") — it's intent, not current state (that's `docs/system/`'s job).
 - Real file/function/table names, no placeholders.
+- **No implicit work.** Everything the grilling decided must appear as a concrete item in §4 (Changes per file) **and** as an acceptance criterion in §7 — never only described in prose. If it isn't a checkable deliverable, it *will* be skipped at execution.
+- **Concrete over open.** Prefer "add field `X` to table `Y` and surface it in endpoint `Z`" over "improve the data model". An item a stranger can't check done/not-done is a future gap — make it checkable.
+- **Traceable both ways.** Every §4 change is covered by ≥1 acceptance criterion, and every criterion traces back to a §4 change. No orphans on either side.
 - At the top of the file, leave a status header: `> 🚧 **Status: ready to implement** — created on YYYY-MM-DD.`
 
 ### 3.1 ADRs — plan and decision work together (important)
@@ -64,6 +67,16 @@ Do both ends:
 2. **New ADR-worthy decision → offer to create the ADR.** If the grilling closed a decision that is **(a) hard to reverse + (b) surprising without context + (c) a real trade-off**, it can't live only in the plan (which will be archived). **Offer to create an ADR** in `docs/adr/` (sequential numbering, format from `docs/adr/_template.md` / `README.md`) and, in the plan, **link to it** instead of repeating the rationale. All three conditions must hold — if the decision is easy to reverse or obvious, it stays in the plan only.
 
 In short: the "durable why" goes to the ADR (and the plan points to it); the "how to execute" stays in the plan.
+
+### 3.2 Completeness gate — run before you save (this is what stops "stuff left out")
+
+The #1 failure of a plan is being **too open**, so execution silently drops things and you have to send it back to "implement what was missing". Before saving, walk the plan against its sources and close every gap:
+
+1. **Re-read the decisions** — the grilling trail in `docs/grills/` (and this conversation). For **each** decided outcome, confirm it appears as a concrete change in §4 **and** as an acceptance criterion in §7. Anything that lives only in prose → promote it to a checkable deliverable, or it won't get built.
+2. **Every criterion is verifiable** — each `- [ ]` says *how* it's proven (test, command, observable behavior). Rewrite the vague ones until a stranger could check them.
+3. **Traceability holds both ways** — no §4 change without a covering criterion; no criterion without a §4 change.
+
+Only save once the Definition of Done (§7) covers **everything** that was decided. State in one line that the gate passed (e.g. "Completeness gate: 9 criteria, all traced to changes and verifiable"). A plan that clears this gate is one an executor can finish without you reviewing what was left out.
 
 ### 4. Update the index
 
