@@ -1,8 +1,8 @@
-These are the blocks the skill inserts/updates in the repo's `CLAUDE.md` (or `AGENTS.md`). Adapt the real paths (language, monorepo vs single app) to the project. Don't duplicate blocks that already exist — update them in-place.
+These are the shared blocks the skill inserts/updates in the repo's canonical `AGENTS.md`. Claude Code should receive them through a root `CLAUDE.md` whose first active line is `@AGENTS.md`; do not duplicate the blocks in both files. Adapt the real paths (language, monorepo vs single app) to the project and update existing blocks in place.
 
-The goal of CLAUDE.md here is that an agent who has **never seen the repo** understands, just by reading: (1) which docs folders exist, (2) **why each one matters**, (3) **how each one works** (when to read, when to write, which skill maintains it) and (4) the work loop. Listing isn't enough — it has to explain.
+The goal of the shared project instructions is that an agent who has **never seen the repo** understands, just by reading: (1) which docs folders exist, (2) **why each one matters**, (3) **how each one works** (when to read, when to write, which skill maintains it) and (4) the work loop. Listing isn't enough — it has to explain.
 
-> Folder/path names (`docs/system`, `docs/plans`, `docs/pending`, `docs/learnings`, `docs/grills`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is. If the target repo writes its CLAUDE.md in another language, adapt the prose to that language.
+> Folder/path names (`docs/system`, `docs/plans`, `docs/pending`, `docs/learnings`, `docs/grills`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is. Adapt the prose to the target repo's language.
 
 ---
 
@@ -18,7 +18,7 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 - `docs/plans/` — **work plans** (what we're going to do; becomes `done/`)
 - `docs/pending/` — **loose ends** to revisit (don't forget)
 - `docs/learnings/` — **lessons** from mistakes already made
-- `docs/grills/` — **grilling-session memory** (how we reasoned to each decision)
+- `docs/grills/` — **standalone grilling-session memory** (one timestamped file per explicit `/grill-with-docs` session; no README; not used by Wayfinder)
 ```
 
 ---
@@ -52,7 +52,7 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 
 - **What it is:** execution plans, ephemeral, carrying the closed decisions from a grilling **and a Definition of Done** — an atomic, verifiable acceptance checklist that is the plan's completeness contract.
 - **Why it matters:** separates intent from reality; whoever implements doesn't reopen everything — and the Definition of Done is what stops planned work from being silently left out (execution verifies every item, not just a green test suite).
-- **How it works:** create with `/to-plan` (which runs a completeness gate so nothing decided stays implicit); execute with `/do-task` / `/night-shift` (which tick every acceptance criterion with proof before marking done); close with `/to-plan done <slug>` (goes to `docs/plans/done/`).
+- **How it works:** create with `/to-plan` (which runs a completeness gate so nothing decided stays implicit); publish with `/to-tickets` as GitHub Issues; execute one unblocked issue per fresh `/implement` session, verifying every acceptance criterion before closure; close with `/to-plan done <slug>` (goes to `docs/plans/done/`).
 
 ### `docs/pending/` — what's left open (don't forget)
 
@@ -66,25 +66,25 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 - **Why it matters:** avoids paying the same mistake twice — the most expensive part of rework.
 - **How it works:** **read** before touching a sensitive area; **write** when bitten by something that cost time + tends to recur + has an actionable rule.
 
-### `docs/grills/` — how we reasoned to the decision (grilling memory)
+### `docs/grills/` — how we reasoned in standalone grillings (auxiliary session memory)
 
-- **What it is:** the **memory of each grilling session** — one file per topic, accumulating the closed decisions, the Q&A trail (questions + the answers given), the dropped hypotheses, and what's still open. Upstream of `CONTEXT.md`/ADR/plan: what crystallises here flows out to those, with a pointer back.
-- **Why it matters:** a grilling produces a lot of reasoning that doesn't fit in a glossary term, one ADR, or a plan. Without this, the *why behind the why* — and the rejected options — evaporate when the session ends, and the same ground gets re-litigated next time.
-- **How it works:** maintained by `/grill-with-docs` — at the start of a grill it **finds the topic's file or creates it** (keyed by topic, one per subject), then appends a **dated session entry** and captures decisions + trail **inline** as the session unfolds. **Read** it before re-opening a topic that was already grilled.
+- **What it is:** the auxiliary memory of an explicit, standalone `/grill-with-docs` session — one timestamped file containing the Q&A trail, dropped hypotheses and open points. It is not the canonical feature doc.
+- **Why it matters:** a standalone grilling has no tracker ticket of its own, so the live reasoning needs a temporary in-repo home until its durable outcomes crystallise.
+- **How it works:** `/grill-with-docs` creates `YYYY-MM-DD-HHmm-<detailed-slug>.md` at the start and updates it inline. Durable results flow to `CONTEXT.md`, ADRs and a plan; `docs/system/` changes only after the code changes. Wayfinder never creates a grill file: its map, tickets and resolution comments on the tracker already provide the trail. Casual design conversations do not create grills automatically.
 ```
 
 ---
 
-## BLOCK 3 — the routine (before and after coding)
+## BLOCK 3 — the routine (before planning questions, coding, and after coding)
 
 ```markdown
-## 🧭 Before touching the code (mandatory)
+## 🧭 Before asking planning questions or touching the code (mandatory)
 
-1. Open **`docs/system/README.md`** → "Topic map" → read the area's `feature-*.md`.
-2. Consult **`CONTEXT.md`** (vocabulary) and **`docs/adr/`** (why the area is the way it is) when relevant; if you're about to re-open a topic that was grilled before, read its **`docs/grills/`** file first (the reasoning trail).
-3. Check **`docs/learnings/`** if the area is sensitive.
-4. See if there's already a plan in **`docs/plans/`** or open items in **`docs/pending/`** about what you're going to do.
-5. Only then open the code.
+1. Open **`docs/system/README.md`** → "Topic map" → read the target `feature-*.md` **and the adjacent/complementary feature-docs** that interact with the work.
+2. Consult **`CONTEXT.md`** (vocabulary) and the ADRs cited by those feature-docs. If starting a standalone grill that reopens an earlier topic, read the related **`docs/grills/`** file too.
+3. Check **`docs/learnings/`** if the area is sensitive, plus existing **`docs/plans/`** and **`docs/pending/`** entries for the subject.
+4. Summarize established facts, existing seams and genuine unknowns. Ask the user only for product/design decisions that the docs and code cannot answer.
+5. This is a **hard gate before the first question** in `/grill-with-docs` or `/wayfinder`, and before their first tracker mutation. Only then inspect the specific code paths the docs identify.
 
 ## ⚠️ When done (mandatory)
 
@@ -103,23 +103,13 @@ The goal of CLAUDE.md here is that an agent who has **never seen the repo** unde
 
 - **`/setup-pedro-mota`** — bootstrap: creates the whole knowledge base (`CONTEXT.md`, `docs/adr/`, `docs/system/`, `docs/plans/`, `docs/pending/`, `docs/learnings/`, agent config) + this documentation in CLAUDE.md. Once per repo.
 - **`/setup-matt-pocock-skills`** — agent config (issue tracker, triage labels, domain layout) in `docs/agents/`. Called by `/setup-pedro-mota`.
-- **`/grill-with-docs`** / **`/grill-me`** — grilling that stress-tests the plan; records the session in `docs/grills/` (one file per topic, find-or-create), updates `CONTEXT.md` (vocabulary) and creates ADRs **inline** as decisions close.
+- **`/grill-with-docs`** — first grounds itself in target + complementary `docs/system` docs, then grills work that fits one planning session; records that standalone session in `docs/grills/`, updates `CONTEXT.md` and creates ADRs inline as decisions close.
+- **`/wayfinder`** — performs the same docs-first grounding, then maps research, prototype and grilling tickets until the destination can be specified precisely. The tracker map/tickets/comments are its trail; it does not create a local grill.
 - **`/to-plan`** — distills the grilling into a plan in `docs/plans/`; `/to-plan done` archives the finished one.
+- **`/to-tickets`** — publishes the approved plan as tracer-bullet GitHub Issues with explicit blocking edges and pointers back to the plan/docs.
+- **`/implement`** — claims and implements one unblocked GitHub Issue per fresh session, then runs TDD/review/verification before committing and closing it.
 - **`/to-pending`** — records a loose end in `docs/pending/` (detailed); `/to-pending done` resolves it.
 - **`/sync-doc`** — syncs `docs/system/` with the real code at the end of implementation.
 
-Loop: **grill (`CONTEXT.md`+ADR) → `/to-plan` → implement → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what you deferred, + `docs/learnings/` if there was a trap).
-
-### If your workspace uses the Click Notes MCP (optional)
-
-A board-driven way to execute plans, plus skills for the company's meetings + knowledge graph. These need the Click Notes MCP connected — skip this section if you don't use it.
-
-- **`/to-tasks`** — publish a `docs/plans/` plan as Click Notes tasks + subtasks, **gated in the title** (`[READY FOR DEV]` to code · `[PLANNING]` to leave alone · `[WIP]` while worked). The plan = one root task, each vertical slice = a subtask carrying pointers to the plan + ADRs.
-- **`/do-task`** — an agent grabs the next `[READY FOR DEV]` task, reads its linked plan + ADRs + `feature-*.md`, implements, tests, and marks it done (supervised, one at a time). Never codes a `[PLANNING]` task; refuses to code with no detailed plan.
-- **`/night-shift`** — runs `/do-task` in a loop **unattended** (e.g. overnight): grounds each task in the project's `docs/system/` + ADRs, commits green work to main, tries hard to resolve failures before parking, and posts a morning report. The board's per-task **Verify** block + context anchor are what make this reliable.
-- **`/clicknotes-meeting`** — rewrite a meeting's notes from its transcript + generate its tasks (deduped against existing ones).
-- **`/clicknotes-memory`** / **`/clicknotes-recall`** — create/update and search the company knowledge graph (Memória).
-- **`/clicknotes-tasks`** — reconcile the task board against what's actually been done.
-
-Board-driven branch: **`/to-plan` → `/to-tasks` → `/do-task` (or `/night-shift` unattended) → `/sync-doc` → `/to-plan done`**. `/handoff` and `/to-tasks` are two ways to pass a written plan to a fresh agent — a ready-to-paste prompt vs. a board agents pull from.
+Loop: **grill (or `/wayfinder`) → `/to-plan` → `/to-tickets` → `/implement` one issue per fresh session → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what you deferred, + `docs/learnings/` if there was a trap). `/handoff` remains the direct-session alternative when a GitHub ticket queue is unnecessary.
 ```

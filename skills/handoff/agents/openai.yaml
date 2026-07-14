@@ -1,0 +1,4 @@
+interface:
+  display_name: "Handoff"
+  short_description: "Prepare a clean session-to-session handoff"
+  default_prompt: "Use $handoff to prepare the current work for a fresh session."

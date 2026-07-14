@@ -1,0 +1,7 @@
+interface:
+  display_name: "Wayfinder"
+  short_description: "Map a large foggy effort into decisions"
+  default_prompt: "Use $wayfinder to chart this large effort toward an AFK-ready plan."
+
+policy:
+  allow_implicit_invocation: false

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Triage"
+  short_description: "Triage requests into agent-ready work"
+  default_prompt: "Use $triage to classify and prepare the open request for its next owner."
+
+policy:
+  allow_implicit_invocation: false

@@ -1,92 +1,187 @@
 # Pedro Mota Skills
 
-A curated bundle of **project & planning agent skills** for Claude Code (and compatible agents) — mixing [Matt Pocock's skills](https://github.com/mattpocock/skills) with Pedro Mota's optimized ones, focused on one thing: **making the agent smart about a codebase from day one** through a living knowledge base and a tight plan → build → document loop.
+A curated, cross-agent engineering workflow for **Claude Code and Codex**, built from Matt Pocock's open-source skills plus Pedro Mota's documentation, planning and execution conventions.
 
-👉 **Full visual tutorial:** open [`index.html`](index.html) in a browser.
+The goal is simple: the agent should understand the existing system before asking questions or touching code, turn decisions into an executable contract, and close work with evidence and living documentation.
 
-## The idea
+## Install once, globally
 
-The agent shouldn't re-learn the project every session. These skills install and maintain a `docs/` **knowledge base** so it understands a feature by reading a page, doesn't reopen settled decisions, and doesn't repeat past mistakes.
-
-| Artifact | Question it answers |
-|---|---|
-| `CONTEXT.md` | what the words mean (glossary) |
-| `docs/adr/` | why we decided this way (decisions) |
-| `docs/system/` | what the code does today (living docs) |
-| `docs/plans/` | what we're going to do (plans) |
-| `docs/pending/` | what's left open (loose ends) |
-| `docs/learnings/` | where we already erred (lessons) |
-| `docs/grills/` | how we reasoned to the decision (grilling memory) |
-
-## The loop
-
-```
-1. /grill-with-docs   decide; record the session in docs/grills/, pin vocabulary in CONTEXT.md + write ADRs
-2. /to-plan           write the plan in docs/plans/
-3. /handoff           hand the plan to a NEW agent — to execute it, or to continue planning
-4. implement          the new agent builds it (optionally with /tdd)
-5. /sync-doc          update docs/system/ to match the shipped code
-6. /to-plan done      archive the plan to docs/plans/done/
-
-along the way:  /to-pending  (defer a loose end)   ·   docs/learnings/  (record a lesson)
-```
-
-`/handoff` is the bridge between planning and building: once the plan is written, it produces a ready-to-paste prompt (saved under `.handoff/` and opened) that a **new agent/chat** uses to pick up — either to **execute the plan** or to **continue the planning** — wired to all the docs above.
-
-**Board-driven alternative.** Instead of (or alongside) `/handoff`, run `/to-tasks` to publish the plan as **Click Notes** tasks + subtasks — each grab-able slice gated in its title (`[READY FOR DEV]` to code, `[PLANNING]` to leave alone, `[WIP]` while an agent works it). An agent then runs `/do-task` to pull the next ready task, read its linked plan + ADRs, implement, test, and mark it done. To run the whole board **unattended** — plan by day, code by night — `/night-shift` loops that drain overnight, delivering each green task the way you pick at start (commit + push to main per task, or one PR per task), and leaves a morning report. Publish once, let agents pull.
-
-## Skills
-
-**Setup**
-- `setup-pedro-mota` — one-shot knowledge-base bootstrap (+ calls `setup-matt-pocock-skills`).
-- `setup-matt-pocock-skills` — per-repo agent config (issue tracker, triage labels, domain layout).
-
-**Grilling & planning**
-- `grill-with-docs`, `grill-me` — stress-test a plan against the domain; record each session in `docs/grills/`.
-- `to-plan` — distill grilling decisions into a plan; close it to `done/`.
-- `to-pending` — record/resolve loose ends.
-- `ubiquitous-language` — extract a domain glossary.
-
-**Docs & handoff**
-- `sync-doc` — keep `docs/system/` in sync with the code.
-- `handoff` — emit a ready-to-paste prompt (continue planning or execute) wired to the docs.
-
-**Tasks & autonomous execution (Click Notes)**
-- `to-tasks` — publish a plan as Click Notes tasks/subtasks, gated `[READY FOR DEV]` / `[PLANNING]` in the title (with a runnable Verify block + context anchor per slice).
-- `do-task` — an agent grabs a `[READY FOR DEV]` task and implements it from the linked plan + ADRs + feature docs (supervised, one at a time).
-- `night-shift` — drains the whole board **unattended** (overnight): runs `do-task` in a loop, delivers green work via the mode you pick at start (commit + push to main per task, or one PR per task), tries hard to resolve failures, reports in the morning.
-
-**Click Notes — meetings & memory** (in [`skills/clicknotes/`](skills/clicknotes/README.md))
-- `clicknotes-meeting` — improve a meeting's notes from its transcript and generate its tasks (deduped).
-- `clicknotes-memory` — create/update a block in the company knowledge graph, following its conventions.
-- `clicknotes-recall` — search the knowledge graph for the current topic and ground the conversation.
-- `clicknotes-tasks` — reconcile open tasks against what's actually done (mark done / update partial).
-
-**Issues & PRDs**
-- `to-issues`, `to-prd`, `triage`.
-
-**Engineering**
-- `tdd`, `improve-codebase-architecture`, `diagnose`, `zoom-out`, `prototype`.
-
-See [NOTICE.md](NOTICE.md) for which skills are Matt Pocock's and which are Pedro's.
-
-## Install
-
-Skills are folders with a `SKILL.md`. Point your agent's skills directory at them. For Claude Code, symlink each into your skills dir:
+Use one user-scoped installation for both agents:
 
 ```bash
-git clone https://github.com/pvieira-design/pedro-mota-skills.git
-cd pedro-mota-skills
-# symlink every skill (top-level and nested, e.g. skills/clicknotes/*) into ~/.claude/skills
-find skills -name SKILL.md | while read -r f; do
-  d=$(dirname "$f"); ln -sfn "$PWD/$d" ~/.claude/skills/"$(basename "$d")"
-done
+npx skills add pvieira-design/pedro-mota-skills \
+  --global \
+  --agent codex claude-code \
+  --skill '*' \
+  --yes
 ```
 
-Then invoke any skill as `/<skill-name>` (e.g. `/setup-pedro-mota`). Start a new repo with `/setup-pedro-mota`.
+This creates one canonical user-level copy under `~/.agents/skills`. Codex discovers that location directly; Claude Code receives links under `~/.claude/skills` to the same skills.
 
-> `sync-doc` is shipped as a skill here; in some setups it lives as a command (`~/.claude/commands/sync-doc.md`). Either works.
+Do **not** run the same command without `--global` inside every project. A same-named project copy under `.agents/skills` and user copy under `~/.agents/skills` makes Codex show both — for example, `Wayfinder · CRM` and `Wayfinder · Personal`. Claude Code gives the personal copy precedence, which can silently hide a different project version.
+
+See [Installation and duplicate cleanup](docs/INSTALLATION.md) for local-clone installation, verification, updates and migration from duplicated installs.
+
+## Invoke in each agent
+
+| Action | Claude Code | Codex |
+| --- | --- | --- |
+| Select a skill | `/wayfinder` | `$wayfinder` or `/skills` |
+| Bootstrap a repo | `/setup-pedro-mota` | `$setup-pedro-mota` |
+| Publish tickets | `/to-tickets` | `$to-tickets` |
+| Implement one issue | `/implement` | `$implement` |
+
+The workflow and files are identical. Only explicit invocation syntax differs.
+
+## Configure a repository
+
+After the global install, open the target repository and run `setup-pedro-mota` once.
+
+It creates or completes:
+
+| Artifact | Question it answers |
+| --- | --- |
+| `AGENTS.md` | What every coding agent must know and do |
+| `CLAUDE.md` | Claude bridge: `@AGENTS.md` plus Claude-only additions |
+| `CONTEXT.md` | What the domain words mean |
+| `docs/adr/` | Why hard-to-reverse decisions were made |
+| `docs/system/` | What the code does today — living feature docs |
+| `docs/plans/` | What is approved to build next |
+| `docs/pending/` | What was deliberately deferred |
+| `docs/learnings/` | Which non-obvious mistakes must not repeat |
+| `docs/grills/` | Live trail of explicit standalone grillings only |
+| `docs/agents/` | Tracker, labels, domain layout and full engineering workflow |
+
+For GitHub repositories, authenticate `gh` first. The setup verifies and creates only missing workflow labels: `plan`, `spec`, `wayfinder:map`, `wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`, `wayfinder:task`, plus the configured triage labels.
+
+## The mandatory grounding gate
+
+Before the first question in a grill or Wayfinder — and before coding — the agent must:
+
+1. Read `docs/system/README.md` and its topic map.
+2. Read the target feature-doc and adjacent/complementary feature-docs.
+3. Read relevant `CONTEXT.md`, ADRs, learnings, plans and pending items.
+4. Summarize established facts, existing seams and genuine unknowns.
+5. Ask the user only for decisions the repository cannot answer.
+
+This is the core Pedro layer on top of the Matt skills: exploration begins from the project's living knowledge base, not from a blind codebase scan.
+
+## The workflow
+
+```text
+bounded uncertainty                         large / foggy effort
+        │                                           │
+        ▼                                           ▼
+grill-with-docs                                wayfinder
+standalone docs/grills trail            tracker map + decision tickets
+        └──────────────────────┬────────────────────┘
+                               ▼
+                            to-plan
+                  approved AFK-ready contract
+                               ▼
+                           to-tickets
+             root plan issue + blocked tracer children
+                               ▼
+                           implement
+                  one frontier issue per clean session
+                               ▼
+             tdd → checks → sync-doc → commit → code-review
+                               ▼
+                proof → close → to-plan done
+```
+
+Important boundaries:
+
+- `grill-with-docs` creates one timestamped `docs/grills/` file and updates it live.
+- `wayfinder` does **not** create a local grill. Its map, tickets and resolution comments are the operational trail.
+- `to-plan` consumes closed decisions and must leave no product/architecture choices for the executor.
+- `to-tickets` requires an approved plan and asks for decomposition approval before tracker mutation.
+- `implement` claims exactly one open, unassigned, unblocked `ready-for-agent` issue before editing.
+- `sync-doc` updates `docs/system/` after code changes; `docs/system/` is project/feature memory, not `docs/grills/`.
+
+Read the complete [engineering workflow](docs/WORKFLOW.md).
+
+## How Pedro's and Matt's skills connect
+
+Matt Pocock's skills provide the engineering primitives: Wayfinder, grilling, domain modeling, research, prototypes, tracer tickets, implementation, TDD, review and triage.
+
+Pedro's layer turns those primitives into one repository lifecycle:
+
+- `setup-pedro-mota` installs the living knowledge base and cross-agent instructions;
+- `to-plan`, `to-pending` and `sync-doc` define the future/pending/present lifecycle;
+- adapted Matt skills enforce docs-first grounding, tracker labels, one-ticket execution and evidence-based closure;
+- `handoff` remains a direct-session alternative when a tracker queue is unnecessary.
+
+This repository is a **curated distribution**, not something to install on top of a separate same-named Matt installation. Several Matt skills are included with Pedro-specific adaptations. Installing `mattpocock/skills` afterward can overwrite those names. See [Attribution and upstream policy](NOTICE.md).
+
+## Skill catalog
+
+### Setup and project memory
+
+- `setup-pedro-mota`
+- `setup-matt-pocock-skills`
+- `sync-doc`
+- `to-plan`
+- `to-pending`
+- `handoff`
+
+### Decisions and design
+
+- `grilling`
+- `grill-with-docs`
+- `wayfinder`
+- `domain-modeling`
+- `research`
+- `prototype`
+- `codebase-design`
+
+### Queue and execution
+
+- `to-spec`
+- `to-tickets`
+- `triage`
+- `implement`
+- `tdd`
+- `code-review`
+- `diagnose`
+
+## Project instruction best practice
+
+Keep cross-agent facts in `AGENTS.md`. Keep `CLAUDE.md` small:
+
+```markdown
+@AGENTS.md
+
+## Claude Code
+
+<!-- Only genuinely Claude-specific instructions belong here. -->
+```
+
+Put always-needed project facts in `AGENTS.md`, detailed repeatable procedures in skills, and feature state in `docs/system/`. Avoid copying the same long instructions into both root files. See [AGENTS.md and CLAUDE.md](docs/PROJECT-INSTRUCTIONS.md).
+
+## Existing repositories
+
+Use the ready-to-paste [migration prompt](docs/MIGRATION-PROMPT.md) to update projects that already received an older version of this documentation. It covers the new `docs/grills/` boundary, Wayfinder's tracker-only trail, the docs-first hard gate, labels, the issue-driven loop and cross-agent instruction layout.
+
+## Update and verify
+
+```bash
+npx skills update --global
+npx skills list --global --json
+./scripts/audit-installation.sh
+```
+
+The audit is read-only. Inside a repository, it reports same-named project/user skills that would appear twice in Codex.
+
+## Further reading
+
+- [Installation](docs/INSTALLATION.md)
+- [Workflow](docs/WORKFLOW.md)
+- [Project instructions](docs/PROJECT-INSTRUCTIONS.md)
+- [Migration prompt](docs/MIGRATION-PROMPT.md)
+- [Visual tutorial](index.html)
+- [Attribution](NOTICE.md)
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Original skills © Matt Pocock; additions/adaptations © Pedro Mota.
+MIT — see [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md).

@@ -1,14 +1,20 @@
 # Grilling: <Topic>
 
-> Memory of the interrogation sessions about **<topic>**. One file per topic; each grilling appends a dated session below. Closed decisions flow out to `CONTEXT.md` / `docs/adr/` / `docs/plans/` — here we keep the full trail so context is never lost.
+> Auxiliary memory of this standalone `/grill-with-docs` session about **<topic>**. One timestamped file per session. Closed decisions flow to `CONTEXT.md` / `docs/adr/` / `docs/plans/`; `docs/system/` changes only when the code changes. Wayfinder uses tracker tickets/comments instead of this folder.
 
-## Still open (across sessions)
+## Grounding read before the first question
+
+- `docs/system/README.md` topic-map entries: <target + complementary topics>
+- Feature-docs read: <paths>
+- Relevant `CONTEXT.md` terms / ADRs / learnings / pending: <links>
+- Established facts: <facts that must not be asked back to the user>
+- Genuine unknowns requiring a decision: <decision questions>
+
+## Still open
 
 - <questions not yet resolved — the live agenda for the next grill>
 
-## Sessions
-
-### YYYY-MM-DD HH:MM
+## Session — YYYY-MM-DD HH:MM
 
 **Focus:** <what this session interrogated>
 

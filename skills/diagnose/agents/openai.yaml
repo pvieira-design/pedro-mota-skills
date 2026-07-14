@@ -1,0 +1,3 @@
+interface:
+  display_name: "Diagnose"
+  short_description: "Reproduce, isolate and fix root causes"

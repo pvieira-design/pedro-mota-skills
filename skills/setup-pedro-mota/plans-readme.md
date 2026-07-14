@@ -15,7 +15,7 @@
 
 ## How to build/close a plan (the `to-plan` skill)
 
-Don't write the plan by hand. At the end of a grilling session (`/grill-me` or `/grill-with-docs`), run **`/to-plan`** — it distills the conversation's decisions into this format and adds it to the index. When the feature ships, run **`/to-plan done <slug>`** to stamp the ✅ badge, move the file to `done/`, and update this index.
+Don't write the plan by hand. At the end of a standalone `/grill-with-docs` session, or when a Wayfinder map has no unresolved decisions, run **`/to-plan`** — it distills the confirmed decisions into this format and adds it to the index. When the feature ships, run **`/to-plan done <slug>`** to stamp the ✅ badge, move the file to `done/`, and update this index.
 
 ## Lifecycle
 
@@ -45,7 +45,7 @@ A plan that's **too open** is the root cause of "the AI didn't build everything 
 - **Verifiable** — each criterion states *how* it's proven (test, command, observable behavior). If you can't say how to check it, it's too vague.
 - **Traceable both ways** — every §4 change has a covering criterion; every criterion traces to a change.
 
-Execution (`/do-task`, `/night-shift`) ticks **every** criterion (with proof) before marking work done — a green test suite alone is not "done". So the plan's §7 is what makes the build verifiable end-to-end.
+Execution (`/to-tickets` → one fresh `/implement` session per GitHub Issue) verifies **every** criterion with proof before closing work — a green test suite alone is not "done". So the plan's §7 is what makes the build verifiable end-to-end.
 
 ## Plans
 

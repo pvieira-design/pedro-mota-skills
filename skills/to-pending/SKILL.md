@@ -1,7 +1,6 @@
 ---
 name: to-pending
 description: Record a PENDING ITEM (a loose end to revisit — deferred edge case, postponed decision, TODO, tech debt, open question) as a detailed doc under docs/pending/, following best practices (self-sufficient, with why + impact + next step). Also resolves/archives completed pending items. Use when something is left pending mid-work ("we'll look at it later", "left pending", "don't forget to", "note this pending item"), or to mark a pending item as resolved.
-argument-hint: "<what was left pending>  |  done <file-or-slug>"
 ---
 
 This skill has **two modes**. Decide by the argument:

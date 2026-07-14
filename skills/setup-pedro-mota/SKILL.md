@@ -1,6 +1,6 @@
 ---
 name: setup-pedro-mota
-description: COMPLETE bootstrap of a repo's knowledge base in Pedro Mota's standard, so the AI is smart from day one. Creates/ensures CONTEXT.md (domain glossary), docs/adr/ (decisions + whys), docs/system/ (living technical docs), docs/plans/ (work plans), docs/pending/ (loose ends to revisit), docs/learnings/ (lessons from mistakes), docs/grills/ (grilling-session memory), runs Matt Pocock's agent setup (issue tracker/triage/domain in docs/agents/), and writes/updates CLAUDE.md explaining the importance and how each one works + the skill loop (/grill-with-docs, /to-plan, /to-pending, /sync-doc) plus the optional Click Notes MCP branch (/to-tasks, /do-task, /night-shift, /clicknotes-*). Run once per repo, before using the other skills, or whenever this structure is missing.
+description: COMPLETE bootstrap of a repo's knowledge base in Pedro Mota's standard, so the AI is smart from day one. Creates/ensures CONTEXT.md, docs/adr/, docs/system/, docs/plans/, docs/pending/, docs/learnings/, docs/grills/ and docs/agents/; configures the Matt Pocock engineering skills; and keeps shared instructions in AGENTS.md with a CLAUDE.md bridge. Run once per repo, before using the other skills, or whenever this structure is missing.
 disable-model-invocation: true
 ---
 
@@ -14,10 +14,12 @@ Bootstraps the whole **knowledge base** that makes an agent (or person) producti
 - **`docs/plans/`** — *what we're GOING to do* (work plans; ephemeral). Created by `/to-plan`.
 - **`docs/pending/`** — *what's left open* (loose ends to revisit, so nothing is forgotten). Created by `/to-pending`.
 - **`docs/learnings/`** — *where we already erred* (lessons not to repeat).
-- **`docs/grills/`** — *how we reasoned to the decision* (grilling-session memory; one file per topic). Maintained by `/grill-with-docs`.
-- **`docs/agents/`** — operational agent config (issue tracker, triage labels, domain layout), via `/setup-matt-pocock-skills`.
+- **`docs/grills/`** — *how we reasoned in standalone grillings* (auxiliary session memory; one timestamped file per explicit `/grill-with-docs` session, no index). Wayfinder uses its tracker map/tickets/comments instead.
+- **`docs/agents/`** — operational agent config (issue tracker, workflow/triage labels, domain layout and the full engineering workflow), via `/setup-matt-pocock-skills` plus this skill.
 
 This is a **prompt-driven** skill, not a script. Explore → present what you found → confirm with the user → write. Be **idempotent**: only create what's missing, never overwrite the user's work, update blocks in-place.
+
+Install one hard grounding rule: **before the first question in `/grill-with-docs` or `/wayfinder`**, read `docs/system/README.md`, the target feature-doc and the adjacent/complementary feature-docs named by its topic map, then relevant `CONTEXT.md`/ADRs. Summarize established facts and ask the user only for decisions the knowledge base and code cannot answer.
 
 > Folder/path names (`docs/system`, `docs/plans`, `docs/pending`, `docs/learnings`, `docs/grills`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is even though this skill is written in English.
 
@@ -70,46 +72,52 @@ Always adapt paths/layout to the repo (language, monorepo vs single app) — the
 
 **Grilling sessions — `docs/grills/`**:
 - `docs/grills/_template.md` ← seed [`grills-template.md`](./grills-template.md) (per-session structure).
-- `docs/grills/README.md` ← seed [`grills-readme.md`](./grills-readme.md) (one file per topic; `/grill-with-docs` fills the index, find-or-create).
+- Do **not** create `docs/grills/README.md`: navigation is the timestamped filename (`YYYY-MM-DD-HHmm-<detailed-slug>.md`).
+
+**Agent workflow — `docs/agents/`**:
+- `docs/agents/engineering-workflow.md` ← seed [`engineering-workflow.md`](./engineering-workflow.md). Adapt the tracker commands, verification commands and delivery policy to the repo; preserve the docs-first gate, Wayfinder/grilling split, plan gate, ticket frontier, one-ticket-per-session implementation and evidence-based closure.
 
 If a folder exists but its README/template is missing, create only what's missing. Never clobber a user's file — suggest the additions instead.
 
 ### 4. Run Matt Pocock's agent setup
 
-For the operational part (where issues live, triage label vocabulary, domain layout), **invoke `/setup-matt-pocock-skills`** — it creates `docs/agents/` + the `## Agent skills` block in CLAUDE.md. Don't reimplement it here; delegate (it's the source of truth for that dimension). If it's unavailable in the environment, say so and proceed without that part.
+For the operational part (where issues live, workflow/triage label vocabulary, domain layout), **invoke `/setup-matt-pocock-skills`** — it creates the tracker-facing files under `docs/agents/` and verifies the required tracker labels. Don't reimplement that part here. If the skill is unavailable, say so and proceed without it.
 
-> Order: both this skill and Matt's edit CLAUDE.md, but in distinct sections and idempotently — running one after the other doesn't conflict. Run Matt's setup and then apply the blocks from step 5 (or vice versa), checking that no section is duplicated.
+> Order: both skills edit the shared project instructions idempotently. Run Matt's setup, write/update `AGENTS.md`, then ensure the Claude bridge from step 5. Never duplicate the shared blocks in both files.
 
-### 5. Write CLAUDE.md (or AGENTS.md)
+### 5. Write shared instructions for Codex and Claude
 
-**Pick the file:** if `CLAUDE.md` exists, edit it; else `AGENTS.md`; if neither, ask which to create. Never create one when the other already exists.
+Use **`AGENTS.md` as the canonical shared project instructions**. Codex reads it natively. Claude Code reads `CLAUDE.md`, so ensure a root `CLAUDE.md` whose first active line is `@AGENTS.md`; keep only genuinely Claude-specific additions below that import.
 
-CLAUDE.md must **explain** the knowledge base — why each artifact matters and how it works (when to read, when to write, which skill maintains it) — not just list it. An agent that has never seen the repo should understand the role of `docs/` just by reading CLAUDE.md. Insert/update the four blocks from the seed [`claude-md-blocks.md`](./claude-md-blocks.md), **adapting the repo's real paths**:
+- If only `AGENTS.md` exists: update it and create the minimal `CLAUDE.md` bridge.
+- If only `CLAUDE.md` exists: preserve its content, create `AGENTS.md` for the shared blocks, add `@AGENTS.md` to `CLAUDE.md`, and remove only duplicated shared blocks after confirming the import covers them.
+- If both exist: update `AGENTS.md`; ensure `CLAUDE.md` imports it; do not maintain two independent copies.
+- Never replace unrelated user instructions. A symlink `CLAUDE.md -> AGENTS.md` is acceptable only when there are no Claude-specific additions; prefer the portable `@AGENTS.md` import.
+
+`AGENTS.md` must **explain** the knowledge base — why each artifact matters and how it works (when to read, when to write, which skill maintains it) — not just list it. An agent that has never seen the repo should understand the role of `docs/` just by reading the shared instructions. Insert/update the four blocks from [`claude-md-blocks.md`](./claude-md-blocks.md), **adapting the repo's real paths**:
 
 1. **Structure** — short list (apps/packages + the docs artifacts with a one-liner).
 2. **The `docs/` folder — why it matters and how it works** — the main block: one subsection per artifact (`CONTEXT.md`/`docs/adr`/`system`/`plans`/`pendencias`/`aprendizados`) with *what it is · why it matters · how it works*. **Don't cut this block** — it's the heart.
-3. **The routine** — what to read before coding (incl. `CONTEXT.md`/ADR) and what to run when done (`/sync-doc`, `/to-plan done`, `/to-pending`, lesson).
-4. **Skill ecosystem** — how `/setup-pedro-mota`, `/setup-matt-pocock-skills`, `/grill-with-docs`, `/to-plan`, `/to-pending` and `/sync-doc` fit into the loop, plus a **gated** subsection for the optional Click Notes MCP branch (`/to-tasks`, `/do-task`, `/night-shift`, `/clicknotes-*`) — keep it clearly marked "if your workspace uses the Click Notes MCP" so repos without it aren't confused.
+3. **The routine** — what to read before the first planning question or before coding (incl. target + complementary `docs/system` feature-docs, `CONTEXT.md` and ADRs) and what to run when done (`/sync-doc`, `/to-plan done`, `/to-pending`, lesson).
+4. **Skill ecosystem** — how `/setup-pedro-mota`, `/setup-matt-pocock-skills`, `/grill-with-docs`, `/wayfinder`, `/to-plan`, `/to-tickets`, `/implement`, `/to-pending` and `/sync-doc` fit into the GitHub issue-driven loop.
 
 **Idempotency:** if a block already exists (even worded differently), update it in-place instead of duplicating. Preserve what the user wrote around it.
 
 ### 6. Done
 
-Tell the user, in ≤6 lines: which artifacts were created/ensured, which instructions file was edited, and the work loop now in effect: **`/grill-with-docs` (CONTEXT.md+ADR) → `/to-plan` → implement → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what you deferred, + a lesson if you got bitten). Remind them they can edit the `README.md`/`_template.md`/seeds directly afterward.
+Tell the user, in ≤6 lines: which artifacts were created/ensured, that `AGENTS.md` is canonical and `CLAUDE.md` imports it, and the work loop now in effect: **`/grill-with-docs` (or `/wayfinder` for large/foggy work) → `/to-plan` → `/to-tickets` → `/implement` → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what you deferred, + a lesson if you got bitten). Remind them they can edit the `README.md`/`_template.md`/seeds directly afterward.
 
 ## Related skills (the ecosystem)
 
 This skill **installs the knowledge base**; the others **consume and maintain it**:
 
 - **`/setup-matt-pocock-skills`** — agent config (issue tracker, triage, domain) in `docs/agents/`. Called in step 4.
-- **`/grill-with-docs`** / **`/grill-me`** — grilling that records the session in `docs/grills/` (one file per topic, find-or-create), fixes vocabulary in `CONTEXT.md`, and creates **ADRs** inline as decisions close.
+- **`/grill-with-docs`** — after grounding in target + complementary `docs/system` docs, grills work that fits one planning session; creates one timestamped file for that standalone session in `docs/grills/`, fixes vocabulary in `CONTEXT.md`, and creates **ADRs** inline as decisions close.
+- **`/wayfinder`** — after the same grounding, charts research, prototype and grilling tickets for work too large or foggy for one session. Its map, tickets and resolution comments on the tracker are the session trail; it does not create `docs/grills/` files.
 - **`/to-plan`** — writes plans in `docs/plans/` (referencing relevant ADRs) and archives them in `done/` when implemented.
+- **`/to-tickets`** — turns an approved plan into tracer-bullet GitHub Issues with explicit blocking edges and plan/doc pointers.
+- **`/implement`** — implements one unblocked issue per fresh session, using TDD at agreed seams and code review before commit/closure.
 - **`/to-pending`** — records loose ends in `docs/pending/` (detailed) and resolves/promotes them.
 - **`/sync-doc`** — keeps `docs/system/` in sync with the code (+ "Topic map") at the end of each feature.
-
-**Optional — Click Notes MCP branch** (only if that MCP is connected; gate it as such in the generated CLAUDE.md):
-
-- **`/to-tasks`** / **`/do-task`** / **`/night-shift`** — board-driven execution: publish a `docs/plans/` plan as gated Click Notes tasks (`[READY FOR DEV]`/`[PLANNING]`/`[WIP]`), then `/do-task` implements one (supervised) or `/night-shift` drains the whole board unattended (overnight, committing green work to main). An alternative to `/handoff` for passing a plan to a fresh agent.
-- **`/clicknotes-meeting`** / **`/clicknotes-memory`** / **`/clicknotes-recall`** / **`/clicknotes-tasks`** — drive the company's meetings + knowledge graph + task board (see `skills/clicknotes/`).
 
 Keep them coherent: if you change the structure here, adjust the references in those skills.

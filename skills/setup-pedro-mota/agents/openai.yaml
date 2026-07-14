@@ -1,0 +1,7 @@
+interface:
+  display_name: "Setup Pedro Mota"
+  short_description: "Configura a base de conhecimento do repositório"
+  default_prompt: "Use $setup-pedro-mota para configurar a base de conhecimento deste repositório."
+
+policy:
+  allow_implicit_invocation: false

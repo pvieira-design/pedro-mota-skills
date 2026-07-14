@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sync Doc"
+  short_description: "Sincroniza documentação técnica com o código"
+  default_prompt: "Use $sync-doc para conferir e atualizar a documentação técnica da feature implementada."

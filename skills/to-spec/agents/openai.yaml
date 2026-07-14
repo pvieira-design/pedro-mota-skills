@@ -1,0 +1,7 @@
+interface:
+  display_name: "To Spec"
+  short_description: "Publish the current discussion as a spec"
+  default_prompt: "Use $to-spec to synthesize this confirmed discussion into a tracker spec."
+
+policy:
+  allow_implicit_invocation: false

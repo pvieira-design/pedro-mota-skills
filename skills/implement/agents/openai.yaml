@@ -1,0 +1,7 @@
+interface:
+  display_name: "Implement"
+  short_description: "Implement a spec or one executable ticket"
+  default_prompt: "Use $implement to build the work in the referenced ticket and verify it."
+
+policy:
+  allow_implicit_invocation: false

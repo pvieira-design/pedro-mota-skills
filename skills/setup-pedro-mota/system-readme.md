@@ -2,22 +2,23 @@
 
 How the **code and skeleton** of this project are built — the **current** state of what exists. One feature/component per file (`feature-<name>.md` / `<component>.md`).
 
-> **This folder is the source of truth for the code.** Before touching any part of the system, start here — don't go scanning the code in the dark. Reading 1-2 feature-docs (a few KB) is far cheaper and more accurate than tracing where something lives. If the doc diverges from the code, the doc is wrong: fix it.
+> **This folder is the source of truth for the code.** Before touching any part of the system — or asking the first question in `/grill-with-docs` or `/wayfinder` — start here. Reading the target feature-doc and its complementary neighbours is far cheaper and more accurate than questioning the user about facts or tracing the code in the dark. If the doc diverges from the code, the doc is wrong: fix it.
 
 > **Maintenance rule:** when you create or change a feature, create/update the matching doc here using [`_template.md`](_template.md) and run **`/sync-doc`** at the end. Every new doc goes into the index below.
 
-## 🧭 Where to start (read BEFORE touching the code)
+## 🧭 Where to start (read BEFORE planning questions or code)
 
-1. Find the topic in the **[Topic map](#topic-map)** → it points to the area's `feature-*.md` (+ ADR, if any).
-2. Read the **`feature-*.md`**. Every feature-doc follows the same format: **What it is · Where it lives (real paths) · API/procedures (with permission gate) · Business rules (non-obvious) · External dependencies · Key files**. You come out knowing where to touch and what not to break.
-3. If the project has `CONTEXT.md` / `docs/adr/`, read them for the domain vocabulary and the "why" behind decisions.
-4. Only then open the code — now knowing the right file.
+1. Find the topic in the **[Topic map](#topic-map)** → it points to the target `feature-*.md` (+ ADR, if any).
+2. Read that feature-doc **and the adjacent/complementary feature-docs** whose rules, APIs or state interact with the proposed work.
+3. Read the cited ADRs and, when present, `CONTEXT.md` for vocabulary and durable reasons.
+4. Summarize existing behavior, seams and genuine unknowns. In a grill or Wayfinder session, ask only decisions the knowledge base and code cannot answer.
+5. Only then inspect the specific code paths named by the docs.
 
 ## Topic map
 
 | Looking for…       | Doc(s)                      | ADR  |
 | ------------------ | --------------------------- | ---- |
-| <topic/feature>    | [feature-x](feature-x.md)   | —    |
+| _(none yet)_       | —                           | —    |
 
 ## Documents
 
@@ -28,5 +29,5 @@ How the **code and skeleton** of this project are built — the **current** stat
 ## Sibling folders
 
 - [`../plans/`](../plans/README.md) — **work plans** (what we're going to do; future). Create with `/to-plan`.
-- [`../pendencias/`](../pendencias/README.md) — **loose ends** to revisit (don't forget). Record with `/to-pending`.
-- [`../aprendizados/`](../aprendizados/README.md) — **lessons** from mistakes already made (don't repeat).
+- [`../pending/`](../pending/README.md) — **loose ends** to revisit (don't forget). Record with `/to-pending`.
+- [`../learnings/`](../learnings/README.md) — **lessons** from mistakes already made (don't repeat).

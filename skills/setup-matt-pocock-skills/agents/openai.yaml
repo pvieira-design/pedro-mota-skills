@@ -1,0 +1,7 @@
+interface:
+  display_name: "Setup Matt Pocock Skills"
+  short_description: "Configure tracker, triage, and domain docs"
+  default_prompt: "Use $setup-matt-pocock-skills to configure this repository for the engineering skills."
+
+policy:
+  allow_implicit_invocation: false

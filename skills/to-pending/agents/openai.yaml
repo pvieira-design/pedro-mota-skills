@@ -1,0 +1,4 @@
+interface:
+  display_name: "To Pending"
+  short_description: "Record or resolve a deferred loose end"
+  default_prompt: "Use $to-pending to record this deferred item with impact and next step."
