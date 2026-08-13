@@ -116,7 +116,7 @@ This repository is the **Pedro overlay**, while the installer owns the order: pi
 
 ## Overlay catalog
 
-The default Pedro overlay installs exactly these 12 names after the Matt profile:
+The default Pedro overlay installs exactly these 13 names after the Matt profile:
 
 - `code-review`
 - `grill-with-docs`
