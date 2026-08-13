@@ -1,70 +1,48 @@
 ---
 name: to-tickets
-description: Publish an approved docs/plans implementation plan as one non-executable tracking issue plus blocked tracer-bullet child tickets, after proving every plan criterion belongs to exactly one ticket and the user approves the decomposition.
-disable-model-invocation: true
+description: Decompose an approved GitHub `spec` issue into executable tracer-bullet child issues with exact criterion ownership and native dependencies. Use when the user explicitly asks to publish tickets from a spec; reject conversations, grills, Wayfinder maps and local plans.
 ---
 
 # To Tickets
 
-Turn one **approved implementation plan** into the configured tracker queue. In repositories using Pedro's docs structure, refuse to publish from a loose conversation, a thin tracker spec or an undecided plan. Return to `grill-with-docs`, `wayfinder` or `to-plan` first.
+Turn one approved `spec` into its executable queue. The user's explicit request to create or publish tickets authorizes the tracker mutations and the decomposition choices; do not add an intermediate approval ritual.
 
-The tracker and label protocol must exist in `docs/agents/issue-tracker.md`, `triage-labels.md` and `workflow-labels.md`. Run `setup-matt-pocock-skills` if they are missing.
+## 1. Validate the source
 
-## 1. Read the contract
+Require the URL or number of an open, unassigned issue labelled `spec` and carrying no `ready-*` label. Read its full body and comments, repository instructions, tracker protocol, linked durable docs and current code anchors.
 
-Read root instructions, `docs/agents/engineering-workflow.md`, the full plan, every ADR/feature-doc/learning/pending item it cites and the relevant `docs/system/README.md` topic map. Verify that:
+Refuse every other input: loose conversation, `grill:session`, `wayfinder:map`, Wayfinder decision ticket, local plan or local grill. Stop without mutation if the spec contains a placeholder, contradiction, blocking choice, unverifiable criterion or missing contract.
 
-- the plan status is approved/ready to implement;
-- no decision, placeholder or “TBD” remains;
-- paths, contracts, failure modes, UX states and verification commands are precise;
-- Definition of Done criteria are atomic and verifiable.
+The current session chat and internal Orca messages are approved channels for sensitive values needed by the work. GitHub child issues are external: carry only non-sensitive consequences, guardrails or safe references, never secrets, credentials, PII or raw sensitive payloads.
 
-If the plan fails this gate, identify exact gaps and stop without creating tracker items.
+## 2. Design and self-review the queue
 
-## 2. Draft vertical tracer bullets
+Create one narrow, complete tracer-bullet child per independently verifiable behavior. Each child:
 
-Split the plan into narrow, complete end-to-end slices. Each child:
+- delivers observable end-to-end behavior through the required layers;
+- fits one fresh implementation session;
+- owns a unique subset of the spec's acceptance criteria;
+- declares real blocking edges;
+- includes exact verification commands and invariants;
+- is AFK (`ready-for-agent`) or names the precise HITL checkpoint (`ready-for-human`).
 
-- delivers observable behavior through the required layers;
-- fits one fresh agent context;
-- can remain green when landed;
-- declares native blocking edges;
-- owns a unique subset of the plan's criteria;
-- is AFK (`ready-for-agent`) or declares the exact human checkpoint (`ready-for-human`).
+Use expand → migrate batches → contract only for mechanical wide refactors that cannot land as ordinary vertical slices.
 
-Do not create horizontal “database”, “API”, and “UI” tickets for one behavior. For mechanical wide refactors, use expand → migrate batches → contract, keeping intermediate states valid.
+Before mutation, self-review both directions: **every positive criterion and every negative restriction in the spec belongs to exactly one child's criterion, invariant or explicit out-of-scope boundary, and every child traces to the spec**. Resolve operational choices such as ticket count, titles, boundaries, order and blockers autonomously. Stop only when the spec itself needs a product, scope or architecture decision.
 
-## 3. Coverage gate and approval
+## 3. Publish in two passes
 
-Before any tracker mutation, show:
+Keep the existing spec as the non-executable parent. Do not create a `plan` root.
 
-- root issue title and plan path;
-- each child title, mode, end-to-end delivery and blockers;
-- the exact plan criteria owned by each child;
-- a blocking graph or ordered frontier.
-
-Check both directions: every plan criterion belongs to **exactly one** child, and every child deliverable traces to the plan. Ask the user to approve the decomposition. Iterate until approved.
-
-## 4. Publish in two passes
-
-### Pass A — create
-
-1. Create one root tracking issue labelled `plan`. It points to `docs/plans/<file>.md`, summarizes the destination and lists global completion conditions. It never receives `ready-for-agent`.
-2. Create one issue per child with the template below.
-3. Attach every child to the root using native sub-issue relationships when supported.
-
-### Pass B — wire
-
-After every issue has an identifier, add native blocking relationships. Use a textual `Blocked by` fallback only when the tracker lacks native dependencies. Verify the resulting frontier: open, unassigned AFK children whose blockers are all closed.
-
-## Child template
+1. Create every child and attach it directly to the spec with native sub-issue relationships.
+2. After identifiers exist, add native blocking dependencies. Use textual `Blocked by` only when the tracker lacks native support.
 
 ```markdown
 ## Source of truth
 
-- Plan: `docs/plans/<file>.md` → section <n>
-- Feature docs: `docs/system/feature-<name>.md`
-- ADRs/learnings: <relevant links>
+- Parent spec: #<number> → <section/criteria>
+- Feature docs: <links>
+- ADRs/learnings: <links>
 
 ## What to deliver
 
@@ -72,24 +50,27 @@ After every issue has an identifier, add native blocking relationships. Use a te
 
 ## Mode
 
-AFK | HITL: <exact human checkpoint>
+AFK | HITL: <exact checkpoint>
 
 ## Acceptance criteria
 
-- [ ] <atomic criterion owned only by this ticket>
+- [ ] <atomic criterion owned only by this issue>
 
 ## Verification
 
-- `<focused command>`
-- `<repository-wide required command>`
+- `<exact focused command>`
 
 ## Invariants
 
 - <what must not break or change>
+
+## Blocked by
+
+- <native references or None>
 ```
 
-Be pointer-first: do not paste the full plan, but include enough for selection and proof in a clean session. Paths and symbols are appropriate when they are canonical plan anchors; avoid speculative code snippets.
+Verify the resulting frontier: open, unassigned `ready-for-agent` children with no open blocker. Comment the published coverage summary on the spec.
 
-## 5. Report
+## 4. Report
 
-Return the root and child links by title, their dependency/frontier state, label/mode and criterion coverage count. The next step is one fresh `implement` session per frontier issue.
+Return the spec and child links by title, dependency/frontier state, mode and criterion coverage. The next step is one fresh `implement` session per frontier issue.

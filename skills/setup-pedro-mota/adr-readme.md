@@ -24,4 +24,4 @@ Decisions are often pinned during a `/grill-with-docs` session — it offers to 
 
 ## ADRs
 
-- [`0001-knowledge-base-in-docs.md`](0001-knowledge-base-in-docs.md) — keep the knowledge base structured in `docs/` (system/plans/pendencias/aprendizados + CONTEXT.md + ADRs).
+- [`0001-knowledge-base-in-docs.md`](0001-knowledge-base-in-docs.md) — keep durable knowledge structured across `docs/system/`, `docs/learnings/`, `CONTEXT.md` and ADRs, with future work in GitHub.

@@ -1,4 +1,4 @@
 interface:
   display_name: "To Pending"
-  short_description: "Record or resolve a deferred loose end"
-  default_prompt: "Use $to-pending to record this deferred item with impact and next step."
+  short_description: "Manage deferred work in GitHub Issues"
+  default_prompt: "Use $to-pending to record this deferred item as a GitHub issue labelled pending, including its impact and next step."

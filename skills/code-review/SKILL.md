@@ -1,14 +1,16 @@
 ---
 name: code-review
-description: Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes — Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/PRD asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to "review since X".
+description: Review changes since a fixed point (commit, branch, tag, or merge-base) along two separate axes — Standards (does the diff follow the repository's documented coding standards?) and Spec (does it implement the originating issue, PRD, or spec?). Run both passes sequentially in the current agent. Use when the user wants to review a branch, PR, work-in-progress changes, or asks to "review since X".
 ---
 
-Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
+Review the diff between `HEAD` and a fixed point along two axes:
 
-- **Standards** — does the code conform to this repo's documented coding standards?
-- **Spec** — does the code faithfully implement the originating issue / PRD / spec?
+- **Standards** — does the code conform to this repository's documented coding standards?
+- **Spec** — does the code faithfully implement the originating issue, PRD, or spec?
 
-Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
+Perform the entire review in the current agent. Complete and freeze the Standards findings before opening the spec and beginning the Spec pass. Report the axes separately so one cannot mask the other.
+
+This is Pedro Mota's sequential adaptation of `mattpocock/skills@v1.2.3`.
 
 The issue tracker should have been provided to you — run `/setup-matt-pocock-skills` if `docs/agents/issue-tracker.md` is missing.
 
@@ -16,74 +18,86 @@ The issue tracker should have been provided to you — run `/setup-matt-pocock-s
 
 ### 1. Pin the fixed point
 
-Whatever the user said is the fixed point — a commit SHA, branch name, tag, `main`, `HEAD~5`, etc. If they didn't specify one, ask for it.
+Use the fixed point supplied by the user: a commit SHA, branch, tag, `main`, `HEAD~5`, or equivalent. Ask for it when absent.
 
-Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
+Capture the comparison once:
 
-Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here — not inside two parallel sub-agents.
+```text
+git diff <fixed-point>...HEAD
+git log <fixed-point>..HEAD --oneline
+```
 
-### 2. Identify the spec source
+Confirm that the fixed point resolves with `git rev-parse <fixed-point>` and that the diff is non-empty. Stop on an invalid ref or empty diff.
 
-Look for the originating spec, in this order:
+### 2. Identify the standards sources
 
-1. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.) — fetch via the workflow in `docs/agents/issue-tracker.md`.
-2. A path the user passed as an argument.
-3. A PRD/spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
-4. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
+Find the repository instructions that govern the changed paths, including `AGENTS.md`, `CLAUDE.md`, `CODING_STANDARDS.md`, `CONTRIBUTING.md`, and referenced documentation.
 
-### 3. Identify the standards sources
+Apply the repository's rules first. Also use the smell baseline below when tooling or repository rules do not already settle the point:
 
-Anything in the repo that documents how code should be written, such as `CODING_STANDARDS.md` or `CONTRIBUTING.md`.
+- **Mysterious Name** — a function, variable, or type whose name does not reveal its purpose. Rename it; if no honest name fits, clarify the design.
+- **Duplicated Code** — the same logic shape appears in multiple changed sites. Extract the shared shape when the semantics truly match.
+- **Feature Envy** — a method reaches into another object's data more than its own. Move the behavior toward the data it uses.
+- **Data Clumps** — the same fields or parameters repeatedly travel together. Bundle the domain concept into one type.
+- **Primitive Obsession** — a primitive or string stands in for a domain concept. Give the concept a focused type.
+- **Repeated Switches** — the same branch cascade over the same kind appears repeatedly. Centralize it with polymorphism or one shared map.
+- **Shotgun Surgery** — one logical change requires scattered edits. Gather the behavior into one module.
+- **Divergent Change** — one module changes for unrelated reasons. Separate those responsibilities.
+- **Speculative Generality** — abstractions, parameters, or hooks serve no current requirement. Remove them until a real need exists.
+- **Message Chains** — callers navigate long object chains. Hide the traversal behind a focused method.
+- **Middle Man** — a function or class mainly delegates onward. Call the real target directly.
+- **Refused Bequest** — an implementer ignores most inherited behavior. Prefer composition.
 
-On top of whatever the repo documents, the Standards axis always carries the **smell baseline** below — a fixed set of Fowler code smells (_Refactoring_, ch.3) that applies even when a repo documents nothing. Two rules bind it:
+Repository standards override the baseline. Treat baseline smells as judgement calls, not hard violations, and skip findings that automated tooling already enforces.
 
-- **The repo overrides.** A documented repo standard always wins; where it endorses something the baseline would flag, suppress the smell.
-- **Always a judgement call.** Each smell is a labelled heuristic ("possible Feature Envy"), never a hard violation — and, like any standard here, skip anything tooling already enforces.
+### 3. Complete the Standards pass
 
-Each smell reads *what it is* → *how to fix*; match it against the diff:
+Read every changed file and relevant hunk using the pinned diff. Account for the repository rules and the smell baseline across the whole diff.
 
-- **Mysterious Name** — a function, variable, or type whose name doesn't reveal what it does or holds. → rename it; if no honest name comes, the design's murky.
-- **Duplicated Code** — the same logic shape appears in more than one hunk or file in the change. → extract the shared shape, call it from both.
-- **Feature Envy** — a method that reaches into another object's data more than its own. → move the method onto the data it envies.
-- **Data Clumps** — the same few fields or params keep travelling together (a type wanting to be born). → bundle them into one type, pass that.
-- **Primitive Obsession** — a primitive or string standing in for a domain concept that deserves its own type. → give the concept its own small type.
-- **Repeated Switches** — the same `switch`/`if`-cascade on the same type recurs across the change. → replace with polymorphism, or one map both sites share.
-- **Shotgun Surgery** — one logical change forces scattered edits across many files in the diff. → gather what changes together into one module.
-- **Divergent Change** — one file or module is edited for several unrelated reasons. → split so each module changes for one reason.
-- **Speculative Generality** — abstraction, parameters, or hooks added for needs the spec doesn't have. → delete it; inline back until a real need shows.
-- **Message Chains** — long `a.b().c().d()` navigation the caller shouldn't depend on. → hide the walk behind one method on the first object.
-- **Middle Man** — a class or function that mostly just delegates onward. → cut it, call the real target direct.
-- **Refused Bequest** — a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
+For each finding:
 
-### 4. Spawn both sub-agents in parallel
+- cite the changed file and hunk or line;
+- cite the repository rule when it is a documented violation;
+- name the smell when it is a baseline judgement call;
+- explain the concrete risk and smallest useful correction.
 
-Send a single message with two `Agent` tool calls. Use the `general-purpose` subagent for both.
+Freeze the Standards findings when every changed file and applicable rule has been considered. Keep the pass under 400 words.
 
-**Standards sub-agent prompt** — include:
+### 4. Identify the spec and complete the Spec pass
 
-- The full diff command and commit list.
-- The list of standards-source files you found in step 3, **plus the smell baseline from step 3** pasted in full — the sub-agent has no other access to it.
-- The brief: "Report — per file/hunk where relevant — (a) every place the diff violates a documented standard: cite the standard (file + the rule); and (b) any baseline smell you spot: name it and quote the hunk. Distinguish hard violations from judgement calls — documented-standard breaches can be hard, but baseline smells are always judgement calls, and a documented repo standard overrides the baseline. Skip anything tooling enforces. Under 400 words."
+Only after freezing Standards, locate the originating spec in this order:
 
-**Spec sub-agent prompt** — include:
+1. GitHub issue references in commit messages (`#123`, `Closes #45`, and equivalents), fetched through `docs/agents/issue-tracker.md`;
+2. a path supplied by the user;
+3. a PRD or spec under `docs/` or `specs/` matching the branch or feature;
+4. the user's confirmation that no spec exists.
 
-- The diff command and commit list.
-- The path or fetched contents of the spec.
-- The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
+When the source is ambiguous, ask which source governs the change. When no spec exists, mark this axis as unavailable instead of inventing requirements.
 
-If the spec is missing, skip the Spec sub-agent and note this in the final report.
+Map every stated requirement to the diff and account for changed behavior that has no matching requirement. Report:
 
-### 5. Aggregate
+- requirements that are missing or partial;
+- behavior outside the requested scope;
+- implementation that appears present but contradicts the requirement.
 
-Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings — the two axes are deliberately separate (see _Why two axes_).
+Quote or precisely cite the governing requirement for every finding. Freeze the Spec findings when every requirement and every changed behavior has been accounted for. Keep the pass under 400 words.
 
-End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes — that's the reranking the separation exists to prevent.
+### 5. Report
+
+Present the frozen findings under `## Standards` and `## Spec`. Preserve the separation and severity within each axis.
+
+End with one line containing:
+
+- the finding count for each axis;
+- the worst finding within each axis, when present.
+
+Do not choose one winner across the two axes.
 
 ## Why two axes
 
 A change can pass one axis and fail the other:
 
-- Code that follows every standard but implements the wrong thing → **Standards pass, Spec fail.**
-- Code that does exactly what the issue asked but breaks the project's conventions → **Spec pass, Standards fail.**
+- code that follows every standard but implements the wrong behavior passes Standards and fails Spec;
+- code that implements the requested behavior but breaks repository conventions passes Spec and fails Standards.
 
-Reporting them separately stops one axis from masking the other.
+Separate reporting keeps both failures visible.

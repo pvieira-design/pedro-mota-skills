@@ -28,6 +28,6 @@ How the **code and skeleton** of this project are built — the **current** stat
 
 ## Sibling folders
 
-- [`../plans/`](../plans/README.md) — **work plans** (what we're going to do; future). Create with `/to-plan`.
-- [`../pending/`](../pending/README.md) — **loose ends** to revisit (don't forget). Record with `/to-pending`.
+- GitHub Issues labelled `spec` — **approved future work**. Publish with `/to-spec` and decompose with `/to-tickets`.
+- GitHub Issues labelled `pending` — **loose ends** to revisit outside the execution frontier. Record with `/to-pending`.
 - [`../learnings/`](../learnings/README.md) — **lessons** from mistakes already made (don't repeat).

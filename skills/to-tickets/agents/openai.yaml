@@ -1,7 +1,7 @@
 interface:
   display_name: "To Tickets"
-  short_description: "Split approved work into blocked tracer tickets"
-  default_prompt: "Use $to-tickets to decompose the approved plan into executable tracer tickets."
+  short_description: "Publish executable children from a spec"
+  default_prompt: "Use $to-tickets to decompose the approved GitHub spec into executable child issues."
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Improve Codebase Architecture"
+  short_description: "Manually audit deep-module opportunities"
+  default_prompt: "Audit the requested codebase area for evidence-backed deep-module refactors. Remain read-only and rank the best candidates."
+
+policy:
+  allow_implicit_invocation: false

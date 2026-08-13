@@ -1,93 +1,98 @@
 ---
 name: to-pending
-description: Record a PENDING ITEM (a loose end to revisit — deferred edge case, postponed decision, TODO, tech debt, open question) as a detailed doc under docs/pending/, following best practices (self-sufficient, with why + impact + next step). Also resolves/archives completed pending items. Use when something is left pending mid-work ("we'll look at it later", "left pending", "don't forget to", "note this pending item"), or to mark a pending item as resolved.
+description: Record a deferred loose end as a GitHub issue labelled `pending`, or resume/resolve an existing pending issue. Use when work is deliberately postponed, an edge case or debt must not be forgotten, the user says to revisit something later, or asks to resume or close a pending item.
 ---
 
-This skill has **two modes**. Decide by the argument:
+Manage deferred work in GitHub Issues. A pending item is an open issue labelled `pending`, without an assignee or any `ready-*` label. It is remembered but remains outside the execution frontier.
 
-- Argument starts with `done` (or `resolved`/`finish`) → **RESOLVE mode**.
-- Anything else (including no argument) → **RECORD mode**.
+This skill writes to GitHub. Run it only when the user explicitly asks to record, resume, or resolve deferred work, or explicitly confirms that a stated deferral should be recorded.
 
-First, find today's date (`date +%F`) and confirm the `docs/pending/` folder (if it doesn't exist, suggest running `/setup-pedro-mota`, which creates the whole structure).
+The current session chat and internal Orca messages are approved channels for sensitive values needed by the task. GitHub is external: a pending issue may contain only non-sensitive consequences or safe references, never secrets, credentials, PII or raw sensitive payloads. Do not block or invent an indirect handoff merely because the value must move between the two approved channels.
 
----
+Choose the mode from the argument:
 
-## RECORD mode — detail the pending item
+- `resume <issue>` or `promote <issue>` → **RESUME**;
+- `done <issue>` or `resolve <issue>` → **RESOLVE**;
+- anything else → **RECORD**.
 
-The goal is to capture a loose end **before it's forgotten**, detailed enough that "future-you" (or another agent) can pick it up **without this conversation's context**. A one-word TODO isn't enough.
+## Grounding
 
-### 1. Identify the pending item
+1. Confirm the repository with `gh repo view --json nameWithOwner` and infer it from the current checkout.
+2. Confirm GitHub authentication with a read operation.
+3. Read `docs/agents/issue-tracker.md` when present and follow its repository-specific conventions.
+4. Confirm the `pending` label exists. If absent, create it with color `D4C5F9` and description `Deferred loose end to revisit; not ready for execution`. If the existing label has an incompatible meaning, stop and ask before changing it.
 
-Use the argument (if any) and what was said in this conversation. If several things were left pending, **one per file** — record each. If it's vague, ask 1-2 short questions to nail the scope (never invent impact or reason).
+There is no markdown fallback. If GitHub is unavailable, report the blocker without writing under `docs/pending/`.
 
-### 2. Name and location
+## RECORD
 
-`docs/pending/YYYY-MM-DD-short-title.md` (today's date + slug of the title). Follow the repo's `docs/pending/README.md` if it differs.
+### 1. Define one loose end
 
-### 3. Detail it following best practices
+Use the request and conversation context to identify exactly one deferred item. For multiple independent items, create one issue per item. Ask a short question only when the scope, reason, or impact cannot be recovered safely.
 
-Use the repo's template (`docs/pending/_template.md`) or these sections. **Each pending item must be self-sufficient and actionable**:
+### 2. Avoid duplicates
 
-1. **What's pending** — exactly what's left to do/decide. Concrete, not vague ("handle the X error when Y" > "improve errors").
-2. **Why it was deferred** — the reason for postponing (out of scope, dependency, missing decision, time).
-3. **Impact / risk if left untouched** — what hurts if no one picks it up (latent bug, growing debt, affected user) + urgency.
-4. **Suggested next step** — how to pick it up: which file to open, which question to answer, who decides.
-5. **Related** — real links: `docs/system/feature-*.md`, plan, ADR, issue, commit, code (`path:line`).
+Search open `pending` issues and other open issues for the same responsibility. When an equivalent issue exists, add missing context as a comment and return its URL instead of creating another issue.
 
-At the top: `## Date: YYYY-MM-DD · Area: <feature> · Priority: <high|medium|low>`.
+### 3. Create a self-sufficient issue
 
-Principles (backlog/issue best practices): specific and context-free · capture the *why and the impact*, not just the "what" · actionable · linked · dated and prioritized · one item per file. **Don't duplicate** what's already in plans/ADRs/feature-docs — reference it.
+Use a concrete title without a `[Pending]` prefix; the label carries the state. Create the issue with only the `pending` label. Do not assign it or add `ready-for-agent`, `ready-for-human`, `needs-triage`, `plan`, or `spec`.
 
-### 4. Update the index
+Use this body:
 
-Add the pending item to the `docs/pending/README.md` list (link + 1 sentence + priority).
+```markdown
+## O que ficou pendente
 
-### 5. Close out
+<concrete loose end>
 
-State the created path. If the pending item is big enough to become a **plan** (`/to-plan`) or is already ready to be **prioritized work** (an issue in the tracker), point that out as the graduation path — but the lightweight record here already ensures it's not lost.
+## Por que foi adiado
 
----
+<scope, dependency, missing decision, or timing reason>
 
-## RESOLVE mode — mark a pending item as resolved
+## Impacto se continuar pendente
 
-Argument: `done <file-or-slug>`.
+<affected behavior, risk, and urgency>
 
-### 1. Locate
+## Próximo passo sugerido
 
-Search `docs/pending/` (outside `done/`) for the matching file. Ambiguous → list and ask. No argument → list the open pending items and ask which one.
+<first action, file, question, or owner needed to resume>
 
-### 2. Record how it was resolved
+## Referências
 
-At the top of the file, add: `> ✅ **Resolved on YYYY-MM-DD** — <how> (implemented / became [plan X] / became issue #N / no longer applies).` Be honest: if "resolved" because it stopped making sense, say so.
+<issue, ADR, feature doc, commit, or code paths>
 
-### 3. Move to `done/`
+## Registro
 
-- Create `docs/pending/done/` if needed.
-- `git mv docs/pending/<file> docs/pending/done/<file>` (preserves history). Outside git, `mv`.
+- Data: YYYY-MM-DD
+- Área: <feature/domain>
+- Prioridade: <alta|média|baixa>
+```
 
-### 4. Update the index
+Every section must contain useful, verified context. Reference canonical docs instead of copying them.
 
-Remove the pending item from the open list in `docs/pending/README.md` (move it to a "Resolved" section or remove it, per the README).
+### 4. Verify and report
 
-### 5. Chain
+Read the created issue back. Completion means it is open, has exactly the intended body, carries `pending`, has no assignee, and has no `ready-*` label. Return its number and URL.
 
-If the resolution was to **do** something, remember to `/sync-doc` the feature. If it **became a plan**, create it with `/to-plan`. If there was a lesson, record it in `docs/learnings/`.
+## RESUME
 
----
+1. Resolve the issue number from the argument. When absent, list open issues labelled `pending` and ask which one.
+2. Read the issue and comments. Require it to be open and labelled `pending`.
+3. Comment with the reason it is being resumed and the immediate next triage question or action.
+4. Remove `pending` and add `needs-triage`. Create `needs-triage` only when missing and when repository conventions do not map that role to another label.
+5. Leave it unassigned and without `ready-*`; normal triage decides its next state.
+6. Read it back and report the URL.
 
-## Notes
+## RESOLVE
 
-- This skill **implements nothing** — it only records (RECORD) or archives (RESOLVE) the pending item.
-- `git add` **explicitly** the files you created/moved (never `git add -A` — there may be other sessions in the same checkout). Don't commit unless asked.
+1. Resolve the issue number from the argument. When absent, list open issues labelled `pending` and ask which one.
+2. Read the issue and comments. Require it to be open and labelled `pending`.
+3. Add a resolution comment stating whether it was implemented elsewhere, superseded, duplicated, or no longer applies, with evidence or links.
+4. Close the issue. Keep the `pending` label as historical classification.
+5. Read it back and verify that it is closed, then report the URL.
 
-## Related skills (the ecosystem)
+## Boundaries
 
-`/to-pending` is the lightweight "don't forget" layer. Neighbors:
-
-- **`/setup-pedro-mota`** — creates `docs/pending/` and the whole structure. Run it first if the folder doesn't exist.
-- **`/to-plan`** — when a pending item grows and becomes a feature to plan, promote it to a plan in `docs/plans/`.
-- **`/sync-doc`** — when the pending item is resolved by writing code, sync the living doc.
-- **Issue tracker / `/triage`** — when the pending item is prioritized to be worked on, graduate it to a formal issue.
-- **`docs/learnings/`** — if the pending item existed because of a mistake, record the lesson there.
-
-Quick distinction: **pending** = loose end to revisit (light); **plan** = feature to execute (complete); **issue** = prioritized/triaged work; **lesson** = mistake not to repeat.
+- Record only; do not implement the deferred work in RECORD mode.
+- Keep durable vocabulary in `CONTEXT.md`, architectural decisions in ADRs, present behavior in `docs/system/`, and recurring traps in `docs/learnings/`.
+- Treat the existing `docs/pending/` tree as historical archive. Do not create, move, or index files there.

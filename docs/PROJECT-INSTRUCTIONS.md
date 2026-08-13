@@ -24,10 +24,10 @@ Claude Code officially recommends importing `AGENTS.md` this way when a reposito
 | Current feature behavior and code paths | `docs/system/feature-*.md` | Living technical source of truth |
 | Domain vocabulary | `CONTEXT.md` | One canonical language |
 | Hard-to-reverse rationale | `docs/adr/` | Durable “why” |
-| Approved future work | `docs/plans/` | Executable contract, not current state |
-| Deferred loose end | `docs/pending/` | Does not disappear |
+| Approved future work | GitHub issue labelled `spec` | Executable contract, not current state |
+| Deferred loose end | GitHub issue labelled `pending` | Does not disappear or enter execution before triage |
 | Non-obvious recurring trap | `docs/learnings/` | Prevents repeated mistakes |
-| Standalone grilling Q&A | `docs/grills/` | Auxiliary session trail only |
+| Standalone grilling Q&A | GitHub issue `grill:session` | Live checkpoint + chronological comments |
 
 ## Keep startup instructions effective
 
@@ -49,8 +49,8 @@ An installed project should make these points obvious in `AGENTS.md`:
 2. `docs/` artifact roles;
 3. the hard grounding gate before grilling, Wayfinder or code;
 4. standalone grills vs Wayfinder tracker trail;
-5. approved plan → tickets → one issue per implementation session;
-6. `sync-doc`, `to-plan done`, pending and learning closure rules;
+5. approved spec → tickets → one issue per implementation session;
+6. `sync-doc`, tracker proof, pending and learning closure rules;
 7. concurrency, commit and push policy;
 8. tracker and label docs under `docs/agents/`.
 

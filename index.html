@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pedro Mota Skills — Claude Code + Codex</title>
-  <meta name="description" content="Cross-agent engineering skills: docs-first decisions, approved plans, issue queues and verified implementation for Claude Code and Codex.">
+  <meta name="description" content="Cross-agent engineering skills: docs-first decisions, approved GitHub specs, issue queues and verified implementation for Claude Code and Codex.">
   <style>
     :root {
       color-scheme: light dark;
@@ -82,12 +82,11 @@
 
   <main class="wrap">
     <section id="install">
-      <h2>One global install, two agents</h2>
-      <pre>npx skills add pvieira-design/pedro-mota-skills \
-  --global \
-  --agent codex claude-code \
-  --skill '*' \
-  --yes</pre>
+      <h2>One explicit profile, two agents</h2>
+      <pre>git clone https://github.com/pvieira-design/pedro-mota-skills.git
+cd pedro-mota-skills
+./scripts/install-engineering-core.sh &lt;published-commit-sha&gt;</pre>
+      <p>The installer pins Matt's 24-skill profile at <code>v1.2.3</code>, then applies 13 Pedro workflow overlays from an immutable published revision. It never installs all skills implicitly.</p>
       <table>
         <thead>
           <tr><th scope="col">Scope</th><th scope="col">Claude Code</th><th scope="col">Codex</th></tr>
@@ -118,7 +117,7 @@
       <ol>
         <li>Read <code>docs/system/README.md</code> and its topic map.</li>
         <li>Read the target and complementary feature-docs.</li>
-        <li>Read relevant vocabulary, ADRs, learnings, plans and pending items.</li>
+        <li>Read relevant vocabulary, ADRs, learnings, specs/tickets and GitHub issues labelled pending.</li>
         <li>State facts, existing seams and genuine unknowns.</li>
         <li>Ask the human only for decisions the repository cannot answer.</li>
       </ol>
@@ -129,15 +128,15 @@
       <h2>The correct flow</h2>
       <div class="flow">
         <div><strong>Grill / Wayfinder</strong><span>Close decisions at the right scale.</span></div>
-        <div><strong>to-plan</strong><span>Write the AFK-ready contract.</span></div>
-        <div><strong>to-tickets</strong><span>Approve vertical children and blockers.</span></div>
+        <div><strong>to-spec</strong><span>Publish the approved GitHub contract.</span></div>
+        <div><strong>to-tickets</strong><span>Publish self-reviewed vertical children and blockers.</span></div>
         <div><strong>implement</strong><span>Claim one frontier issue in a clean session.</span></div>
         <div><strong>Verify</strong><span>TDD, checks, sync-doc and review.</span></div>
-        <div><strong>Close</strong><span>Evidence, plan done, pending and learnings.</span></div>
+        <div><strong>Close</strong><span>Evidence, tracker closure, GitHub pending issues and learnings.</span></div>
       </div>
       <div class="grid">
-        <div class="card"><h3>Standalone grill</h3><p>Creates one timestamped <code>docs/grills/</code> file before its first question and updates it live.</p></div>
-        <div class="card"><h3>Wayfinder</h3><p>Uses its tracker map, decision tickets and resolution comments as the trail. It creates no duplicate local grill.</p></div>
+        <div class="card"><h3>Standalone grill</h3><p>Creates a <code>grill:session</code> issue before its first substantive question. The body is the live checkpoint; comments preserve every round against compaction.</p></div>
+        <div class="card"><h3>Wayfinder</h3><p>Uses its tracker map, decision tickets and resolution comments as the trail. Neither path creates a local grill.</p></div>
         <div class="card"><h3>Feature memory</h3><p>Lives in <code>docs/system/</code>, <code>CONTEXT.md</code> and ADRs — never in the raw session transcript.</p></div>
       </div>
       <p><a href="docs/WORKFLOW.md">Read every gate and state transition →</a></p>
@@ -145,7 +144,7 @@
 
     <section id="labels">
       <h2>Tracker protocol</h2>
-      <p>The setup verifies and creates only missing labels. Wayfinder needs <code>wayfinder:map</code>, <code>wayfinder:research</code>, <code>wayfinder:prototype</code>, <code>wayfinder:grilling</code> and <code>wayfinder:task</code>. The implementation queue also uses <code>plan</code>, <code>spec</code>, <code>ready-for-agent</code>, <code>ready-for-human</code>, <code>needs-info</code>, <code>needs-triage</code> and <code>wontfix</code>.</p>
+      <p>The setup verifies and creates only missing labels. Standalone grills use <code>grill:session</code> + <code>ready-for-human</code>. Wayfinder needs <code>wayfinder:map</code>, <code>wayfinder:research</code>, <code>wayfinder:prototype</code>, <code>wayfinder:grilling</code> and <code>wayfinder:task</code>. The implementation queue also uses <code>spec</code>, <code>ready-for-agent</code>, <code>needs-info</code>, <code>needs-triage</code> and <code>wontfix</code>.</p>
       <p>Labels are operational state. The detailed decisions and current technical truth remain in repository docs.</p>
     </section>
 
@@ -153,8 +152,9 @@
       <h2>How Pedro and Matt connect</h2>
       <div class="grid">
         <div class="card"><h3>Matt's primitives</h3><p>Wayfinder, grilling, domain modeling, research, prototype, tracer tickets, implementation, TDD, code review and triage.</p></div>
-        <div class="card"><h3>Pedro's lifecycle</h3><p>Living system docs, plans, pending items, learnings, hard grounding, cross-agent instructions and evidence-based closure.</p></div>
+        <div class="card"><h3>Pedro's lifecycle</h3><p>Living system docs, GitHub specs and pending issues, learnings, hard grounding, cross-agent instructions and evidence-based closure.</p></div>
         <div class="card"><h3>Curated adaptations</h3><p>Same-named Matt skills in this bundle include Pedro-specific behavior. Do not install another copy over them.</p></div>
+        <div class="card"><h3>Manual architecture audit</h3><p><code>improve-codebase-architecture</code> remains installed but only runs when explicitly invoked.</p></div>
       </div>
       <p><a href="NOTICE.md">Exact provenance and adaptation policy →</a></p>
     </section>

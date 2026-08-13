@@ -1,7 +1,7 @@
 interface:
   display_name: "Wayfinder"
   short_description: "Map a large foggy effort into decisions"
-  default_prompt: "Use $wayfinder to chart this large effort toward an AFK-ready plan."
+  default_prompt: "Use $wayfinder to chart this large effort toward a decision-complete GitHub spec."
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

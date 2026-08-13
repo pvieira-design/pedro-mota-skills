@@ -20,4 +20,4 @@
 
 ## Related
 
-- <link to the affected docs/system/feature-*.md, plan, ADR, commit — if any>
+- <link to the affected docs/system/feature-*.md, GitHub spec/issue, ADR, commit — if any>

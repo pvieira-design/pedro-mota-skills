@@ -15,31 +15,37 @@ Codex scans repository `.agents/skills` and user `~/.agents/skills`. If both con
 
 Official references: [Codex skills](https://learn.chatgpt.com/docs/build-skills.md) and [Claude Code skills](https://code.claude.com/docs/en/skills).
 
-## Global install from GitHub
-
-```bash
-npx skills add pvieira-design/pedro-mota-skills \
-  --global \
-  --agent codex claude-code \
-  --skill '*' \
-  --yes
-```
-
-The important flag is `--global`. Running inside a Git repository without it installs a project copy.
-
-## Global install from a local clone
-
-Useful while developing this bundle:
+## Reproducible engineering-core install
 
 ```bash
 git clone https://github.com/pvieira-design/pedro-mota-skills.git
 cd pedro-mota-skills
-npx skills add . \
-  --global \
+./scripts/install-engineering-core.sh <published-40-character-commit-sha>
+```
+
+The script installs exactly two ordered profiles:
+
+1. 24 approved Matt skills from immutable tag `mattpocock/skills@v1.2.3`;
+2. 13 Pedro-owned or adapted overlays from the immutable commit passed as the argument.
+
+Both commands use `--global`, `--agent codex claude-code` and explicit skill names. There is no `--skill '*'` default profile.
+
+## Project-scoped development fixture
+
+Useful only while developing and validating this overlay before publication. Run it from a temporary directory, pointing at the clone:
+
+```bash
+skills_fixture_dir="$(mktemp -d)"
+cd "$skills_fixture_dir"
+npx skills add /path/to/pedro-mota-skills \
   --agent codex claude-code \
-  --skill '*' \
+  --skill code-review grill-with-docs handoff implement \
+    improve-codebase-architecture research setup-matt-pocock-skills \
+    setup-pedro-mota sync-doc to-pending to-spec to-tickets wayfinder \
   --yes
 ```
+
+That command installs a project-scoped fixture because it intentionally omits `--global`; do not use a dirty local checkout as team distribution proof.
 
 ## Verify
 
@@ -61,6 +67,13 @@ For this reusable bundle, the project list should not repeat the same names show
 
 In Claude Code, use `/skills` to inspect sources. In Codex, use `/skills` or type `$` in the composer. Newly changed skills are normally detected live; restart the app if a stale selector remains.
 
+### Workflow invocation policy
+
+- Model or user invoked: `grill-with-docs`, `wayfinder`, `to-tickets`.
+- User invoked only: `to-spec`, `implement`, `improve-codebase-architecture`, `setup-pedro-mota`, `setup-matt-pocock-skills`.
+
+Implicit discovery does not bypass operational gates: grill/Wayfinder wait for confirmation, and `to-tickets` publishes only after an explicit user request.
+
 ## Fix duplicate Personal + Project entries
 
 First prove the overlap:
@@ -74,10 +87,10 @@ If the project versions are identical to the global versions and are not intenti
 
 ```bash
 npx skills remove \
-  code-review codebase-design diagnose domain-modeling \
+  code-review codebase-design diagnose domain-modeling improve-codebase-architecture \
   grill-with-docs grilling handoff implement prototype research \
   setup-matt-pocock-skills setup-pedro-mota sync-doc tdd \
-  to-pending to-plan to-spec to-tickets triage wayfinder \
+  to-pending to-spec to-tickets triage wayfinder \
   --yes
 ```
 
@@ -98,26 +111,21 @@ Install under `.agents/skills` only when a skill is genuinely repo-specific or t
 
 If a project-scoped version intentionally replaces a global one, do not leave both active under the same frontmatter `name`.
 
-## Do not stack the Matt package over this bundle
+## Preserve the overlay order
 
-This distribution already contains a curated snapshot of Matt Pocock's skills, including Pedro-specific adaptations to grounding, labels and execution. Installing `mattpocock/skills` afterward can replace same-named skills and remove those adaptations.
+The explicit installer intentionally starts from Matt v1.2.3 and then replaces only the adapted names with Pedro's revision. Installing Matt again afterward can replace those names and remove the workflow adaptations.
 
-Choose one:
-
-- install this full distribution; or
-- install Matt's upstream package and manually add only Pedro-only skills, accepting a different workflow.
-
-The documented workflow assumes the first option.
+Re-run `install-engineering-core.sh <same-or-new-published-sha>` when repairing provenance. Do not improvise the order or add all 35 upstream skills.
 
 ## Update
 
-For a GitHub-installed bundle:
+Because the engineering core is pinned, updating to a new Pedro revision is an explicit reinstall with the new published SHA:
 
 ```bash
-npx skills update --global
+./scripts/install-engineering-core.sh <new-published-40-character-commit-sha>
 ```
 
-Then rerun the audit and inspect the changelog/diff. When updating the vendored Matt snapshot in this repository, reapply Pedro adaptations deliberately and validate every skill before publishing.
+Then rerun the audit and inspect the changelog/diff. `npx skills update --global` only refreshes each skill at its recorded ref; it does not choose a new immutable Pedro revision for the team. When updating the pinned Matt version in this repository, reapply Pedro adaptations deliberately and validate every skill before publishing.
 
 ## Bootstrap each repository
 

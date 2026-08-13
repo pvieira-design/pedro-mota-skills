@@ -1,7 +1,7 @@
 interface:
   display_name: "Grill With Docs"
-  short_description: "Interrogate plans and update domain docs"
-  default_prompt: "Use $grill-with-docs to close the decisions in this plan without implementing it."
+  short_description: "Close decisions in a tracker-backed grill"
+  default_prompt: "Use $grill-with-docs to close this bounded decision work in a compaction-safe GitHub grill issue."
 
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true

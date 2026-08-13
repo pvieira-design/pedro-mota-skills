@@ -1,75 +1,79 @@
 ---
 name: to-spec
-description: Turn the current conversation into a spec and publish it to the project issue tracker — no interview, just synthesis of what you've already discussed.
+description: Publish a decision-complete standalone grill or resolved Wayfinder map as a self-contained, non-executable GitHub `spec` issue. Reads the complete tracker history and does not interview or rely on chat memory.
 disable-model-invocation: true
 ---
 
-This skill takes the current conversation context and codebase understanding and produces a spec (you may know this document as a PRD). Do NOT interview the user — just synthesize what you already know.
+# To Spec
 
-The issue tracker and triage label vocabulary should have been provided to you — run `/setup-matt-pocock-skills` if not.
+Turn a completed tracker-backed decision process into the implementation contract. This is synthesis, not another interview.
 
-## Process
+## 1. Require a source issue
 
-1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the project's domain glossary vocabulary throughout the spec, and respect any ADRs in the area you're touching.
+Require the URL or number of exactly one source:
 
-2. Sketch out the seams at which you're going to test the feature. Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can. The fewer seams across the codebase, the better - the ideal number is one.
+- a standalone issue labelled `grill:session`; or
+- a Wayfinder issue labelled `wayfinder:map`.
 
-Check with the user that these seams match their expectations.
+Refuse a loose conversation, local plan, local grill file or untracked summary. The source issue is the recovery boundary after compaction.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+## 2. Read the complete history
 
-<spec-template>
+Read repository instructions and the configured tracker docs. Fetch the source body, every comment and every linked artifact.
 
-## Problem Statement
+For a Wayfinder map, also read every resolved child decision ticket and its resolution comments. Stop if any child decision remains open, fog remains unresolved or the destination is not ready to specify.
 
-The problem that the user is facing, from the user's perspective.
+Ground the synthesis in `docs/system/README.md`, target and complementary feature docs, `CONTEXT.md`, ADRs, learnings and related pending issues. Use current code only to verify facts and exact anchors.
 
-## Solution
+The current session chat and internal Orca messages are approved channels for sensitive values needed by the work. The GitHub spec is external: preserve only non-sensitive consequences or safe references, never secrets, credentials, PII or raw sensitive payloads. Do not invent a redaction ceremony between the two approved channels.
 
-The solution to the problem, from the user's perspective.
+## 3. Completeness gate
 
-## User Stories
+Do not publish while any executor-facing choice remains. The source must settle:
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+- problem, expected outcome, scope and non-goals;
+- product, architecture and data decisions;
+- exact contracts, permissions, required fields, failure modes and invariants;
+- frontend layout, actions, states and edge states when applicable;
+- public test seams, verification commands and observable acceptance criteria;
+- risks, discarded alternatives and prohibited behavior.
 
-1. As an <actor>, I want a <feature>, so that <benefit>
+If anything is missing or contradictory, comment the exact gaps on the source issue and stop. Do not fill them from inference or ask a new interview inside this skill.
 
-<user-story-example>
-1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
-</user-story-example>
+## 4. Publish the parent contract
 
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+Create one unassigned issue labelled only `spec` among workflow/state labels. Never apply `ready-for-agent` or `ready-for-human` to the spec.
 
-## Implementation Decisions
+```markdown
+## Origin
 
-A list of implementation decisions that were made. This can include:
+- Decision trail: <source issue link>
 
-- The modules that will be built/modified
-- The interfaces of those modules that will be modified
-- Technical clarifications from the developer
-- Architectural decisions
-- Schema changes
-- API contracts
-- Specific interactions
+## Problem
 
-Do NOT include specific file paths or code snippets. They may end up being outdated very quickly.
+## Expected outcome
 
-Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts — not a working demo, just the important bits.
+## Scope
 
-## Testing Decisions
+## Non-goals
 
-A list of testing decisions that were made. Include:
+## Decisions and exact technical contracts
 
-- A description of what makes a good test (only test external behavior, not implementation details)
-- Which modules will be tested
-- Prior art for the tests (i.e. similar types of tests in the codebase)
+## Frontend flow and states
 
-## Out of Scope
+## Invariants and failure modes
 
-A description of the things that are out of scope for this spec.
+## Testing decisions and verification
 
-## Further Notes
+## Risks and discarded alternatives
 
-Any further notes about the feature.
+## Acceptance criteria
 
-</spec-template>
+- [ ] <atomic, observable criterion>
+```
+
+Use exact repository paths and symbols when they are stable contract anchors. The issue must be sufficient for `to-tickets` and a clean implementation session without reading the original chat.
+
+## 5. Close the decision trail
+
+After the spec exists, comment its link on the source issue and close the completed grill or Wayfinder map. Return the spec link and state that the next step is `to-tickets`.

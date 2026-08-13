@@ -1,4 +1,0 @@
-interface:
-  display_name: "To Plan"
-  short_description: "Turn closed decisions into an executable plan"
-  default_prompt: "Use $to-plan to write the confirmed decisions as an AFK-ready implementation plan."

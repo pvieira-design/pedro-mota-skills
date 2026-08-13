@@ -1,6 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: Configure this repo for the engineering skills — set up its issue tracker, required workflow and triage labels, domain doc layout, and shared AGENTS.md/CLAUDE.md bridge. Run once before first use of the other engineering skills.
+description: Configure a GitHub repository for the engineering skills — verify its workflow and triage labels, domain doc layout, and shared AGENTS.md/CLAUDE.md bridge. Run once before first use of the other engineering skills.
 disable-model-invocation: true
 ---
 
@@ -8,12 +8,14 @@ disable-model-invocation: true
 
 Scaffold the per-repo configuration that the engineering skills assume:
 
-- **Issue tracker** — where issues live (GitHub by default; local markdown is also supported out of the box)
+- **Issue tracker** — GitHub Issues, the operational queue used by this distribution
 - **Triage labels** — the strings used for the five canonical triage roles
-- **Workflow labels** — the fixed labels used by Wayfinder and the plan/spec queue
+- **Workflow labels** — the fixed labels used by Wayfinder, specs and deferred work
 - **Domain docs** — where `CONTEXT.md` and ADRs live, and the consumer rules for reading them
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
+
+The current session chat and internal Orca messages are approved channels for sensitive values needed by setup. GitHub, generated repository files, commits, publishable patches and public logs are external: write only non-sensitive configuration consequences or safe references, never secrets, credentials, PII or raw sensitive payloads.
 
 ## Process
 
@@ -21,13 +23,12 @@ This is a prompt-driven skill, not a deterministic script. Explore, present what
 
 Look at the current repo to understand its starting state. Read whatever exists; don't assume:
 
-- `git remote -v` and `.git/config` — is this a GitHub repo? Which one?
+- `git remote -v` and `.git/config` — which GitHub repo is this?
 - `AGENTS.md` and `CLAUDE.md` at the repo root — does either exist? Is there already an `## Agent skills` section in either?
 - `CONTEXT.md` and `CONTEXT-MAP.md` at the repo root
 - `docs/adr/` and any `src/*/docs/adr/` directories
 - `docs/agents/` — does this skill's prior output already exist?
 - Existing tracker labels — on GitHub, inspect with `gh label list --limit 200`; identify missing or conflicting workflow labels.
-- `.scratch/` — sign that a local-markdown issue tracker convention is already in use
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
 - Monorepo signals — a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. Present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
 
@@ -39,16 +40,9 @@ Lead each section with the recommended answer so the user can accept it in a wor
 
 **Section A — Issue tracker.**
 
-> Explainer: The "issue tracker" is where issues live for this repo. Skills like `to-tickets`, `triage`, `to-spec`, and `qa` read from and write to it — they need to know whether to call `gh issue create`, write a markdown file under `.scratch/`, or follow some other workflow you describe. Pick the place you actually track work for this repo.
+> Explainer: this distribution uses GitHub Issues as the durable operational queue for grills, Wayfinder maps, specs, implementation tickets and pending work.
 
-Default posture: these skills were designed for GitHub. If a `git remote` points at GitHub, propose that. If a `git remote` points at GitLab (`gitlab.com` or a self-hosted host), propose GitLab. Otherwise (or if the user prefers), offer:
-
-- **GitHub** — issues live in the repo's GitHub Issues (uses the `gh` CLI)
-- **GitLab** — issues live in the repo's GitLab Issues (uses the [`glab`](https://gitlab.com/gitlab-org/cli) CLI)
-- **Local markdown** — issues live as files under `.scratch/<feature>/` in this repo (good for solo projects or repos without a remote)
-- **Other** (Jira, Linear, etc.) — ask the user to describe the workflow in one paragraph; the skill will record it as freeform prose
-
-Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off** — leave it off and don't raise it; a user who wants external PRs in the triage queue can flip the flag in the file later.
+Confirm that the repository has a GitHub remote and that `gh` can read it. If either is missing, report the blocker; do not silently fall back to local markdown or another tracker. Record the repository in `docs/agents/issue-tracker.md` from the GitHub template. Leave "PRs as a request surface" off unless the user explicitly asks to change it.
 
 **Section B — Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you) — an uninstalled skill needs no labels.
 
@@ -58,11 +52,10 @@ If it is installed, ask exactly one question:
 
 The defaults are the five canonical roles, each label string equal to its name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. On **yes**, write them as-is. Only if the user says no — usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`) — collect the overrides so `triage` applies existing labels instead of creating duplicates.
 
-**Section C — Workflow labels.** These names are protocol, not customizable display preferences: `plan`, `spec`, `wayfinder:map`, `wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`, and `wayfinder:task`. Together with the triage roles above, they are what `wayfinder`, `to-spec`, `to-tickets`, and `implement` query.
+**Section C — Workflow labels.** These names are protocol, not customizable display preferences: `pending`, `grill:session`, `spec`, `wayfinder:map`, `wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`, and `wayfinder:task`. Together with the triage roles above, they are what `grill-with-docs`, `to-pending`, `wayfinder`, `to-spec`, `to-tickets`, and `implement` query.
 
-- On GitHub/GitLab, show which are present and which are missing. After the user confirms the setup draft, create only the missing labels; never overwrite the color/description of an existing label silently.
+- On GitHub, show which are present and which are missing. After the user confirms the setup draft, create only the missing labels; never overwrite the color/description of an existing label silently.
 - If an existing label with one of these exact names has an incompatible meaning, stop and resolve the conflict with the user.
-- For a local tracker, record the fixed strings in `docs/agents/workflow-labels.md`; there is no remote mutation.
 
 **Section D — Domain docs.** Default to **single-context** — one `CONTEXT.md` + `docs/adr/` at the repo root. This fits almost every repo; write it without asking.
 
@@ -99,7 +92,7 @@ The block:
 
 ### Workflow labels
 
-Plan/spec and Wayfinder labels are fixed and verified on the configured tracker. See `docs/agents/workflow-labels.md`.
+Spec, grill, pending and Wayfinder labels are fixed and verified on GitHub. See `docs/agents/workflow-labels.md`.
 
 ### Domain docs
 
@@ -113,13 +106,9 @@ After writing the docs, create only missing labels on a real tracker. For GitHub
 Then write the docs files using the seed templates in this skill folder as a starting point:
 
 - [issue-tracker-github.md](./issue-tracker-github.md) — GitHub issue tracker
-- [issue-tracker-gitlab.md](./issue-tracker-gitlab.md) — GitLab issue tracker
-- [issue-tracker-local.md](./issue-tracker-local.md) — local-markdown issue tracker
 - [triage-labels.md](./triage-labels.md) — label mapping (only if `triage` is installed)
-- [workflow-labels.md](./workflow-labels.md) — fixed plan/spec/Wayfinder label protocol
+- [workflow-labels.md](./workflow-labels.md) — fixed spec/Wayfinder/deferred-work label protocol
 - [domain.md](./domain.md) — domain doc consumer rules + layout
-
-For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
 ### 5. Done
 

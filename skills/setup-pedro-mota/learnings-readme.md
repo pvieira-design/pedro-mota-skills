@@ -16,10 +16,10 @@ If it's just a code detail, that's a feature doc (`docs/system/`), not a lesson.
 
 ## Difference from sibling folders
 
-| | `docs/learnings/` | `docs/system/` | `docs/plans/` |
+| | `docs/learnings/` | `docs/system/` | GitHub specs/tickets |
 |---|---|---|---|
 | Captures | **mistake + rule not to repeat** | current state of the code | what we're going to do |
-| Tone | "don't do X because Y" | "the code does X" | "we'll do X" |
+| Tone | "don't do X because Y" | "the code does X" | "deliver X under these criteria" |
 
 ## Naming convention
 

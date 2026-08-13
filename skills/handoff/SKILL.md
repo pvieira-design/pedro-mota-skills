@@ -1,21 +1,21 @@
 ---
 name: handoff
-description: Compact the current conversation into a handoff document and a ready-to-paste prompt under the project's hidden .handoff/ folder. Use for direct session-to-session transfer when the issue-driven queue is unnecessary, or to continue a Wayfinder/grilling/planning thread in a fresh chat.
+description: Compact the current conversation into a handoff document and a ready-to-paste prompt under the project's hidden .handoff/ folder. Use for direct session-to-session transfer when the issue-driven queue is unnecessary, or to continue a Wayfinder, grilling or tracker thread in a fresh chat.
 ---
 
 # Handoff
 
 Create two ephemeral Markdown files under the repository root's `.handoff/` folder: a detailed handoff and a short ready-to-paste prompt. Open the prompt when done.
 
-`handoff` is a **direct-session alternative**, not a replacement for the standard approved-plan → `to-tickets` → one-ticket-per-`implement` flow. Prefer tracker tickets when work is shared, concurrent, blocked or needs durable operational state.
+`handoff` is a **direct-session alternative**, not a replacement for the standard approved-spec → `to-tickets` → one-ticket-per-`implement` flow. Prefer tracker tickets when work is shared, concurrent, blocked or needs durable operational state.
 
 ## 1. Determine the purpose
 
 Infer one purpose; ask one short question only if genuinely ambiguous:
 
-- **Continue standalone grilling/planning** — decisions remain open and a `docs/grills/` session exists.
+- **Continue standalone grilling/specification** — decisions remain open and a GitHub issue labelled `grill:session` exists.
 - **Continue Wayfinder** — a tracker map or decision ticket remains open. The tracker is the trail; there is no local grill.
-- **Execute a plan directly** — the user intentionally wants one fresh session to execute an approved `docs/plans/` plan without publishing tickets.
+- **Continue tracker execution** — an approved spec or executable child issue already exists.
 - **General continuation** — none of the above.
 
 ## 2. Ground the handoff
@@ -24,12 +24,12 @@ Read root `AGENTS.md` and `CLAUDE.md`, then reference only artifacts that exist:
 
 1. `docs/system/README.md`, the target feature-doc and complementary feature-docs;
 2. `CONTEXT.md` and relevant ADRs;
-3. the active `docs/plans/` file;
-4. relevant `docs/pending/` and `docs/learnings/` items;
-5. for standalone grilling, the exact `docs/grills/` session;
+3. the active GitHub spec and implementation issue, when present;
+4. relevant open GitHub issues labelled `pending` and `docs/learnings/` items;
+5. for standalone grilling, the exact `grill:session` issue, including its current body, every comment and linked artifact;
 6. for Wayfinder, the map URL/number and current ticket URL/number.
 
-Do not duplicate those artifacts. Point to the sources of truth. Redact secrets and PII.
+Do not duplicate those artifacts. Point to the sources of truth. The current session chat and internal Orca messages are approved channels for sensitive values needed by the task, but handoff files, GitHub, commits, publishable patches and public logs are not. Keep only non-sensitive consequences or safe references in the handoff; never persist secrets, credentials, PII or raw sensitive payloads. Do not invent an indirect handoff between the two approved channels.
 
 ## 3. Write the files
 
@@ -44,9 +44,9 @@ The detailed handoff contains: purpose, goal, completed/in-progress/blocked stat
 
 Every prompt must tell the new agent to read the handoff, `AGENTS.md`/`CLAUDE.md`, and the ordered knowledge-base list before acting.
 
-- **Standalone grilling:** resume the same grill file, ask one decision at a time, do not code, then use `to-plan` once decisions close.
-- **Wayfinder:** load the map and current ticket, keep all operational reasoning in tracker comments, resolve no more than one non-research ticket, do not create `docs/grills/`, then use `to-plan` when the route is fully clear.
-- **Direct plan execution:** state that bypassing tickets is intentional; read the full approved plan and cited docs, implement it, run checks/review, `sync-doc`, and `to-plan done`. Record deferrals with `to-pending`.
+- **Standalone grilling:** resume the same `grill:session` issue, preserve each substantive round in a chronological comment, refresh the issue-body checkpoint before the next question, do not code, then use `to-spec` once decisions close.
+- **Wayfinder:** load the map and current ticket, keep all operational reasoning in tracker comments, resolve no more than one non-research ticket, do not create `docs/grills/`, then use `to-spec` when the route is fully clear.
+- **Tracker execution:** read the executable issue, parent spec and cited docs; follow `implement` claim, checks, review, proof and closure gates. Record deferrals with `to-pending`.
 - **General:** state the exact next action without inventing a workflow.
 
 Use the repository's working language. Mention both explicit syntaxes only when useful: Claude Code uses `/skill-name`; Codex uses `$skill-name` or `/skills`.

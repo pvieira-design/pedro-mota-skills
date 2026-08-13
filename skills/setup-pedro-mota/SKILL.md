@@ -1,27 +1,30 @@
 ---
 name: setup-pedro-mota
-description: COMPLETE bootstrap of a repo's knowledge base in Pedro Mota's standard, so the AI is smart from day one. Creates/ensures CONTEXT.md, docs/adr/, docs/system/, docs/plans/, docs/pending/, docs/learnings/, docs/grills/ and docs/agents/; configures the Matt Pocock engineering skills; and keeps shared instructions in AGENTS.md with a CLAUDE.md bridge. Run once per repo, before using the other skills, or whenever this structure is missing.
+description: COMPLETE bootstrap of a repo's durable knowledge base in Pedro Mota's standard. Creates or ensures CONTEXT.md, docs/adr/, docs/system/, docs/learnings/ and docs/agents/; configures tracker-backed grills, GitHub specs, tickets and deferred work; and keeps shared instructions in AGENTS.md with a CLAUDE.md bridge. Run once per repo or whenever this structure is missing.
 disable-model-invocation: true
 ---
 
 # Setup Pedro Mota
 
-Bootstraps the whole **knowledge base** that makes an agent (or person) productive from day one: they understand a feature by reading a page instead of scanning the code, **don't reopen decisions already made**, and **don't repeat mistakes already paid for**. Seven artifacts, each answering a different question, + Matt Pocock's agent config:
+Bootstrap the **durable knowledge base** that makes an agent or person productive from day one: understand a feature by reading a page instead of scanning the code, preserve decisions already made, and avoid repeating mistakes already paid for. Each artifact answers a different question:
 
 - **`CONTEXT.md`** — *what the words mean* (domain glossary).
 - **`docs/adr/`** — *why we decided it this way* (Architecture Decision Records).
 - **`docs/system/`** — *what the code does TODAY* (living technical docs; one feature per file). Maintained by `/sync-doc`.
-- **`docs/plans/`** — *what we're GOING to do* (work plans; ephemeral). Created by `/to-plan`.
-- **`docs/pending/`** — *what's left open* (loose ends to revisit, so nothing is forgotten). Created by `/to-pending`.
+- **GitHub Issues labelled `pending`** — *what's left open* (loose ends to revisit, outside the execution frontier). Created by `/to-pending`.
 - **`docs/learnings/`** — *where we already erred* (lessons not to repeat).
-- **`docs/grills/`** — *how we reasoned in standalone grillings* (auxiliary session memory; one timestamped file per explicit `/grill-with-docs` session, no index). Wayfinder uses its tracker map/tickets/comments instead.
+- **GitHub Issues labelled `grill:session`** — *how we reasoned in standalone grillings* (live checkpoint in the body; chronological substantive rounds in comments).
 - **`docs/agents/`** — operational agent config (issue tracker, workflow/triage labels, domain layout and the full engineering workflow), via `/setup-matt-pocock-skills` plus this skill.
+
+Approved future work lives in GitHub: `/to-spec` publishes the implementation contract and `/to-tickets` creates its executable tracer-bullet queue. Treat existing `docs/plans/`, `docs/grills/` and `docs/pending/` trees as historical archives; never create or extend them.
 
 This is a **prompt-driven** skill, not a script. Explore → present what you found → confirm with the user → write. Be **idempotent**: only create what's missing, never overwrite the user's work, update blocks in-place.
 
+The current session chat and internal Orca messages are approved channels for sensitive values needed by setup. GitHub, generated repository files, commits, publishable patches and public logs are external: write only non-sensitive configuration consequences or safe references, never secrets, credentials, PII or raw sensitive payloads.
+
 Install one hard grounding rule: **before the first question in `/grill-with-docs` or `/wayfinder`**, read `docs/system/README.md`, the target feature-doc and the adjacent/complementary feature-docs named by its topic map, then relevant `CONTEXT.md`/ADRs. Summarize established facts and ask the user only for decisions the knowledge base and code cannot answer.
 
-> Folder/path names (`docs/system`, `docs/plans`, `docs/pending`, `docs/learnings`, `docs/grills`, `docs/adr`, `CONTEXT.md`) are Pedro's established conventions — keep them as-is even though this skill is written in English.
+> Folder/path names (`docs/system`, `docs/learnings`, `docs/adr`, `CONTEXT.md`) and the GitHub labels `grill:session` and `pending` are Pedro's established conventions. Existing `docs/plans/`, `docs/grills/` and `docs/pending/` trees are historical archives; do not add files or indexes there.
 
 ## Process
 
@@ -29,9 +32,11 @@ Install one hard grounding rule: **before the first question in `/grill-with-doc
 
 Understand the repo's current state (run in parallel):
 
-- `ls docs/ docs/system/ docs/plans/ docs/pending/ docs/learnings/ docs/grills/ docs/adr/ docs/agents/ 2>/dev/null` — what already exists?
+- `ls docs/ docs/system/ docs/learnings/ docs/adr/ docs/agents/ 2>/dev/null` — what already exists?
+- `ls -d docs/plans docs/grills docs/pending 2>/dev/null` — which historical archives already exist? Do not create them.
+- `gh issue list --state open --label pending --limit 20` — which loose ends are deferred in GitHub?
 - `ls CLAUDE.md AGENTS.md CONTEXT.md CONTEXT-MAP.md 2>/dev/null` — which root artifacts exist?
-- `git remote -v` — GitHub/GitLab? (feeds Matt's issue-tracker setup).
+- `git remote -v` — which GitHub repository feeds Matt's issue-tracker setup?
 - `git ls-files '*.md' | head -50` — docs convention already in use?
 - Code layout: `ls`, `cat package.json pnpm-workspace.yaml 2>/dev/null` — monorepo? which apps/packages? (feeds the template's "Where it lives" and CLAUDE.md "Structure").
 
@@ -59,29 +64,20 @@ Always adapt paths/layout to the repo (language, monorepo vs single app) — the
 - `docs/system/_template.md` ← seed [`system-template.md`](./system-template.md) (adjust "Where it lives" to the repo's real layers).
 - `docs/system/README.md` ← seed [`system-readme.md`](./system-readme.md) (the "Topic map" table starts empty; `/sync-doc` fills it).
 
-**Plans — `docs/plans/`**:
-- `docs/plans/README.md` ← seed [`plans-readme.md`](./plans-readme.md).
-
-**Pending — `docs/pending/`**:
-- `docs/pending/_template.md` ← seed [`pending-template.md`](./pending-template.md).
-- `docs/pending/README.md` ← seed [`pending-readme.md`](./pending-readme.md).
-
 **Lessons — `docs/learnings/`**:
 - `docs/learnings/_template.md` ← seed [`learnings-template.md`](./learnings-template.md).
 - `docs/learnings/README.md` ← seed [`learnings-readme.md`](./learnings-readme.md).
 
-**Grilling sessions — `docs/grills/`**:
-- `docs/grills/_template.md` ← seed [`grills-template.md`](./grills-template.md) (per-session structure).
-- Do **not** create `docs/grills/README.md`: navigation is the timestamped filename (`YYYY-MM-DD-HHmm-<detailed-slug>.md`).
-
 **Agent workflow — `docs/agents/`**:
-- `docs/agents/engineering-workflow.md` ← seed [`engineering-workflow.md`](./engineering-workflow.md). Adapt the tracker commands, verification commands and delivery policy to the repo; preserve the docs-first gate, Wayfinder/grilling split, plan gate, ticket frontier, one-ticket-per-session implementation and evidence-based closure.
+- `docs/agents/engineering-workflow.md` ← seed [`engineering-workflow.md`](./engineering-workflow.md). Adapt tracker commands, verification commands and delivery policy; preserve the docs-first gate, Wayfinder/grilling split, spec gate, ticket frontier, one-ticket-per-session implementation and evidence-based closure.
 
 If a folder exists but its README/template is missing, create only what's missing. Never clobber a user's file — suggest the additions instead.
 
 ### 4. Run Matt Pocock's agent setup
 
 For the operational part (where issues live, workflow/triage label vocabulary, domain layout), **invoke `/setup-matt-pocock-skills`** — it creates the tracker-facing files under `docs/agents/` and verifies the required tracker labels. Don't reimplement that part here. If the skill is unavailable, say so and proceed without it.
+
+For a GitHub tracker, also ensure `grill:session` and `pending` exist with their documented meanings. Create only missing labels; preserve compatible existing labels and stop on semantic conflict. These checks are owned here because the upstream Matt setup does not know Pedro's live-grill and deferred-work lifecycle.
 
 > Order: both skills edit the shared project instructions idempotently. Run Matt's setup, write/update `AGENTS.md`, then ensure the Claude bridge from step 5. Never duplicate the shared blocks in both files.
 
@@ -97,27 +93,27 @@ Use **`AGENTS.md` as the canonical shared project instructions**. Codex reads it
 `AGENTS.md` must **explain** the knowledge base — why each artifact matters and how it works (when to read, when to write, which skill maintains it) — not just list it. An agent that has never seen the repo should understand the role of `docs/` just by reading the shared instructions. Insert/update the four blocks from [`claude-md-blocks.md`](./claude-md-blocks.md), **adapting the repo's real paths**:
 
 1. **Structure** — short list (apps/packages + the docs artifacts with a one-liner).
-2. **The `docs/` folder — why it matters and how it works** — the main block: one subsection per artifact (`CONTEXT.md`/`docs/adr`/`system`/`plans`/`pendencias`/`aprendizados`) with *what it is · why it matters · how it works*. **Don't cut this block** — it's the heart.
-3. **The routine** — what to read before the first planning question or before coding (incl. target + complementary `docs/system` feature-docs, `CONTEXT.md` and ADRs) and what to run when done (`/sync-doc`, `/to-plan done`, `/to-pending`, lesson).
-4. **Skill ecosystem** — how `/setup-pedro-mota`, `/setup-matt-pocock-skills`, `/grill-with-docs`, `/wayfinder`, `/to-plan`, `/to-tickets`, `/implement`, `/to-pending` and `/sync-doc` fit into the GitHub issue-driven loop.
+2. **The knowledge base — why it matters and how it works** — the main block: one subsection per durable artifact (`CONTEXT.md`, `docs/adr`, `docs/system`, `docs/learnings`) plus GitHub grills, specs, tickets and `pending` issues. **Don't cut this block** — it's the heart.
+3. **The routine** — what to read before the first planning question or coding, and what to run when done (`/sync-doc`, `/to-pending`, lesson).
+4. **Skill ecosystem** — how `/setup-pedro-mota`, `/setup-matt-pocock-skills`, `/grill-with-docs`, `/wayfinder`, `/to-spec`, `/to-tickets`, `/implement`, `/to-pending` and `/sync-doc` fit into the GitHub issue-driven loop.
 
 **Idempotency:** if a block already exists (even worded differently), update it in-place instead of duplicating. Preserve what the user wrote around it.
 
 ### 6. Done
 
-Tell the user, in ≤6 lines: which artifacts were created/ensured, that `AGENTS.md` is canonical and `CLAUDE.md` imports it, and the work loop now in effect: **`/grill-with-docs` (or `/wayfinder` for large/foggy work) → `/to-plan` → `/to-tickets` → `/implement` → `/sync-doc` → `/to-plan done`** (+ `/to-pending` for what you deferred, + a lesson if you got bitten). Remind them they can edit the `README.md`/`_template.md`/seeds directly afterward.
+Tell the user, in ≤6 lines: which artifacts were created or ensured, that `AGENTS.md` is canonical and `CLAUDE.md` imports it, and the work loop now in effect: **`/grill-with-docs` (or `/wayfinder` for large/foggy work) → `/to-spec` → `/to-tickets` → `/implement` → `/sync-doc`** (+ `/to-pending` for deferrals, + a lesson after a recurring trap). State that existing `docs/plans/`, `docs/grills/` and `docs/pending/` remain historical only.
 
 ## Related skills (the ecosystem)
 
 This skill **installs the knowledge base**; the others **consume and maintain it**:
 
 - **`/setup-matt-pocock-skills`** — agent config (issue tracker, triage, domain) in `docs/agents/`. Called in step 4.
-- **`/grill-with-docs`** — after grounding in target + complementary `docs/system` docs, grills work that fits one planning session; creates one timestamped file for that standalone session in `docs/grills/`, fixes vocabulary in `CONTEXT.md`, and creates **ADRs** inline as decisions close.
-- **`/wayfinder`** — after the same grounding, charts research, prototype and grilling tickets for work too large or foggy for one session. Its map, tickets and resolution comments on the tracker are the session trail; it does not create `docs/grills/` files.
-- **`/to-plan`** — writes plans in `docs/plans/` (referencing relevant ADRs) and archives them in `done/` when implemented.
-- **`/to-tickets`** — turns an approved plan into tracer-bullet GitHub Issues with explicit blocking edges and plan/doc pointers.
+- **`/grill-with-docs`** — after grounding, creates a `grill:session` + `ready-for-human` issue before its first substantive question. The body is the live checkpoint; comments preserve each substantive round against compaction.
+- **`/wayfinder`** — after the same grounding, charts research, prototype and grilling tickets for work too large or foggy for one session. Its map, tickets and resolution comments are the session trail.
+- **`/to-spec`** — reads the complete source issue history and publishes the closed implementation contract as a GitHub issue, grounded in vocabulary, ADRs and `docs/system/`.
+- **`/to-tickets`** — turns the approved spec into tracer-bullet GitHub Issues with explicit blocking edges and spec/doc pointers.
 - **`/implement`** — implements one unblocked issue per fresh session, using TDD at agreed seams and code review before commit/closure.
-- **`/to-pending`** — records loose ends in `docs/pending/` (detailed) and resolves/promotes them.
+- **`/to-pending`** — records loose ends as GitHub issues labelled `pending` and resolves/promotes them.
 - **`/sync-doc`** — keeps `docs/system/` in sync with the code (+ "Topic map") at the end of each feature.
 
 Keep them coherent: if you change the structure here, adjust the references in those skills.

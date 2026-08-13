@@ -1,3 +1,4 @@
 interface:
   display_name: "Code Review"
-  short_description: "Review a diff on standards and spec"
+  short_description: "Review standards and spec sequentially"
+  default_prompt: "Review the changes since the fixed point along separate Standards and Spec axes, completing both passes sequentially in the current agent."

@@ -10,6 +10,7 @@ Issues and PRDs for this repo live as GitHub issues. Use the `gh` CLI for all op
 - **Comment on an issue**: `gh issue comment <number> --body "..."`
 - **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
 - **Close**: `gh issue close <number> --comment "..."`
+- **Deferred loose end**: an open, unassigned issue labelled `pending`, without a `ready-*` label. `/to-pending` creates it; resuming removes `pending` and adds `needs-triage`.
 
 Infer the repo from `git remote -v` — `gh` does this automatically when run inside a clone.
 
@@ -32,6 +33,13 @@ Create a GitHub issue.
 ## When a skill says "fetch the relevant ticket"
 
 Run `gh issue view <number> --comments`.
+
+## Standalone grilling operations
+
+- **Start:** after grounding and before the first substantive question, create `[Grill] <specific topic>` with `grill:session` + `ready-for-human`.
+- **Checkpoint:** keep objective, sources, facts, scope, non-goals, decisions, open questions, discarded hypotheses and next checkpoint in the body.
+- **History:** after every substantive answer, add a chronological comment with findings, answer and resulting decision, then update the body before asking again.
+- **Promote:** `to-spec` reads the body, every comment and linked artifact. After it publishes the spec, comment the spec link and close the grill issue.
 
 ## Wayfinding operations
 

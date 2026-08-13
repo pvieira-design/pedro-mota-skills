@@ -1,11 +1,13 @@
 ---
 name: sync-doc
-description: Sincronizar a documentação técnica viva de uma feature com o código real, criando o feature-doc quando ausente ou corrigindo divergências quando existente. Usar ao terminar ou ajustar uma feature, quando o usuário pedir `/sync-doc`, "atualize a documentação técnica", "confira se docs/system bate com o código" ou antes de fechar um plano implementado.
+description: Sincronizar a documentação técnica viva de uma feature com o código real, criando o feature-doc quando ausente ou corrigindo divergências quando existente. Usar ao terminar ou ajustar uma feature, quando o usuário pedir `/sync-doc`, "atualize a documentação técnica", "confira se docs/system bate com o código" ou antes de fechar uma issue implementada.
 ---
 
 # Sync Doc
 
 Sincronizar somente a documentação do estado atual do sistema. Não alterar código de produto, não escrever plano futuro e não transformar pendências ou aprendizados em regras já implementadas.
+
+O chat da sessão e as mensagens internas do Orca são canais aprovados para valores sensíveis necessários à tarefa. Documentação versionada, commits, patches publicáveis e logs públicos são externos: registre apenas consequências não sensíveis ou referências seguras, nunca segredos, credenciais, PII ou payloads sensíveis brutos. Não bloqueie nem crie handoff indireto apenas porque o valor precisa circular entre os dois canais aprovados.
 
 ## 1. Carregar as convenções do projeto
 
@@ -141,6 +143,4 @@ Responder de forma curta com:
 - validações executadas;
 - eventual pergunta ou TODO pendente.
 
-Se a feature veio de um plano em `docs/plans/`, lembrar de usar `$to-plan` em modo `done` somente depois que implementação, testes e documentação estiverem concluídos.
-
-Se surgir uma armadilha não óbvia que custou tempo e pode se repetir, oferecer `$to-pending` ou o registro em `docs/learnings/`, conforme a convenção do projeto. Não criar esses registros automaticamente sem que o escopo autorize.
+Se surgir uma ponta adiada, oferecer `$to-pending` para registrá-la no GitHub; se for uma armadilha não óbvia que custou tempo e pode se repetir, oferecer o registro em `docs/learnings/`. Não criar esses registros automaticamente sem que o escopo autorize.

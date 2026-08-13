@@ -1,22 +1,22 @@
 # Pedro Mota Skills
 
-A curated, cross-agent engineering workflow for **Claude Code and Codex**, built from Matt Pocock's open-source skills plus Pedro Mota's documentation, planning and execution conventions.
+A curated, cross-agent engineering workflow for **Claude Code and Codex**, built from Matt Pocock's open-source skills plus Pedro Mota's documentation, specification and execution conventions.
 
-The goal is simple: the agent should understand the existing system before asking questions or touching code, turn decisions into an executable contract, and close work with evidence and living documentation.
+The goal is simple: the agent should understand the existing system before asking questions or touching code, publish decisions as an executable GitHub contract, and close work with evidence and living documentation.
 
-## Install once, globally
+## Install the engineering core once, globally
 
-Use one user-scoped installation for both agents:
+The approved catalog combines Matt Pocock's pinned upstream skills with Pedro's workflow overlay. Use the repository installer with an immutable published commit SHA:
 
 ```bash
-npx skills add pvieira-design/pedro-mota-skills \
-  --global \
-  --agent codex claude-code \
-  --skill '*' \
-  --yes
+git clone https://github.com/pvieira-design/pedro-mota-skills.git
+cd pedro-mota-skills
+./scripts/install-engineering-core.sh <published-40-character-commit-sha>
 ```
 
-This creates one canonical user-level copy under `~/.agents/skills`. Codex discovers that location directly; Claude Code receives links under `~/.claude/skills` to the same skills.
+The script installs an explicit 24-skill Matt profile from `mattpocock/skills@v1.2.3`, then overlays only the 13 Pedro-owned or deliberately adapted skills from the supplied immutable revision. It does not install every skill exposed by either repository.
+
+The result is one canonical user-level copy under `~/.agents/skills`. Codex discovers that location directly; Claude Code receives links under `~/.claude/skills` to the same skills.
 
 Do **not** run the same command without `--global` inside every project. A same-named project copy under `.agents/skills` and user copy under `~/.agents/skills` makes Codex show both — for example, `Wayfinder · CRM` and `Wayfinder · Personal`. Claude Code gives the personal copy precedence, which can silently hide a different project version.
 
@@ -46,13 +46,13 @@ It creates or completes:
 | `CONTEXT.md` | What the domain words mean |
 | `docs/adr/` | Why hard-to-reverse decisions were made |
 | `docs/system/` | What the code does today — living feature docs |
-| `docs/plans/` | What is approved to build next |
-| `docs/pending/` | What was deliberately deferred |
+| GitHub Issues labelled `spec` | What is approved to build next |
+| GitHub Issues labelled `pending` | What was deliberately deferred |
 | `docs/learnings/` | Which non-obvious mistakes must not repeat |
-| `docs/grills/` | Live trail of explicit standalone grillings only |
+| GitHub Issues labelled `grill:session` | Live, compaction-safe trail of standalone grillings |
 | `docs/agents/` | Tracker, labels, domain layout and full engineering workflow |
 
-For GitHub repositories, authenticate `gh` first. The setup verifies and creates only missing workflow labels: `plan`, `spec`, `wayfinder:map`, `wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`, `wayfinder:task`, plus the configured triage labels.
+Authenticate `gh` first. The setup verifies and creates only missing workflow labels: `pending`, `grill:session`, `spec`, `wayfinder:map`, `wayfinder:research`, `wayfinder:prototype`, `wayfinder:grilling`, `wayfinder:task`, plus the configured triage labels.
 
 ## The mandatory grounding gate
 
@@ -60,7 +60,7 @@ Before the first question in a grill or Wayfinder — and before coding — the 
 
 1. Read `docs/system/README.md` and its topic map.
 2. Read the target feature-doc and adjacent/complementary feature-docs.
-3. Read relevant `CONTEXT.md`, ADRs, learnings, plans and pending items.
+3. Read relevant `CONTEXT.md`, ADRs, learnings, specs/tickets and pending items.
 4. Summarize established facts, existing seams and genuine unknowns.
 5. Ask the user only for decisions the repository cannot answer.
 
@@ -73,31 +73,31 @@ bounded uncertainty                         large / foggy effort
         │                                           │
         ▼                                           ▼
 grill-with-docs                                wayfinder
-standalone docs/grills trail            tracker map + decision tickets
+live grill issue + comments             tracker map + decision tickets
         └──────────────────────┬────────────────────┘
                                ▼
-                            to-plan
-                  approved AFK-ready contract
+                            to-spec
+                approved GitHub contract
                                ▼
                            to-tickets
-             root plan issue + blocked tracer children
+               blocked tracer-bullet children
                                ▼
                            implement
                   one frontier issue per clean session
                                ▼
              tdd → checks → sync-doc → commit → code-review
                                ▼
-                proof → close → to-plan done
+                  proof → tracker closure
 ```
 
 Important boundaries:
 
-- `grill-with-docs` creates one timestamped `docs/grills/` file and updates it live.
-- `wayfinder` does **not** create a local grill. Its map, tickets and resolution comments are the operational trail.
-- `to-plan` consumes closed decisions and must leave no product/architecture choices for the executor.
-- `to-tickets` requires an approved plan and asks for decomposition approval before tracker mutation.
+- `grill-with-docs` creates a `grill:session` + `ready-for-human` issue before its first substantive question. The body is the current checkpoint; comments preserve every substantive round.
+- `wayfinder` keeps its map, tickets and resolution comments as the operational trail. Neither path creates a local grill.
+- `to-spec` reads the source issue body, every comment and linked artifact, then publishes a complete contract that leaves no product/architecture choices for the executor.
+- `to-tickets` requires an approved spec. An explicit request to publish tickets authorizes the skill to self-review and create the child decomposition without an intermediate approval round.
 - `implement` claims exactly one open, unassigned, unblocked `ready-for-agent` issue before editing.
-- `sync-doc` updates `docs/system/` after code changes; `docs/system/` is project/feature memory, not `docs/grills/`.
+- `sync-doc` updates `docs/system/` after code changes; tracker issues hold planning-session history, not present-state documentation.
 
 Read the complete [engineering workflow](docs/WORKFLOW.md).
 
@@ -108,42 +108,45 @@ Matt Pocock's skills provide the engineering primitives: Wayfinder, grilling, do
 Pedro's layer turns those primitives into one repository lifecycle:
 
 - `setup-pedro-mota` installs the living knowledge base and cross-agent instructions;
-- `to-plan`, `to-pending` and `sync-doc` define the future/pending/present lifecycle;
+- `to-spec` and `sync-doc` separate future tracker contracts from present repository docs; `to-pending` keeps deferred work in GitHub Issues;
 - adapted Matt skills enforce docs-first grounding, tracker labels, one-ticket execution and evidence-based closure;
 - `handoff` remains a direct-session alternative when a tracker queue is unnecessary.
 
-This repository is a **curated distribution**, not something to install on top of a separate same-named Matt installation. Several Matt skills are included with Pedro-specific adaptations. Installing `mattpocock/skills` afterward can overwrite those names. See [Attribution and upstream policy](NOTICE.md).
+This repository is the **Pedro overlay**, while the installer owns the order: pinned Matt profile first, Pedro adaptations second. Do not reinstall Matt afterward, because that would overwrite the workflow-specific copies. See [Attribution and upstream policy](NOTICE.md).
 
-## Skill catalog
+## Overlay catalog
 
-### Setup and project memory
+The default Pedro overlay installs exactly these 12 names after the Matt profile:
 
-- `setup-pedro-mota`
-- `setup-matt-pocock-skills`
-- `sync-doc`
-- `to-plan`
-- `to-pending`
-- `handoff`
-
-### Decisions and design
-
-- `grilling`
+- `code-review`
 - `grill-with-docs`
-- `wayfinder`
-- `domain-modeling`
+- `handoff`
+- `implement`
+- `improve-codebase-architecture` (manual only)
 - `research`
-- `prototype`
-- `codebase-design`
-
-### Queue and execution
-
+- `setup-matt-pocock-skills`
+- `setup-pedro-mota`
+- `sync-doc`
+- `to-pending`
 - `to-spec`
 - `to-tickets`
-- `triage`
-- `implement`
-- `tdd`
-- `code-review`
-- `diagnose`
+- `wayfinder`
+
+This source repository also keeps comparison/reference copies of `codebase-design`, `diagnose`, `domain-modeling`, `grilling`, `prototype`, `tdd` and `triage`. They are not selected by `install-engineering-core.sh`; the default profile gets the approved upstream names, including `diagnosing-bugs`, directly from Matt v1.2.3.
+
+## Invocation policy
+
+| Workflow skill | Codex | Claude Code | Operational gate |
+| --- | --- | --- | --- |
+| `grill-with-docs` | Model or user | Model or user | If inferred, propose the session and wait for confirmation |
+| `wayfinder` | Model or user | Model or user | If inferred, explain why the work exceeds one grill and wait for confirmation |
+| `to-spec` | User only | User only | Requires a completed grill or resolved Wayfinder issue |
+| `to-tickets` | Model or user | Model or user | Tracker publication still requires an explicit user request |
+| `implement` | User only | User only | One executable child issue in a clean session |
+| `improve-codebase-architecture` | User only | User only | Read-only architecture audit; never inferred during normal implementation |
+| `setup-*` | User only | User only | Mutates repository structure/configuration |
+
+Model invocation controls discovery, not authority: HITL sessions still require confirmation, and tracker publication still requires an explicit request.
 
 ## Project instruction best practice
 
@@ -161,12 +164,12 @@ Put always-needed project facts in `AGENTS.md`, detailed repeatable procedures i
 
 ## Existing repositories
 
-Use the ready-to-paste [migration prompt](docs/MIGRATION-PROMPT.md) to update projects that already received an older version of this documentation. It covers the new `docs/grills/` boundary, Wayfinder's tracker-only trail, the docs-first hard gate, labels, the issue-driven loop and cross-agent instruction layout.
+Use the ready-to-paste [migration prompt](docs/MIGRATION-PROMPT.md) to update projects that already received an older version of this documentation. It covers tracker-backed grills and Wayfinder, the docs-first hard gate, labels, the issue-driven loop and cross-agent instruction layout.
 
 ## Update and verify
 
 ```bash
-npx skills update --global
+./scripts/install-engineering-core.sh <new-published-40-character-commit-sha>
 npx skills list --global --json
 ./scripts/audit-installation.sh
 ```

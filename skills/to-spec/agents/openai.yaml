@@ -1,7 +1,7 @@
 interface:
   display_name: "To Spec"
-  short_description: "Publish the current discussion as a spec"
-  default_prompt: "Use $to-spec to synthesize this confirmed discussion into a tracker spec."
+  short_description: "Promote a completed decision trail to spec"
+  default_prompt: "Use $to-spec on the completed grill or Wayfinder issue to publish the non-executable parent spec."
 
 policy:
   allow_implicit_invocation: false
