@@ -50,13 +50,13 @@ The goal of the shared project instructions is that an agent who has **never see
 
 ### GitHub `spec` issues — what we're GOING to do (future)
 
-- **What it is:** the approved implementation contract published from closed decisions, with behavior, implementation/testing decisions, scope and acceptance expectations.
+- **What it is:** the approved implementation contract published from a complete direct brief or a closed tracker-backed decision trail, with behavior, implementation/testing decisions, scope and acceptance expectations.
 - **Why it matters:** separates future intent from `docs/system/`, which describes only the present, while keeping the executable queue shareable.
-- **How it works:** publish with `/to-spec`; decompose with `/to-tickets` into blocked tracer-bullet issues; execute one frontier issue per fresh `/implement` session. Existing `docs/plans/` is historical only.
+- **How it works:** publish with `/to-spec` only after an explicit user request; decompose with `/to-tickets` into blocked tracer-bullet issues; execute one frontier issue per fresh `/implement` session. Existing `docs/plans/` is historical only.
 
 ### GitHub `grill:session` issues — how we close decisions without losing context
 
-- **What it is:** the live history of an explicit standalone `/grill-with-docs` session. Create `[Grill] <specific topic>` with `grill:session` + `ready-for-human` after grounding and before the first substantive question.
+- **What it is:** the live history of an explicit standalone `/grill-with-docs` session. After grounding, first prove that at least one genuine decision remains; only then create `[Grill] <specific topic>` with `grill:session` + `ready-for-human` before the first substantive question. Zero open decisions means zero grill.
 - **Why it matters:** chat can compact or move to a clean session. The tracker must be sufficient to recover the reasoning without chat memory.
 - **How it works:** keep the current checkpoint in the body (objective, sources, facts, scope, non-goals, decisions, open questions, discarded hypotheses and next checkpoint). After every substantive answer, add a chronological comment with findings, answer and resulting decision, then update the body before asking again. When decisions close, `/to-spec` reads the body, every comment and linked artifact; after publishing the spec, comment its link and close the grill.
 
@@ -107,13 +107,13 @@ The current session chat and internal Orca messages are approved channels for se
 
 - **`/setup-pedro-mota`** — bootstrap: creates the durable knowledge base (`CONTEXT.md`, `docs/adr/`, `docs/system/`, `docs/learnings/`, agent config), verifies GitHub workflow labels and adds this documentation to AGENTS.md. Once per repo.
 - **`/setup-matt-pocock-skills`** — agent config (issue tracker, triage labels, domain layout) in `docs/agents/`. Called by `/setup-pedro-mota`.
-- **`/grill-with-docs`** — first grounds itself, then creates and maintains a `grill:session` + `ready-for-human` issue as a compaction-safe checkpoint while closing one decision at a time.
-- **`/wayfinder`** — performs the same docs-first grounding, then maps research, prototype and grilling tickets until the destination can be specified precisely. The tracker map/tickets/comments are its trail; it does not create a local grill.
-- **`/to-spec`** — reads the complete grill/map issue history and distills closed decisions into an approved GitHub implementation contract.
+- **`/grill-with-docs`** — first grounds itself and proves at least one genuine decision remains, then creates and maintains a `grill:session` + `ready-for-human` issue as a compaction-safe checkpoint while closing one decision at a time. Zero decisions means zero grill.
+- **`/wayfinder`** — performs the same docs-first grounding, then maps research, prototype and grilling tickets only when planning is multisession and the route still has real fog. The tracker map/tickets/comments are its trail; it does not create a local grill.
+- **`/to-spec`** — after an explicit publication request, accepts a complete direct brief or reads the complete grill/map history and distills closed decisions into an approved GitHub implementation contract.
 - **`/to-tickets`** — publishes tracer-bullet GitHub Issues with explicit blocking edges and pointers back to the spec and durable docs.
-- **`/implement`** — claims and implements one unblocked GitHub Issue per fresh session, then runs TDD/review/verification before committing and closing it.
+- **`/implement`** — claims and implements one unblocked GitHub Issue per fresh session, then runs TDD, focused checks, commit, code review, `/sync-doc` and final review before closing it.
 - **`/to-pending`** — records a loose end as a GitHub issue labelled `pending`; `resume` sends it to triage and `done` resolves it.
 - **`/sync-doc`** — syncs `docs/system/` with the real code at the end of implementation.
 
-Loop: **grill (or `/wayfinder`) → `/to-spec` → `/to-tickets` → `/implement` one issue per fresh session → `/sync-doc` → tracker proof/closure** (+ `/to-pending` for what you deferred, + `docs/learnings/` if there was a trap). `/handoff` remains the direct-session alternative when a GitHub ticket queue is unnecessary.
+Routes: simple decided work stays direct; a complete brief, grill or Wayfinder can feed `/to-spec`; then `/to-tickets` → `/implement` one issue per fresh session → review → `/sync-doc` → final proof/closure (+ `/to-pending` for deferrals, + `docs/learnings/` for a recurring trap). `/handoff` remains the direct-session alternative when a GitHub ticket queue is unnecessary.
 ```

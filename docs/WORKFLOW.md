@@ -1,6 +1,6 @@
 # Engineering workflow
 
-`Standalone grill or Wayfinder → to-spec → spec issue → to-tickets → executable child issues → implement`
+Choose the smallest valid route: direct work for simple decided changes; direct brief → `to-spec`; standalone grill → `to-spec`; or Wayfinder → `to-spec`. Every spec then flows through `to-tickets` to executable child issues.
 
 ## State model
 
@@ -29,11 +29,13 @@ The user decides product/design trade-offs. The repository answers repository fa
 
 ## 2. Choose the decision process
 
-Use `grill-with-docs` when decision work fits one session. After grounding and before the first substantive question, create `[Grill] <specific topic>` with `grill:session` + `ready-for-human`. Keep the current checkpoint in its body and preserve each substantive round as a chronological comment that distinguishes facts, decisions, hypotheses, preferences and doubts before asking the next question.
+If grounding leaves no executor-facing decision and the work is simple, implement directly. If the user explicitly wants an AFK contract from a complete brief, use `to-spec` directly.
+
+Use `grill-with-docs` when at least one genuine decision remains and the decision work fits one session. Prove that open decision before tracker mutation. Then create `[Grill] <specific topic>` with `grill:session` + `ready-for-human` before the first substantive question. Keep the current checkpoint in its body and preserve each substantive round as a chronological comment that distinguishes facts, decisions, hypotheses, preferences and doubts before asking the next question.
 
 The checkpoint records objective, sources, established facts, scope, non-goals, decisions, open questions, discarded hypotheses and the next checkpoint. This issue is the recovery artifact after compaction or a clean-session handoff.
 
-Use `wayfinder` when the effort is larger than one session or the route is too foggy. Wayfinder creates a tracker map and child decision tickets. It does **not** create a local grill: map, tickets and resolution comments are its operational memory.
+Use `wayfinder` when planning is both multisession and still has real fog about the route. Size alone is insufficient. Wayfinder creates a tracker map and child decision tickets. It does **not** create a local grill: map, tickets and resolution comments are its operational memory.
 
 Wayfinder ticket types:
 
@@ -46,7 +48,7 @@ Resolve at most one non-research Wayfinder ticket in a session.
 
 ## 3. Publish the executable contract
 
-Use `to-spec` only after decisions close. It reads the source grill/map body, every comment and linked artifact without relying on chat memory. The GitHub spec must preserve the problem, solution, behavior, implementation decisions, data rules, failure modes, UX states, test seams, invariants and out-of-scope boundaries.
+Use `to-spec` only after decisions close and only when the user explicitly requests publication. It accepts exactly one source: a complete direct brief in the current session, a completed grill, or a resolved Wayfinder map. Tracker-backed sources are read in full; a direct brief cannot rely on omitted earlier chat or agent recollection. The GitHub spec must preserve the problem, solution, behavior, implementation decisions, data rules, failure modes, UX states, test seams, invariants and out-of-scope boundaries.
 
 If implementation tickets would have to choose product or architecture, the spec is not ready.
 
@@ -72,11 +74,13 @@ Use a clean session and one `implement` invocation per child:
 4. stop if any decision/criterion/seam is ambiguous;
 5. use TDD at agreed seams;
 6. run the focused checks assigned to the ticket; run a global suite only when this ticket is the repository's designated final candidate;
-7. run `sync-doc`;
-8. make a local explicit-path commit;
-9. run `code-review` from the starting SHA;
-10. prove every criterion and comment the evidence;
-11. close according to delivery policy.
+7. make a local explicit-path commit;
+8. run `code-review` from the starting SHA;
+9. fix valid findings and rerun only affected checks;
+10. run `sync-doc` against the reviewed implementation;
+11. perform a final review of code and living docs together;
+12. prove every criterion and comment the evidence;
+13. close according to delivery policy.
 
 No push unless explicitly authorized.
 

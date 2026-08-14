@@ -18,10 +18,10 @@ The following are included as upstream or near-upstream engineering primitives:
 The following originate from Matt Pocock's package but are intentionally adapted in this distribution:
 
 - `code-review` — preserves the Standards and Spec axes while running both passes sequentially in the current agent, without delegation;
-- `grilling` and `grill-with-docs` — docs-first grounding and Pedro's tracker-backed, compaction-safe standalone grill boundary;
+- `grilling` and `grill-with-docs` — docs-first grounding plus a genuine-decision gate before Pedro's tracker-backed, compaction-safe standalone grill;
 - `wayfinder` — docs-first grounding and tracker-only trail;
 - `setup-matt-pocock-skills` — cross-agent project instructions plus workflow-label verification;
-- `to-spec` — publishes a non-executable `spec` parent contract instead of marking it ready for direct execution;
+- `to-spec` — on explicit publication intent, accepts a decision-complete direct brief or tracker trail and publishes a non-executable `spec` parent contract without inventing an empty grill;
 - `to-tickets` — requires an approved GitHub spec, then publishes a reviewed tracer-bullet child queue;
 - `implement` — one frontier issue per clean session, claim-first, docs, review and evidence gates;
 - `handoff` — rewritten as a direct-session alternative compatible with standalone grilling and Wayfinder;

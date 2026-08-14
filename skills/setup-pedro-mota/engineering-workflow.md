@@ -15,7 +15,7 @@ Golden rule: **the issue points to the truth; it does not duplicate it**.
 
 Sensitive-data rule: the current session chat and internal Orca messages are approved channels for necessary secrets, credentials, PII and sensitive payloads. GitHub, versioned files, commits, publishable patches and public logs are external; they receive only non-sensitive consequences or safe references. Do not block or add an indirect handoff merely because a necessary value moves between the two approved channels.
 
-Canonical flow: `standalone grill or Wayfinder → to-spec → spec issue → to-tickets → executable child issues → implement`.
+Choose the smallest valid route: direct work for simple decided changes; direct brief → `to-spec`; standalone grill → `to-spec`; or Wayfinder → `to-spec`. Every spec then flows through `to-tickets` to executable child issues.
 
 ## Skill installation scope
 
@@ -29,15 +29,17 @@ Shared project instructions live in `AGENTS.md`. Root `CLAUDE.md` imports them w
 
 | Situation | Entry | Result |
 | --- | --- | --- |
+| Simple, decided, local, low-risk work | Current chat | Direct implementation without a planning issue |
+| Decision-complete brief needing an AFK contract | `to-spec` | Direct approved spec without an intermediate grill |
 | Bounded work with decisions to close | `grill-with-docs` | Confirmed understanding + live `grill:session` issue |
-| Large, greenfield or too foggy for one session | `wayfinder` | Tracker map of decision tickets; no duplicate local grill |
+| Multisession planning with real route fog | `wayfinder` | Tracker map of decision tickets; no duplicate local grill |
 | Missing external fact | `research` | Cited finding linked to the requesting ticket |
 | Behavior/visual still too abstract | `prototype` | Disposable artifact that improves the decision |
 | All decisions are closed | `to-spec` | Approved implementation contract on the tracker |
 | Approved spec must become a queue | `to-tickets` | Vertical child tickets with blocking edges |
 | One AFK child is on the frontier | `implement` | One implemented, verified and documented slice |
 
-Do not use Wayfinder for small work. Do not ask the user for facts that docs/code can answer. Do not publish a spec while product or architecture decisions remain open.
+Zero open decisions means zero grill. Size alone does not justify Wayfinder. Do not ask the user for facts that docs/code can answer. Do not publish a spec while product or architecture decisions remain open.
 
 ## 2. Ground before the first question or mutation
 
@@ -57,13 +59,13 @@ If docs disagree with code, code defines the present and `sync-doc` must correct
 
 ### Standalone grilling
 
-After grounding and before its first substantive question, `grill-with-docs` creates `[Grill] <specific topic>` with `grill:session` + `ready-for-human`. Its body is the live checkpoint: objective, sources, facts, scope, non-goals, decisions, open questions, discarded hypotheses and next checkpoint. After every substantive answer, add a chronological comment that distinguishes facts, decisions, hypotheses, preferences and doubts, then update the body before asking again. This makes the session recoverable after compaction or handoff.
+After grounding, `grill-with-docs` first names at least one genuine executor-facing decision. If none remains, stop before tracker mutation and use direct work or a directly requested `to-spec`. Otherwise create `[Grill] <specific topic>` with `grill:session` + `ready-for-human` before the first substantive question. Its body is the live checkpoint: objective, sources, facts, scope, non-goals, decisions, open questions, discarded hypotheses and next checkpoint. After every substantive answer, add a chronological comment that distinguishes facts, decisions, hypotheses, preferences and doubts, then update the body before asking again. This makes the session recoverable after compaction or handoff.
 
 Ask one decision at a time. Durable vocabulary moves to `CONTEXT.md`; hard-to-reverse, surprising trade-offs move to ADRs; `docs/system/` changes only after code changes. When no blocking decision remains, `to-spec` reads the complete issue history, publishes the spec, comments its link on the grill and closes the grill issue.
 
 ### Wayfinder
 
-Wayfinder plans work too large for one decision session. Its destination is normally an approved spec issue ready for decomposition. The tracker is its canonical trail:
+Wayfinder plans work that is both too large for one decision session and still foggy about the route. Its destination is normally an approved spec issue ready for decomposition. The tracker is its canonical trail:
 
 - `wayfinder:map` — destination, decisions index, fog and out-of-scope;
 - `wayfinder:research` — AFK external fact;
@@ -75,7 +77,7 @@ Wayfinder uses only its tracker trail. Resolve at most one non-research ticket p
 
 ## 4. Publish the implementation contract
 
-`to-spec` reads the source grill/map body, every comment and linked artifact, then publishes the closed decisions as the parent implementation contract. It is ready only when:
+`to-spec` requires explicit publication intent and accepts one decision-complete source: the direct brief fully present in the current session, a completed grill, or a resolved Wayfinder map. It reads tracker-backed sources in full, then publishes the closed decisions as the parent implementation contract. It is ready only when:
 
 - there are no placeholders, “maybe”, “TBD”, or implicit decisions;
 - models, FKs, enums, required fields, permissions, contracts and failure modes are exact;
@@ -112,12 +114,13 @@ An implementation ticket is takeable only when it is open, labelled `ready-for-a
 4. Refuse AFK execution if a decision, criterion, seam or command is ambiguous.
 5. Work red → green at the agreed seams; run focused checks regularly.
 6. Run the focused checks assigned to the ticket. Run a global suite only when this ticket is the repository's designated final candidate; reuse valid proof for an identical SHA and environment.
-7. Run `sync-doc` for affected feature docs.
-8. Commit only the issue's explicit paths; do not push unless authorized.
-9. Run `code-review <starting-SHA>` over the committed diff; fix findings and rerun affected checks.
-10. Verify every criterion individually and collect proof.
-11. Comment summary, criterion proofs, commands/results, commit and remaining gates.
-12. Close only according to the repository's delivery policy.
+7. Commit only the issue's explicit paths; do not push unless authorized.
+8. Run `code-review <starting-SHA>` over the committed diff; fix findings and rerun affected checks.
+9. Run `sync-doc` for affected feature docs after the implementation review.
+10. Perform a final review of code and living docs together.
+11. Verify every criterion individually and collect proof.
+12. Comment summary, criterion proofs, commands/results, commit and remaining gates.
+13. Close only according to the repository's delivery policy.
 
 A green test suite alone does not prove the whole spec was delivered.
 

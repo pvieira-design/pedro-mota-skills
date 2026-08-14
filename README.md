@@ -56,7 +56,7 @@ Authenticate `gh` first. The setup verifies and creates only missing workflow la
 
 ## The mandatory grounding gate
 
-Before the first question in a grill or Wayfinder — and before coding — the agent must:
+Before choosing a decision process, asking its first question, mutating its tracker trail or coding, the agent must:
 
 1. Read `docs/system/README.md` and its topic map.
 2. Read the target feature-doc and adjacent/complementary feature-docs.
@@ -69,32 +69,24 @@ This is the core Pedro layer on top of the Matt skills: exploration begins from 
 ## The workflow
 
 ```text
-bounded uncertainty                         large / foggy effort
-        │                                           │
-        ▼                                           ▼
-grill-with-docs                                wayfinder
-live grill issue + comments             tracker map + decision tickets
-        └──────────────────────┬────────────────────┘
-                               ▼
-                            to-spec
-                approved GitHub contract
-                               ▼
-                           to-tickets
-               blocked tracer-bullet children
-                               ▼
-                           implement
-                  one frontier issue per clean session
-                               ▼
-             tdd → checks → sync-doc → commit → code-review
-                               ▼
-                  proof → tracker closure
+simple + decided ────────────────────────────────→ direct work
+
+decision-complete brief ─────────────────────────┐
+bounded uncertainty → grill-with-docs ───────────┼→ to-spec → to-tickets
+multisession + real fog → wayfinder ─────────────┘              │
+                                                                 ▼
+                                                     one issue per clean session
+                                                                 │
+                               tdd → focused checks → commit → code-review
+                                                                 │
+                                            sync-doc → final review → proof/closure
 ```
 
 Important boundaries:
 
-- `grill-with-docs` creates a `grill:session` + `ready-for-human` issue before its first substantive question. The body is the current checkpoint; comments preserve every substantive round.
+- `grill-with-docs` creates a `grill:session` + `ready-for-human` issue only after grounding proves at least one genuine decision remains. The body is the current checkpoint; comments preserve every substantive round.
 - `wayfinder` keeps its map, tickets and resolution comments as the operational trail. Neither path creates a local grill.
-- `to-spec` reads the source issue body, every comment and linked artifact, then publishes a complete contract that leaves no product/architecture choices for the executor.
+- `to-spec` publishes only after an explicit request. It accepts either a complete direct brief in the current session or a tracker-backed grill/map read in full, then produces a contract that leaves no executor-facing choices.
 - `to-tickets` requires an approved spec. An explicit request to publish tickets authorizes the skill to self-review and create the child decomposition without an intermediate approval round.
 - `implement` claims exactly one open, unassigned, unblocked `ready-for-agent` issue before editing.
 - `sync-doc` updates `docs/system/` after code changes; tracker issues hold planning-session history, not present-state documentation.
@@ -140,7 +132,7 @@ This source repository also keeps comparison/reference copies of `codebase-desig
 | --- | --- | --- | --- |
 | `grill-with-docs` | Model or user | Model or user | If inferred, propose the session and wait for confirmation |
 | `wayfinder` | Model or user | Model or user | If inferred, explain why the work exceeds one grill and wait for confirmation |
-| `to-spec` | User only | User only | Requires a completed grill or resolved Wayfinder issue |
+| `to-spec` | Model or user | Model or user | Discovery is automatic; publication requires an explicit request and a decision-complete direct brief, grill or Wayfinder map |
 | `to-tickets` | Model or user | Model or user | Tracker publication still requires an explicit user request |
 | `implement` | User only | User only | One executable child issue in a clean session |
 | `improve-codebase-architecture` | User only | User only | Read-only architecture audit; never inferred during normal implementation |
@@ -164,7 +156,7 @@ Put always-needed project facts in `AGENTS.md`, detailed repeatable procedures i
 
 ## Existing repositories
 
-Use the ready-to-paste [migration prompt](docs/MIGRATION-PROMPT.md) to update projects that already received an older version of this documentation. It covers tracker-backed grills and Wayfinder, the docs-first hard gate, labels, the issue-driven loop and cross-agent instruction layout.
+Use the ready-to-paste [migration prompt](docs/MIGRATION-PROMPT.md) to update projects that already received an older version of this documentation. It covers the direct/grill/Wayfinder routing boundary, the docs-first hard gate, labels, the issue-driven loop and cross-agent instruction layout.
 
 ## Update and verify
 

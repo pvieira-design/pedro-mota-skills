@@ -127,16 +127,17 @@ cd pedro-mota-skills
     <section id="workflow">
       <h2>The correct flow</h2>
       <div class="flow">
-        <div><strong>Grill / Wayfinder</strong><span>Close decisions at the right scale.</span></div>
-        <div><strong>to-spec</strong><span>Publish the approved GitHub contract.</span></div>
+        <div><strong>Choose the smallest route</strong><span>Direct work, direct brief, genuine grill or multisession Wayfinder.</span></div>
+        <div><strong>to-spec</strong><span>On explicit request, publish a decision-complete GitHub contract.</span></div>
         <div><strong>to-tickets</strong><span>Publish self-reviewed vertical children and blockers.</span></div>
         <div><strong>implement</strong><span>Claim one frontier issue in a clean session.</span></div>
-        <div><strong>Verify</strong><span>TDD, checks, sync-doc and review.</span></div>
+        <div><strong>Verify</strong><span>Focused checks, commit, code review, sync-doc and final review.</span></div>
         <div><strong>Close</strong><span>Evidence, tracker closure, GitHub pending issues and learnings.</span></div>
       </div>
       <div class="grid">
-        <div class="card"><h3>Standalone grill</h3><p>Creates a <code>grill:session</code> issue before its first substantive question. The body is the live checkpoint; comments preserve every round against compaction.</p></div>
-        <div class="card"><h3>Wayfinder</h3><p>Uses its tracker map, decision tickets and resolution comments as the trail. Neither path creates a local grill.</p></div>
+        <div class="card"><h3>Direct routes</h3><p>Simple decided work stays in the current chat. A complete brief can feed <code>to-spec</code> directly when the user requests an AFK contract.</p></div>
+        <div class="card"><h3>Standalone grill</h3><p>Only after proving that a genuine decision remains, creates a <code>grill:session</code> issue. Zero open decisions means zero grill.</p></div>
+        <div class="card"><h3>Wayfinder</h3><p>For work that is both multisession and still foggy, uses a tracker map, decision tickets and resolution comments as the trail.</p></div>
         <div class="card"><h3>Feature memory</h3><p>Lives in <code>docs/system/</code>, <code>CONTEXT.md</code> and ADRs — never in the raw session transcript.</p></div>
       </div>
       <p><a href="docs/WORKFLOW.md">Read every gate and state transition →</a></p>
@@ -172,7 +173,7 @@ cd pedro-mota-skills
 
     <section id="migrate">
       <h2>Already installed the old documentation?</h2>
-      <p>Use the ready-to-paste prompt to migrate without changing product code. It updates the grill/Wayfinder boundary, grounding gate, labels, GitHub issue flow, install scope and <code>AGENTS.md</code>/<code>CLAUDE.md</code> layout.</p>
+      <p>Use the ready-to-paste prompt to migrate without changing product code. It updates the direct/grill/Wayfinder routing boundary, grounding gate, labels, GitHub issue flow, install scope and <code>AGENTS.md</code>/<code>CLAUDE.md</code> layout.</p>
       <a class="button primary" href="docs/MIGRATION-PROMPT.md">Open the migration prompt</a>
     </section>
   </main>

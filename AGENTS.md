@@ -17,12 +17,12 @@ This repository publishes a curated Agent Skills bundle for Claude Code and Code
 - Install the explicit engineering-core profile once globally: pinned Matt foundations first, then the Pedro workflow overlay; do not teach `--skill '*'` or simultaneous user + project copies of the same name.
 - `AGENTS.md` is the shared project instruction source; `CLAUDE.md` imports it with `@AGENTS.md`.
 - Before the first grill/Wayfinder question, ground in `docs/system/README.md`, target and complementary feature-docs, then vocabulary, ADRs, learnings, related tracker work and pending issues.
-- A standalone `grill-with-docs` creates a `grill:session` + `ready-for-human` issue before its first substantive question. Its body is the live checkpoint; each substantive round is preserved as a chronological comment before the checkpoint advances.
+- A standalone `grill-with-docs` first proves that at least one genuine decision remains, then creates a `grill:session` + `ready-for-human` issue before its first substantive question. Zero open decisions means zero grill.
 - Wayfinder uses its tracker map, decision tickets and resolution comments. Neither entry path creates a local grill file.
-- `to-spec` reads the complete source issue history — body, every comment and linked artifact — so a clean or compacted session can publish the contract without relying on chat memory.
-- Canonical flow: `standalone grill or Wayfinder → to-spec → spec issue → to-tickets → executable child issues → implement`.
-- Approved work flows `to-spec → to-tickets → implement one issue per clean session → sync-doc → review/proof → tracker closure`.
-- `grill-with-docs`, `wayfinder` and `to-tickets` are model-discoverable but preserve their confirmation/publication gates; `to-spec`, `implement`, `improve-codebase-architecture` and `setup-*` are user-invoked only.
+- `to-spec` accepts a complete tracker-backed decision trail or an explicitly approved direct brief whose executor-facing decisions are closed. Tracker sources are read in full; direct briefs must be fully present in the current session.
+- Canonical routes: direct work for simple decided changes; direct brief → `to-spec`; standalone grill → `to-spec`; or Wayfinder → `to-spec`. Specs then flow to `to-tickets` and executable child issues.
+- Approved work flows `to-spec → to-tickets → implement one issue per clean session → focused checks → commit → code review → sync-doc → final review/proof → tracker closure`.
+- `grill-with-docs`, `wayfinder`, `to-spec` and `to-tickets` are model-discoverable but preserve their confirmation/publication gates; `implement`, `improve-codebase-architecture` and `setup-*` are user-invoked only.
 - Tracker setup verifies fixed spec/pending/Wayfinder labels and configured triage roles.
 - Click Notes and the removed `to-tasks`/`do-task`/`night-shift` branch are not part of this engineering distribution.
 
@@ -31,7 +31,7 @@ This repository publishes a curated Agent Skills bundle for Claude Code and Code
 - Keep changes surgical and preserve upstream attribution.
 - When adapting a Matt skill, record the adaptation in `NOTICE.md`.
 - Keep frontmatter `name` equal to the directory name and write precise trigger descriptions.
-- Preserve Claude's `disable-model-invocation: true` and Codex's `policy.allow_implicit_invocation: false` together for explicitly invoked workflow skills.
+- Keep Claude's `disable-model-invocation: true` and Codex's `policy.allow_implicit_invocation: false` together only for explicitly invoked workflow skills. Model-discoverable skills omit the former and set the latter to `true`; their bodies retain any confirmation or publication gate.
 - Keep supporting detail in referenced files instead of bloating `SKILL.md`.
 - If a workflow rule changes, update the skill behavior, setup templates, `README.md`, relevant `docs/`, `index.html`, and active global copy together.
 

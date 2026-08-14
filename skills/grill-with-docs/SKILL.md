@@ -13,6 +13,8 @@ If the user did not explicitly invoke this skill, explain why a grill fits and w
 
 Before the first question, read the repository instructions, `docs/system/README.md`, target and complementary feature docs, relevant `CONTEXT.md`, ADRs, learnings, related tracker work and pending issues. Inspect only the code needed to verify facts. Summarize established facts, existing seams and genuine unknowns; ask the user only for decisions.
 
+Identify at least one genuine open product, design, architecture, contract, UX, test-seam or failure-mode decision before creating a tracker artifact. If grounding leaves no such decision, stop before mutation: use the direct-work path, or use `to-spec`'s direct-brief path when the user explicitly requested a spec. Zero open decisions means zero grill.
+
 Verify the tracker protocol documents `grill:session`, `ready-for-human` and `spec`. If it does not, stop and use `setup-matt-pocock-skills`; do not invent labels.
 
 The current session chat and internal Orca messages are approved channels for sensitive values needed by the work. GitHub is not: issue bodies/comments receive only non-sensitive consequences or safe references, never secrets, credentials, PII or raw sensitive payloads. Do not block or invent an indirect handoff merely because the value must move between the two approved channels.

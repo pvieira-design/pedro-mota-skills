@@ -44,4 +44,4 @@ Apply the deletion test explicitly. Distinguish a real seam with multiple adapte
 
 ## 4. Stop at the decision boundary
 
-Recommend the single best next candidate and explain why it outranks the rest. Do not design the final interface, edit code or start implementation automatically. If the user chooses a candidate, route the decision through the repository's normal grilling/Wayfinder → spec → tickets → implementation flow.
+Recommend the single best next candidate and explain why it outranks the rest. Do not design the final interface, edit code or start implementation automatically. If the user chooses a candidate, use the repository's smallest valid route: direct work when it is already simple and decided, direct `to-spec` for a complete brief that needs an AFK contract, a standalone grill for a genuine bounded decision, or Wayfinder when planning is both multisession and still foggy.

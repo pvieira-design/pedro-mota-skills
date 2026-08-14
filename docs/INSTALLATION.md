@@ -69,10 +69,10 @@ In Claude Code, use `/skills` to inspect sources. In Codex, use `/skills` or typ
 
 ### Workflow invocation policy
 
-- Model or user invoked: `grill-with-docs`, `wayfinder`, `to-tickets`.
-- User invoked only: `to-spec`, `implement`, `improve-codebase-architecture`, `setup-pedro-mota`, `setup-matt-pocock-skills`.
+- Model or user invoked: `grill-with-docs`, `wayfinder`, `to-spec`, `to-tickets`.
+- User invoked only: `implement`, `improve-codebase-architecture`, `setup-pedro-mota`, `setup-matt-pocock-skills`.
 
-Implicit discovery does not bypass operational gates: grill/Wayfinder wait for confirmation, and `to-tickets` publishes only after an explicit user request.
+Implicit discovery does not bypass operational gates: grill/Wayfinder wait for confirmation, and `to-spec`/`to-tickets` publish only after an explicit user request.
 
 ## Fix duplicate Personal + Project entries
 

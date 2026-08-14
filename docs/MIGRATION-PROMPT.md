@@ -25,9 +25,9 @@ Regras a implementar
    - A issue GitHub `grill:session` é a memória operacional de uma sessão explícita e avulsa de grill-with-docs; docs/grills/ é arquivo histórico.
 
 2. Grill avulso vs Wayfinder
-   - Depois do grounding e antes da primeira pergunta substantiva, grill-with-docs cria `[Grill] <tópico específico>` com `grill:session` + `ready-for-human`. O corpo é o checkpoint vivo; cada rodada substantiva vira comentário cronológico, separando fatos, decisões, hipóteses, preferências e dúvidas antes da atualização do corpo e da próxima pergunta.
+   - Depois do grounding, grill-with-docs primeiro prova que existe ao menos uma decisão genuína aberta. Só então cria `[Grill] <tópico específico>` com `grill:session` + `ready-for-human` antes da primeira pergunta substantiva. Zero decisões abertas significa zero grill.
    - Wayfinder usa issue-mapa, tickets de decisão e comentários de resolução. Nenhum fluxo cria grill local.
-   - to-spec lê o corpo, todos os comentários e artefatos ligados na issue de origem; não depende da memória do chat. Depois de publicar a spec, comenta o link e fecha o grill/mapa.
+   - to-spec exige pedido explícito de publicação e aceita brief direto decision-complete, grill concluído ou mapa resolvido. Para origem no tracker, lê corpo, comentários e artefatos; para brief direto, exige o contrato completo na sessão atual. Nunca cria grill vazio como plumbing.
    - Resultados duráveis de ambos fluem para CONTEXT.md, ADRs e a spec no GitHub. docs/system/ só muda depois que o código correspondente mudar.
 
 3. Hard gate antes de perguntar ou mapear
@@ -36,11 +36,13 @@ Regras a implementar
    - Não perguntar ao usuário fatos que docs ou código respondem; levar ao usuário somente decisões de produto/design.
 
 4. Fluxo operacional
-   - Trabalho delimitado: grill-with-docs → to-spec.
-   - Trabalho grande/nebuloso: wayfinder → tickets de research/prototype/grilling/task → to-spec.
+   - Trabalho simples e decidido: implementação direta.
+   - Brief decision-complete que precisa de contrato AFK: to-spec direto.
+   - Decisão delimitada aberta: grill-with-docs → to-spec.
+   - Planejamento multissessão com fog real: wayfinder → tickets de research/prototype/grilling/task → to-spec.
    - Spec aprovada: to-tickets cria sub-issues verticais com bloqueios nativos, usando a spec existente como raiz não executável.
    - Implementação: uma issue `ready-for-agent`, aberta, sem assignee e sem blocker por sessão limpa; implement deve se atribuir antes de editar.
-   - Fechamento: TDD/checks → sync-doc → commit local por paths explícitos → code-review desde o SHA inicial → provas por critério → fechamento dos tickets e da spec.
+   - Fechamento: TDD/checks focados → commit local por paths explícitos → code-review desde o SHA inicial → correções/rechecks → sync-doc → revisão final conjunta de código e docs → provas por critério → fechamento dos tickets e da spec.
    - Não fazer push sem autorização explícita. Handoff continua como alternativa de passagem direta quando uma fila no tracker não fizer sentido.
 
 5. Labels do tracker

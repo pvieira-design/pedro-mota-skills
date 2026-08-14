@@ -101,18 +101,18 @@ Use **`AGENTS.md` as the canonical shared project instructions**. Codex reads it
 
 ### 6. Done
 
-Tell the user, in ≤6 lines: which artifacts were created or ensured, that `AGENTS.md` is canonical and `CLAUDE.md` imports it, and the work loop now in effect: **`/grill-with-docs` (or `/wayfinder` for large/foggy work) → `/to-spec` → `/to-tickets` → `/implement` → `/sync-doc`** (+ `/to-pending` for deferrals, + a lesson after a recurring trap). State that existing `docs/plans/`, `docs/grills/` and `docs/pending/` remain historical only.
+Tell the user, in ≤6 lines: which artifacts were created or ensured, that `AGENTS.md` is canonical and `CLAUDE.md` imports it, and the route now in effect: direct work for simple decided changes; direct brief, grill or Wayfinder into `/to-spec`; then `/to-tickets` → `/implement` → review → `/sync-doc` → final proof (+ `/to-pending` for deferrals, + a lesson after a recurring trap). State that existing `docs/plans/`, `docs/grills/` and `docs/pending/` remain historical only.
 
 ## Related skills (the ecosystem)
 
 This skill **installs the knowledge base**; the others **consume and maintain it**:
 
 - **`/setup-matt-pocock-skills`** — agent config (issue tracker, triage, domain) in `docs/agents/`. Called in step 4.
-- **`/grill-with-docs`** — after grounding, creates a `grill:session` + `ready-for-human` issue before its first substantive question. The body is the live checkpoint; comments preserve each substantive round against compaction.
-- **`/wayfinder`** — after the same grounding, charts research, prototype and grilling tickets for work too large or foggy for one session. Its map, tickets and resolution comments are the session trail.
-- **`/to-spec`** — reads the complete source issue history and publishes the closed implementation contract as a GitHub issue, grounded in vocabulary, ADRs and `docs/system/`.
+- **`/grill-with-docs`** — after grounding proves at least one genuine decision remains, creates a `grill:session` + `ready-for-human` issue before its first substantive question. Zero open decisions means zero grill.
+- **`/wayfinder`** — after the same grounding, charts research, prototype and grilling tickets only for multisession planning with real route fog. Its map, tickets and resolution comments are the session trail.
+- **`/to-spec`** — after an explicit publication request, accepts a complete direct brief, grill or Wayfinder map and publishes the closed implementation contract as a GitHub issue, grounded in vocabulary, ADRs and `docs/system/`.
 - **`/to-tickets`** — turns the approved spec into tracer-bullet GitHub Issues with explicit blocking edges and spec/doc pointers.
-- **`/implement`** — implements one unblocked issue per fresh session, using TDD at agreed seams and code review before commit/closure.
+- **`/implement`** — implements one unblocked issue per fresh session, using TDD at agreed seams, a committed implementation review, then `/sync-doc` and final review before closure.
 - **`/to-pending`** — records loose ends as GitHub issues labelled `pending` and resolves/promotes them.
 - **`/sync-doc`** — keeps `docs/system/` in sync with the code (+ "Topic map") at the end of each feature.
 
