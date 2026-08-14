@@ -23,7 +23,7 @@ The following originate from Matt Pocock's package but are intentionally adapted
 - `setup-matt-pocock-skills` — cross-agent project instructions plus workflow-label verification;
 - `to-spec` — on explicit publication intent, accepts a decision-complete direct brief or tracker trail and publishes a non-executable `spec` parent contract without inventing an empty grill;
 - `to-tickets` — requires an approved GitHub spec, then publishes a reviewed tracer-bullet child queue;
-- `implement` — one frontier issue per clean session, claim-first, docs, review and evidence gates;
+- `implement` — one frontier issue per clean session, claim-first, committed implementation review, post-review `sync-doc`, final code-plus-docs review and evidence gates;
 - `handoff` — rewritten as a direct-session alternative compatible with standalone grilling and Wayfinder;
 - `improve-codebase-architecture` — retained as an explicit, read-only architecture audit rather than an automatically invoked implementation aid.
 - `research` — preserves the upstream primary-source workflow while enforcing the approved sensitive-channel boundary for its persisted report.

@@ -44,12 +44,14 @@ Persist proof as command + scope + SHA + environment + result. Reuse a valid gre
 
 Do not expand scope. Record a deferred edge case as a GitHub issue with `to-pending`; do not silently solve it inside this issue.
 
-## 5. Document, commit and review
+## 5. Commit, review, then synchronize documentation
 
-1. Run `sync-doc` for every affected feature so `docs/system/` matches the new code.
-2. Stage only explicit paths owned by this issue and create one local atomic commit.
-3. Run `code-review <starting-SHA>` against the committed diff. Fix Standards and Spec findings, update the commit and rerun affected checks.
-4. Do not push unless the user or issue explicitly authorizes it.
+1. Stage only explicit implementation paths owned by this issue and create one local atomic commit.
+2. Run `code-review <starting-SHA>` against the committed implementation diff.
+3. Fix valid Standards and Spec findings, amend the commit and rerun only affected checks.
+4. Run `sync-doc` after the implementation review so `docs/system/` describes the reviewed code. Absence of a pre-existing feature-doc does not make synchronization inapplicable when the change creates or alters documentable behavior.
+5. Stage the affected living docs, amend the same atomic commit and review the final code-plus-docs diff. Fix any divergence and rerun affected checks before proof.
+6. Do not push unless the user or issue explicitly authorizes it.
 
 ## 6. Prove and close
 
